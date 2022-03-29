@@ -120,7 +120,7 @@ const address = {
 // Comments (subdocument)
 const comment = {
     "_id": "7b7ffeef-c9d6-4c42-93d5-dee015e56eac",
-    "from": "jwang203@stevens.edu",
+    "from": "f4a5489d-8f6e-4997-a3a8-22519b5cc55e",
     "details": "Don't be late or you won't get any food",
     "timestamp": "04/01/2022 09:32:14"
 }
