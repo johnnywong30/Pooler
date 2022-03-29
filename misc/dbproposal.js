@@ -4,6 +4,7 @@ const user = {
     "firstName": "Jordan",
     "lastName": "Wang",
     "email": "jwang203@stevens.edu",
+    "password": "$2a$10$2M0FNA3JdPTQ4Yn2ZRFvle833u8T0z8Hi7WRWR9/qxU/M89QaG106",
     "phone": "333-333-3333",
     "venmo": "big-wang-69",
     "address": {
