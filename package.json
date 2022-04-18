@@ -1,0 +1,31 @@
+{
+  "name": "pooler",
+  "version": "1.0.0",
+  "description": "CS546-B Final Project: Pooler",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon -q app.js",
+    "seed": "node ./config/seed.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnnywong30/Pooler.git"
+  },
+  "author": "Carrot Carro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnnywong30/Pooler/issues"
+  },
+  "homepage": "https://github.com/johnnywong30/Pooler#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.3",
+    "express-handlebars": "^6.0.5",
+    "express-session": "^1.17.2",
+    "mongodb": "^4.5.0",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7"
+  }
+}
