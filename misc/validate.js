@@ -1,19 +1,18 @@
 const emailValidator = require('email-validator')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, validate } = require('uuid');
 const { phone } = require('phone')
 const { ObjectId } = require('mongodb')
 const US_States = require('../const/USStates.json')
 
-const checkString = (str, fieldName = 'input', additionalCheck = str => true) => {
+module.exports = {
+  checkString(str, fieldName = 'input', additionalCheck = str => true) {
     if (! str) throw `${fieldName} does not exist`
     if (typeof str !== 'string') throw `${fieldName} is not a string`
     const trimmed = str.trim()
     if (trimmed.length < 1) throw `${fieldName} cannot be empty spaces`
     if (! additionalCheck(trimmed)) throw `${fieldName} is invalid`
     return trimmed
-}
-
-module.exports = {
+  },
   checkEmail(email) {
     if (!email) throw 'email does not exist'
     if (typeof email !== 'string') throw 'email is not a string'
@@ -34,10 +33,10 @@ module.exports = {
     return trimmed
   },
   checkFirstName(firstName) {
-    return checkString(firstName, 'First Name')
+    return module.exports.checkString(firstName, 'First Name')
   },
   checkLastName(lastName) {
-    return checkString(lastName, 'Last Name')
+    return module.exports.checkString(lastName, 'Last Name')
   },
   checkPhone(phoneNum) {
     const validate = phone(phoneNum)
@@ -45,21 +44,21 @@ module.exports = {
     return validate.phoneNumber
   },
   checkVenmo(venmo) {
-    return checkString(venmo, 'Venmo username')
+    return module.exports.checkString(venmo, 'Venmo username')
   },
   checkStreet(street) {
-    return checkString(street, 'Street')
+    return module.exports.checkString(street, 'Street')
   },
   checkCity(city) {
-    return checkString(city, 'City')
+    return module.exports.checkString(city, 'City')
   },
   checkState(state) {
-    const curr = checkString(state, 'State')
+    const curr = module.exports.checkString(state, 'State')
     if (US_States[state] === undefined) throw `${state} does not exist in the United States`
     return state
   },
   checkZipcode(zipcode) {
-    return checkString(zipcode, 'Zipcode', (str) => {
+    return module.exports.checkString(zipcode, 'Zipcode', (str) => {
       return str.length === 5 && /^\d+$/.test(str)
     })
   },
@@ -77,7 +76,54 @@ module.exports = {
   checkIsDriver(isDriver) {
     if (isDriver === undefined) throw `isDriver does not exist`
     return isDriver
-  }
-
-
+  },
+  checkPrivate(isPrivate) {
+    if (isPrivate === undefined) throw `isPrivate does not exist`
+    return isPrivate
+  },
+  //date validation modified from jordan's lab 8
+  //https://stackoverflow.com/questions/11591854/format-date-to-mm-dd-yyyy-in-javascript
+  checkDate(date) {
+    if (!date) throw `date ${date} must be supplied`; 
+    //check if date is in acceptable format
+    date = new Date(date);
+    // https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
+    if (date instanceof Date && isNaN(date.getTime())) { throw `invalid date ${date}`; }
+    let year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    return month + '/' + day + '/' + year;
+  },
+  // checks if the time is in military format
+  checkTime(time) {
+    if (!time) throw `time must be supplied`
+    //modified from https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
+    const regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"
+    time = time.match(regex)
+    if (!time) throw `${time} is not in a valid military time format`
+    return time
+  },
+  //separate functions to check strings with both date and time
+  //string is "04/01/2022 09:32:14"
+  checkDateTime(dateTime) {
+    if (!dateTime) throw `date and time must be supplied`
+    let data = dateTime.split(" ")
+    if (data.length !== 2) throw `invalid date and time`
+    module.exports.checkDate(data[0])
+    module.exports.checkTime(data[1])
+    return dateTime
+  },
+  checkCapacity(capacity) {
+    if (!capacity) throw `capacity must be supplied`
+    if (typeof capacity !== 'number' || isNaN(capacity)) throw `${capacity} must be a number`
+    if (capacity < 1) throw `cannot have capacity ${capacity} < 1`
+    return capacity
+  },
+  checkId(id) {
+    if (!id) throw `id must be supplied`
+    if (!validate(id)) throw `${id} is not a valid id`
+    return id
+  },
+  
 }
+
