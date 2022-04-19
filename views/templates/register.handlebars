@@ -1,0 +1,137 @@
+{{!-- Inspiration source: https://mdbootstrap.com/docs/standard/extended/registration/#section-6 --}}
+{{!-- TODO: validate inputs on client side --}}
+<section class="h-100 h-custom gradient-custom-2">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12">
+                {{#if error}}
+                <div class="row">
+                    <div class="col-12 d-flex align-items-center mb-3">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Error: {{error}}
+                        </div>
+                        {{!-- TODO Get button to dismiss alert using js --}}
+                    </div>
+                </div>
+                {{/if}}
+                <div class="card card-registration card-registration-2">
+                    <div class="card-body p-0">
+                        <form id="register-form" action="/register" method="POST">
+                            <div class="row g-0">
+                                {{!-- Left half --}}
+                                <div class="col-lg-6 text-black">
+                                    <div class="p-5">
+                                        <h3 class="fw-normal mb-5">Account Information</h3>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-4 pb-2">
+                                                <div class="form-outline">
+                                                    <input type="text" id="email" name="email"
+                                                        class="form-control form-control-lg" required />
+                                                    <label class="form-label" for="email">Email</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-4 pb-2">
+                                                <div class="form-outline">
+                                                    <input type="password" id="password" name="password"
+                                                        class="form-control form-control-lg" required />
+                                                    <label class="form-label" for="password">Password</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4 pb-2">
+                                                <div class="form-outline">
+                                                    <input type="text" id="firstName" name="firstName"
+                                                        class="form-control form-control-lg" required />
+                                                    <label class="form-label" for="firstName">First Name</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4 pb-2">
+                                                <div class="form-outline">
+                                                    <input type="text" id="lastName" name="lastName"
+                                                        class="form-control form-control-lg" required />
+                                                    <label class="form-label" for="lastName">Last Name</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-4 pb-2">
+                                                <div class="form-outline">
+                                                    <input type="tel" id="phone" name="phone"
+                                                        class="form-control form-control-lg" required />
+                                                    <label class="form-label" for="phone">Phone Number</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p>Already have an account? <a href="/login" class="link-info">Login here</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                {{!-- Right Half --}}
+                                <div class="col-lg-6 bg-teal text-white">
+                                    <div class="p-5">
+                                        <h3 class="fw-normal mb-5">Personal Information</h3>
+                                        <div class="mb-4 pb-2">
+                                            <div class="form-outline form-white">
+                                                <input type="text" id="venmo" name="venmo"
+                                                    class="form-control form-control-lg" required />
+                                                <label class="form-label" for="phone">Venmo</label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-4 pb-2">
+                                            <div class="form-outline form-white">
+                                                <input type="text" id="street" name="street"
+                                                    class="form-control form-control-lg" required />
+                                                <label class="form-label" for="street">Street Address</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4 pb-2">
+                                                <div class="form-outline form-white">
+                                                    <input type="text" id="city" name="city"
+                                                        class="form-control form-control-md" required />
+                                                    <label class="form-label" for="city">City</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 mb-4 pb-2">
+                                                <div class="form-outline form-white">
+                                                    <input type="number" id="zipcode" name="zipcode"
+                                                        class="form-control form-control-md" required />
+                                                    <label class="form-label" for="zipcode">Zipcode</label>
+                                                </div>
+                                            </div>
+                                            {{!-- TODO Fix state select css later --}}
+                                            <div class="col-md-3 mb-4 pb-2">
+                                                <div class="form-outline form-white">
+                                                    <select class="form-select pb-0" aria-label="state" id="state"
+                                                        name="state" required>
+                                                        <option selected>State</option>
+                                                        {{#each states}}
+                                                        <option value={{this}}>{{this}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-check d-flex justify-content-end mb-4 pt-3 pb-3">
+                                                <input class="form-check-input me-3" type="checkbox" value="yes"
+                                                    id="isDriver" name="isDriver" />
+                                                <label class="form-check-label text-white" for="isDriver">
+                                                    I am a driver.
+                                                </label>
+                                            </div>
+                                            <button type="submit" class="btn btn-light btn-lg"
+                                                data-mdb-ripple-color="dar">Register</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
