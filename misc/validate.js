@@ -89,7 +89,7 @@ module.exports = {
     let month = (1 + date.getMonth()).toString().padStart(2, '0');
     let day = date.getDate().toString().padStart(2, '0');
     return month + '/' + day + '/' + year;
-  }
+  },
   // checks if the time is in military format
   checkTime(time) {
     if (!time) throw `Error: time must be supplied`
@@ -98,5 +98,11 @@ module.exports = {
     time = time.match(regex)
     if (!time) throw `Error: ${time} is not in a valid military time format`
     return time
+  },
+  checkCapacity(capacity) {
+    if (!capacity) throw `Error: capacity must be supplied`
+    if (typeof capacity !== 'number' || isNaN(capacity)) throw `Error: ${capacity} must be a number`
+    if (capacity < 1) throw `Error: cannot have capacity ${capacity} < 1`
+    return capacity
   }
 }
