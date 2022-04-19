@@ -77,6 +77,12 @@ module.exports = {
     if (! isDriver || typeof isDriver !== 'boolean') throw `isDriver does not exist`
     return isDriver
   },
+  checkPrivate(isPrivate) {
+    if (! isPrivate || typeof isPrivate !== 'boolean') throw `isPrivate does not exist`
+    return isPrivate
+  },
+  //im thinking for departuretime, we can split on space
+  //and then try and check each part [date, time] separately
   //date validation modified from jordan's lab 8
   //https://stackoverflow.com/questions/11591854/format-date-to-mm-dd-yyyy-in-javascript
   checkDate(date) {
