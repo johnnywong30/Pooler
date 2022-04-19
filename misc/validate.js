@@ -33,10 +33,10 @@ module.exports = {
     return trimmed
   },
   checkFirstName(firstName) {
-    return this.checkString(firstName, 'First Name')
+    return module.exports.checkString(firstName, 'First Name')
   },
   checkLastName(lastName) {
-    return this.checkString(lastName, 'Last Name')
+    return module.exports.checkString(lastName, 'Last Name')
   },
   checkPhone(phoneNum) {
     const validate = phone(phoneNum)
@@ -44,21 +44,21 @@ module.exports = {
     return validate.phoneNumber
   },
   checkVenmo(venmo) {
-    return this.checkString(venmo, 'Venmo username')
+    return module.exports.checkString(venmo, 'Venmo username')
   },
   checkStreet(street) {
-    return this.checkString(street, 'Street')
+    return module.exports.checkString(street, 'Street')
   },
   checkCity(city) {
-    return this.checkString(city, 'City')
+    return module.exports.checkString(city, 'City')
   },
   checkState(state) {
-    const curr = this.checkString(state, 'State')
+    const curr = module.exports.checkString(state, 'State')
     if (US_States.state === undefined) throw `${state} does not exist in the United States`
     return state
   },
   checkZipcode(zipcode) {
-    return this.checkString(zipcode, 'Zipcode', (str) => {
+    return module.exports.checkString(zipcode, 'Zipcode', (str) => {
       return str.length === 5
     })
   },
@@ -66,10 +66,10 @@ module.exports = {
     if (! address) throw `Address does not exist`
     const validatedAddress = {
       _id: uuidv4(),
-      address: this.checkStreet(address.street),
-      city: this.checkCity(address.city),
-      state: this.checkState(address.state),
-      zipcode: this.checkZipcode(address.zipcode)
+      address: module.exports.checkStreet(address.street),
+      city: module.exports.checkCity(address.city),
+      state: module.exports.checkState(address.state),
+      zipcode: module.exports.checkZipcode(address.zipcode)
     }
     return validatedAddress
   },
@@ -109,8 +109,8 @@ module.exports = {
     if (!dateTime) throw `Error: date and time must be supplied`
     let data = dateTime.split(" ")
     if (data.length !== 2) throw `Error: invalid date and time`
-    this.checkDate(data[0])
-    this.checkTime(data[1])
+    module.exports.checkDate(data[0])
+    module.exports.checkTime(data[1])
     return dateTime
   },
   checkCapacity(capacity) {
