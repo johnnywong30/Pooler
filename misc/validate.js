@@ -81,8 +81,6 @@ module.exports = {
     if (! isPrivate || typeof isPrivate !== 'boolean') throw `isPrivate does not exist`
     return isPrivate
   },
-  //im thinking for departuretime, we can split on space
-  //and then try and check each part [date, time] separately
   //date validation modified from jordan's lab 8
   //https://stackoverflow.com/questions/11591854/format-date-to-mm-dd-yyyy-in-javascript
   checkDate(date) {
@@ -104,6 +102,16 @@ module.exports = {
     time = time.match(regex)
     if (!time) throw `Error: ${time} is not in a valid military time format`
     return time
+  },
+  //separate functions to check strings with both date and time
+  //string is "04/01/2022 09:32:14"
+  checkDateTime(dateTime) {
+    if (!dateTime) throw `Error: date and time must be supplied`
+    let data = dateTime.split(" ")
+    if (data.length !== 2) throw `Error: invalid date and time`
+    this.checkDate(data[0])
+    this.checkTime(data[1])
+    return dateTime
   },
   checkCapacity(capacity) {
     if (!capacity) throw `Error: capacity must be supplied`
