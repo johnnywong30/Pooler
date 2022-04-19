@@ -1,5 +1,5 @@
 const emailValidator = require('email-validator')
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, validate } = require('uuid');
 const { phone } = require('phone')
 const { ObjectId } = require('mongodb')
 const US_States = require('../const/USStates.json')
@@ -38,7 +38,7 @@ module.exports = {
   checkLastName(lastName) {
     return this.checkString(lastName, 'Last Name')
   },
-  checkPhone(phonNum) {
+  checkPhone(phoneNum) {
     const validate = phone(phoneNum)
     if (! validate.isValid) throw `Phone number is invalid`
     return validate.phoneNumber
@@ -104,5 +104,10 @@ module.exports = {
     if (typeof capacity !== 'number' || isNaN(capacity)) throw `Error: ${capacity} must be a number`
     if (capacity < 1) throw `Error: cannot have capacity ${capacity} < 1`
     return capacity
+  },
+  checkId(id) {
+    if (!id) throw `Error: id must be supplied`
+    if (!validate(id)) throw `Error: ${id} is not a valid uuid`
+    return id
   }
 }
