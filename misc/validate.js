@@ -54,19 +54,19 @@ module.exports = {
   },
   checkState(state) {
     const curr = module.exports.checkString(state, 'State')
-    if (US_States.state === undefined) throw `${state} does not exist in the United States`
+    if (US_States[state] === undefined) throw `${state} does not exist in the United States`
     return state
   },
   checkZipcode(zipcode) {
     return module.exports.checkString(zipcode, 'Zipcode', (str) => {
-      return str.length === 5
+      return str.length === 5 && /^\d+$/.test(str)
     })
   },
   checkAddress(address) {
     if (! address) throw `Address does not exist`
     const validatedAddress = {
       _id: uuidv4(),
-      address: module.exports.checkStreet(address.street),
+      address: module.exports.checkStreet(address.address),
       city: module.exports.checkCity(address.city),
       state: module.exports.checkState(address.state),
       zipcode: module.exports.checkZipcode(address.zipcode)
@@ -74,21 +74,21 @@ module.exports = {
     return validatedAddress
   },
   checkIsDriver(isDriver) {
-    if (! isDriver || typeof isDriver !== 'boolean') throw `isDriver does not exist`
+    if (isDriver === undefined) throw `isDriver does not exist`
     return isDriver
   },
   checkPrivate(isPrivate) {
-    if (! isPrivate || typeof isPrivate !== 'boolean') throw `isPrivate does not exist`
+    if (isPrivate === undefined) throw `isPrivate does not exist`
     return isPrivate
   },
   //date validation modified from jordan's lab 8
   //https://stackoverflow.com/questions/11591854/format-date-to-mm-dd-yyyy-in-javascript
   checkDate(date) {
-    if (!date) throw `Error: date ${date} must be supplied`; 
+    if (!date) throw `date ${date} must be supplied`; 
     //check if date is in acceptable format
     date = new Date(date);
     // https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
-    if (date instanceof Date && isNaN(date.getTime())) { throw `Error: invalid date ${date}`; }
+    if (date instanceof Date && isNaN(date.getTime())) { throw `invalid date ${date}`; }
     let year = date.getFullYear();
     let month = (1 + date.getMonth()).toString().padStart(2, '0');
     let day = date.getDate().toString().padStart(2, '0');
@@ -96,32 +96,34 @@ module.exports = {
   },
   // checks if the time is in military format
   checkTime(time) {
-    if (!time) throw `Error: time must be supplied`
+    if (!time) throw `time must be supplied`
     //modified from https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
     const regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"
     time = time.match(regex)
-    if (!time) throw `Error: ${time} is not in a valid military time format`
+    if (!time) throw `${time} is not in a valid military time format`
     return time
   },
   //separate functions to check strings with both date and time
   //string is "04/01/2022 09:32:14"
   checkDateTime(dateTime) {
-    if (!dateTime) throw `Error: date and time must be supplied`
+    if (!dateTime) throw `date and time must be supplied`
     let data = dateTime.split(" ")
-    if (data.length !== 2) throw `Error: invalid date and time`
+    if (data.length !== 2) throw `invalid date and time`
     module.exports.checkDate(data[0])
     module.exports.checkTime(data[1])
     return dateTime
   },
   checkCapacity(capacity) {
-    if (!capacity) throw `Error: capacity must be supplied`
-    if (typeof capacity !== 'number' || isNaN(capacity)) throw `Error: ${capacity} must be a number`
-    if (capacity < 1) throw `Error: cannot have capacity ${capacity} < 1`
+    if (!capacity) throw `capacity must be supplied`
+    if (typeof capacity !== 'number' || isNaN(capacity)) throw `${capacity} must be a number`
+    if (capacity < 1) throw `cannot have capacity ${capacity} < 1`
     return capacity
   },
   checkId(id) {
-    if (!id) throw `Error: id must be supplied`
-    if (!validate(id)) throw `Error: ${id} is not a valid uuid`
+    if (!id) throw `id must be supplied`
+    if (!validate(id)) throw `${id} is not a valid id`
     return id
-  }
+  },
+  
 }
+
