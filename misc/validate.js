@@ -4,15 +4,16 @@ const { phone } = require('phone')
 const { ObjectId } = require('mongodb')
 const US_States = require('../const/USStates.json')
 
-module.exports = {
-  checkString(str, fieldName = 'input', additionalCheck = str => true) {
+const checkString = (str, fieldName = 'input', additionalCheck = str => true) => {
     if (! str) throw `${fieldName} does not exist`
     if (typeof str !== 'string') throw `${fieldName} is not a string`
     const trimmed = str.trim()
     if (trimmed.length < 1) throw `${fieldName} cannot be empty spaces`
     if (! additionalCheck(trimmed)) throw `${fieldName} is invalid`
     return trimmed
-  },
+}
+
+module.exports = {
   checkEmail(email) {
     if (!email) throw 'email does not exist'
     if (typeof email !== 'string') throw 'email is not a string'
@@ -33,43 +34,45 @@ module.exports = {
     return trimmed
   },
   checkFirstName(firstName) {
-    return this.checkString(firstName, 'First Name')
+    return checkString(firstName, 'First Name')
   },
   checkLastName(lastName) {
-    return this.checkString(lastName, 'Last Name')
+    return checkString(lastName, 'Last Name')
   },
-  checkPhone(phonNum) {
+  checkPhone(phoneNum) {
     const validate = phone(phoneNum)
     if (! validate.isValid) throw `Phone number is invalid`
     return validate.phoneNumber
   },
   checkVenmo(venmo) {
-    return this.checkString(venmo, 'Venmo username')
+    return checkString(venmo, 'Venmo username')
   },
   checkStreet(street) {
-    return this.checkString(street, 'Street')
+    console.log('got here', street)
+    return checkString(street, 'Street')
   },
   checkCity(city) {
-    return this.checkString(city, 'City')
+    return checkString(city, 'City')
   },
   checkState(state) {
-    const curr = this.checkString(state, 'State')
-    if (US_States.state === undefined) throw `${state} does not exist in the United States`
+    const curr = checkString(state, 'State')
+    if (US_States[state] === undefined) throw `${state} does not exist in the United States`
     return state
   },
   checkZipcode(zipcode) {
-    return this.checkString(zipcode, 'Zipcode', (str) => {
+    return checkString(zipcode, 'Zipcode', (str) => {
       return str.length === 5
     })
   },
   checkAddress(address) {
     if (! address) throw `Address does not exist`
+    console.log('over here', address)
     const validatedAddress = {
       _id: uuidv4(),
-      address: this.checkStreet(address.street),
-      city: this.checkCity(address.city),
-      state: this.checkState(address.state),
-      zipcode: this.checkZipcode(address.zipcode)
+      address: module.exports.checkStreet(address.address),
+      city: module.exports.checkCity(address.city),
+      state: module.exports.checkState(address.state),
+      zipcode: module.exports.checkZipcode(address.zipcode)
     }
     return validatedAddress
   },

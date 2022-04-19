@@ -1,24 +1,41 @@
 const express = require('express');
-const users = require('../data/users')
+const { users } = require('../data')
+const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver } = require('../misc/validate')
+const US_States = require('../const/USStates.json')
 const router = express.Router();
 
-// TODO: test
+
 router
     .route('/register')
     .get(async (req, res) => {
         if (req.session.user) return res.redirect('/')
-        else return res.render('templates/register')
+        else {
+            const states = Object.keys(US_States)
+            const templateData = {
+                states: states
+            }
+            return res.render('templates/register', templateData)
+        }
     })
     .post(async (req, res) => {
-        const { username, password } = req.body
+        const { email, password, firstName, lastName, phone, venmo, address, isDriver } = req.body
         let register = {}
         try {
-            const user = checkUsername(username)
-            const pass = checkPassword(password)
-            register = await createUser(user, pass)
+            const _email = checkEmail(email)
+            const _pass = checkPassword(password)
+            const _firstName = checkFirstName(firstName)
+            const _lastName = checkLastName(lastName)
+            const _phone = checkPhone(phone)
+            const _venmo = checkVenmo(venmo)
+            const _address = checkAddress(address)
+            const _isDriver = checkIsDriver(isDriver)
+            const args = [_email, _pass, _firstName, _lastName, _phone, _venmo, _address, _isDriver]
+            register = await users.createUser(...args)
         } catch (e) {
+            const states = Object.keys(US_States)
             const templateData = {
-                error: e
+                error: e,
+                states: states
             }
             return res.status(400).render('templates/register', templateData)
         }
@@ -31,17 +48,20 @@ router
         }
     })
 
-// TODO: test
 router
     .route('/login')
+    .get(async (req, res) => {
+        if (req.session.user) return res.redirect('/')
+        else return res.render('templates/login')
+    })
     .post(async (req, res) => {
-        const { username, password } = req.body
+        const { email, password } = req.body
         let auth = {}
-        let user = ''
+        let userEmail = ''
         try {
-            user = checkUsername(username)
+            userEmail = checkEmail(email)
             const pass = checkPassword(password)
-            auth = await checkUser(user, pass)
+            auth = await users.checkUser(userEmail, pass)
         } catch (e) {
             const templateData = {
                 error: e
@@ -50,28 +70,26 @@ router
         }
         if (auth.authenticated) {
             req.session.user = {
-                username: user
+                email: userEmail
             }
             return res.redirect('/')
         } else {
             const templateData = {
-                error: 'You did not provide a valid username and/or password.'
+                error: 'You did not provide a valid email and/or password.'
             }
             return res.status(400).render('templates/login', templateData)
         }
     })
 
-// TODO: test
 router
     .route('/logout')
     .get(async (req, res) => {
         if (req.session.user) {
-            req.session.destroy()    
+            req.session.destroy()
         }
         return res.redirect('/')
     })
 
-// TODO: test
 router
     .route('/')
     .get(async (req, res) => {
@@ -86,6 +104,4 @@ router
 
 
 
-module.exports = {
-    router: router
-}
+module.exports = router
