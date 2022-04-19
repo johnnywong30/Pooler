@@ -39,7 +39,7 @@ router
             }
             return res.status(400).render('templates/register', templateData)
         }
-        if (register.userRegistered) return res.redirect('/')
+        if (register.userRegistered) return res.redirect('/login')
         else {
             const templateData = {
                 error: 'Internal Server Error'
@@ -64,7 +64,7 @@ router
             auth = await users.checkUser(userEmail, pass)
         } catch (e) {
             const templateData = {
-                error: e
+                error: 'You did not provide a valid email and/or password.'
             }
             return res.status(400).render('templates/login', templateData)
         }

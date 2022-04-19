@@ -55,7 +55,7 @@ configRoutes(app);
 
 app.listen(port, async () => {
     //  COLOR FOR TEXT
-    // const db = await connection.connectToDb();
+    const db = await connection.connectToDb();
     console.log('\x1b[32m%s\x1b[0m', `*************************************\n${appName} Application Started Smoothly on port ${port}\n`)
     console.log('\x1b[32m%s\x1b[0m', `Your routes will be running on http://localhost:${port}\n*************************************`)
     

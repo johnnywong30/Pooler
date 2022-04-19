@@ -48,7 +48,6 @@ module.exports = {
     return checkString(venmo, 'Venmo username')
   },
   checkStreet(street) {
-    console.log('got here', street)
     return checkString(street, 'Street')
   },
   checkCity(city) {
@@ -61,12 +60,11 @@ module.exports = {
   },
   checkZipcode(zipcode) {
     return checkString(zipcode, 'Zipcode', (str) => {
-      return str.length === 5
+      return str.length === 5 && /^\d+$/.test(str)
     })
   },
   checkAddress(address) {
     if (! address) throw `Address does not exist`
-    console.log('over here', address)
     const validatedAddress = {
       _id: uuidv4(),
       address: module.exports.checkStreet(address.address),
@@ -77,7 +75,7 @@ module.exports = {
     return validatedAddress
   },
   checkIsDriver(isDriver) {
-    if (! isDriver || typeof isDriver !== 'boolean') throw `isDriver does not exist`
+    if (isDriver === undefined) throw `isDriver does not exist`
     return isDriver
   }
 
