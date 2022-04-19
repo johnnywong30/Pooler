@@ -80,7 +80,7 @@ module.exports = {
   //date validation modified from jordan's lab 8
   //https://stackoverflow.com/questions/11591854/format-date-to-mm-dd-yyyy-in-javascript
   checkDate(date) {
-    if (!date) { throw `Error: date ${date} must be supplied`; }
+    if (!date) throw `Error: date ${date} must be supplied`; 
     //check if date is in acceptable format
     date = new Date(date);
     // https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
@@ -89,5 +89,14 @@ module.exports = {
     let month = (1 + date.getMonth()).toString().padStart(2, '0');
     let day = date.getDate().toString().padStart(2, '0');
     return month + '/' + day + '/' + year;
+  }
+  // checks if the time is in military format
+  checkTime(time) {
+    if (!time) throw `Error: time must be supplied`
+    //modified from https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
+    const regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]"
+    time = time.match(regex)
+    if (!time) throw `Error: ${time} is not in a valid military time format`
+    return time
   }
 }
