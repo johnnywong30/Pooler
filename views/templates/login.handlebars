@@ -13,9 +13,9 @@
                     <form id="login-form" action="/login" method="POST" style="width: 23rem">
                         <h3 class="fw-normal mb-1 pb-3" style="letter-spacing: 1px;">Login</h3>
                         {{#if error}}
-                        <div class="d-flex align-items-center mb-3">
+                        <div id='server-error' class="d-flex align-items-center mb-3">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                Error {{error}}
+                                Error: {{error}}
                             </div>
                             {{!-- TODO Get button to dismiss alert using js --}}
                         </div>
