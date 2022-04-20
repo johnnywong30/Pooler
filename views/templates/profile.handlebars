@@ -8,7 +8,11 @@
         <div class"profile-info">
             {{!-- need to populate with actual text --}}
             <div class="form-outline">
-                <input id="firstname" name="email" type="text" required />
+                <input id="email" name="email" type="email" required />
+                <label for="email" class="form-label">Email</label>
+            </div>
+            <div class="form-outline">
+                <input id="firstname" name="firstname" type="text" required />
                 <label for="firstname" class="form-label">First Name</label>
             </div>
             <div class="form-outline">
@@ -33,8 +37,12 @@
                 <label for="city" class="form-label">City</label>
             </div>
             <div class="form-outline">
-                <input id="zipcode" name="city" type="number" required />
+                <input id="zipcode" name="zipcode" type="number" required />
                 <label for="zipcode" class="form-label">Zipcode</label>
+            </div>
+            <div class="form-check">
+                <input id="isDriver" name="isDriver" type="checkbox" required />
+                <label for="isDriver" class="form-label">I am a driver.</label>
             </div>
         </div>
         <button id="saveChangesBtn">
