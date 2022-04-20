@@ -6,7 +6,39 @@
             Edit Profile
         </button>
         <div class"profile-info">
-
+            {{!-- need to populate with actual text --}}
+            <div class="form-outline">
+                <input id="firstname" name="email" type="text" required />
+                <label for="firstname" class="form-label">First Name</label>
+            </div>
+            <div class="form-outline">
+                <input id="lastname" name="lastname" type="text" required />
+                <label for="lastname" class="form-label">Last Name</label>
+            </div>
+            <div class="form-outline">
+                <input id="phone" name="phone" type="tel" required />
+                <label for="phone" class="form-label">Phone Number</label>
+            </div>
+            <h2>Personal Information</h2>
+            <div class="form-outline">
+                <input id="venmo" name="venmo" type="text" required />
+                <label for="venmo" class="form-label">Venmo</label>
+            </div>
+            <div class="form-outline">
+                <input id="streetAddress" name="streetAddress" type="text" required />
+                <label for="streetAddress" class="form-label">Street Address</label>
+            </div>
+            <div class="form-outline">
+                <input id="city" name="city" type="text" required />
+                <label for="city" class="form-label">City</label>
+            </div>
+            <div class="form-outline">
+                <input id="zipcode" name="city" type="number" required />
+                <label for="zipcode" class="form-label">Zipcode</label>
+            </div>
         </div>
+        <button id="saveChangesBtn">
+            Save Changes
+        </button>
     </div>
 </section>
