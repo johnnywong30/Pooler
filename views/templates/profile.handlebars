@@ -5,7 +5,7 @@
         <button id="editBtn">
             Edit Profile
         </button>
-        <form>
+        <form id="edit-profile-form" action="/updateProfile" method="POST">
             <div class="col-lg-8">
                 <div class="card mb-4">
                     <div class="card-body">
@@ -91,16 +91,42 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="form-check">
-                            <input id="isDriver" name="isDriver" type="checkbox" required />
-                            <label for="isDriver" class="form-label">I am a driver.</label>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">State</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="form-outline form-white">
+                                    <select class="form-select pb-0" aria-label="state" id="state"
+                                        name="state" required>
+                                        <option selected>State</option>
+                                        {{#each states}}
+                                        <option value={{this}}>{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
                         </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">I am a driver</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <button type="submit" id="saveChangesBtn">
+                            Save Changes
+                        </button>
                     </div>
                 </div>
             </div>
-            <button id="saveChangesBtn">
-                Save Changes
-            </button>
         </form>
     </div>
 </section>
+
+<script type="text/javascript" src="/public/js/validateProfile.js"></script>
