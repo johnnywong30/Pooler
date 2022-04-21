@@ -2,6 +2,9 @@
 <section>
     <div class="container-fluid">
         <h1>Profile</h1>
+        <div id="client-error" class="row" hidden>
+                    
+        </div>
         <button id="editBtn">
             Edit Profile
         </button>
@@ -17,7 +20,7 @@
                             <p class="mb-0">Email</p>
                         </div>
                         <div class="col-sm-9">
-                            <input id="email" name="email" type="email" class="form-control form-control-lg" required />
+                            <input id="email" name="email" type="email" disabled='true' class="edit-field form-control form-control-lg" required />
                         </div>
                     </div>
                     <hr>
@@ -26,7 +29,7 @@
                             <p class="mb-0">First Name</p>
                         </div>
                         <div class="col-sm-9">
-                            <input id="firstname" name="firstname" type="firstname" class="form-control form-control-lg" required />
+                            <input id="firstName" name="firstName" type="firstName" disabled='true' class="edit-field form-control form-control-lg" required />
                         </div>
                     </div>
                     <hr>
@@ -35,7 +38,7 @@
                             <p class="mb-0">Last Name</p>
                         </div>
                         <div class="col-sm-9">
-                            <input id="lastname" name="lastname" type="lastname" class="form-control form-control-lg" required />
+                            <input id="lastName" name="lastName" type="lastName" disabled='true' class="edit-field form-control form-control-lg" required />
                         </div>
                     </div>
                     <hr>
@@ -44,7 +47,7 @@
                             <p class="mb-0">Phone Number</p>
                         </div>
                         <div class="col-sm-9">
-                            <input id="phone" name="phone" type="phone" class="form-control form-control-lg" required />
+                            <input id="phone" name="phone" type="phone" disabled='true' class="edit-field form-control form-control-lg" required />
                         </div>
                     </div>
                 </div>         
@@ -60,7 +63,7 @@
                                 <p class="mb-0">Venmo</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="venmo" name="venmo" type="venmo" class="form-control form-control-lg" required />
+                                <input id="venmo" name="venmo" type="venmo" disabled='true' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -69,7 +72,7 @@
                                 <p class="mb-0">Street Address</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="streetAddress" name="streetAddress" type="streetAddress" class="form-control form-control-lg" required />
+                                <input id="street" name="street" type="street" disabled='true' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -78,7 +81,7 @@
                                 <p class="mb-0">City</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="city" name="city" type="city" class="form-control form-control-lg" required />
+                                <input id="city" name="city" type="city" disabled='true' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -87,7 +90,7 @@
                                 <p class="mb-0">Zipcode</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="zipcode" name="zipcode" type="zipcode" class="form-control form-control-lg" required />
+                                <input id="zipcode" name="zipcode" type="zipcode" disabled='true' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -97,7 +100,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="form-outline form-white">
-                                    <select class="form-select pb-0" aria-label="state" id="state"
+                                    <select class="edit-field form-select pb-0" disabled='true' aria-label="state" id="state"
                                         name="state" required>
                                         <option selected>State</option>
                                         {{#each states}}
@@ -114,14 +117,14 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" disabled />
+                                    <input class="edit-field form-check-input" disabled='true' type="checkbox" value="" id="isDriver" name="isDriver" disabled />
                                 </div>
                             </div>
                         </div>
                         <hr>
-                        <button type="submit" id="saveChangesBtn">
+                        <button type="submit" id="saveChangesBtn" disabled='true' class="edit-field">
                             Save Changes
-                        </button>
+                        </button> 
                     </div>
                 </div>
             </div>
