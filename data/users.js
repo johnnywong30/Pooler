@@ -69,7 +69,7 @@ module.exports = {
     const collection = await users()
     const user = await collection.findOne({ email: email });
 		if (user === null) throw `Error: user with email ${email} was not found`;
-    return [user]
+    return user
   },
   async getUsers() {
 		const collection = await users();
