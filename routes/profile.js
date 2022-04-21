@@ -5,7 +5,7 @@ const US_States = require('../const/USStates.json')
 const router = express.Router();
 
 router
-    .route('/')
+    .route('/profile')
     .get(async (req, res) => {
         if (req.session.user) {
             const templateData = {
@@ -14,6 +14,12 @@ router
             return res.render('templates/profile', templateData)
         }
         else return res.render('templates/index')
+    })
+
+router
+    .route('/updateProfile')
+    .get(async (req, res) => {
+
     })
 
 module.exports = router
