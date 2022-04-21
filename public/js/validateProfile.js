@@ -146,18 +146,29 @@ let list = document.querySelectorAll('.edit-field')
 let editables = Array.from(list).map(elem => elem)
 
 let contentEditable = false;
-
+const submittable = {
+    email: false,
+    firstName: false,
+    lastName: false,
+    phone: false,
+    venmo: false,
+    street: false,
+    city: false,
+    zipcode: false,
+    state: false
+}
 // reference https://codepen.io/Shokeen/pen/XXggZr for editable fields
 editBtn.addEventListener('click', (e) => {
     e.preventDefault()
     if (!contentEditable) {
         contentEditable = !contentEditable
-        editables.map((element) => element.disabled = 'false')
+        editables.map((element) => element.disabled = false)
         editBtn.disabled = true
         saveChangesBtn.disabled = false
     }
 })
 
+//taken from validateRegister
 const createError = (error) => {
     // in case error had another error in it already; clear all children
     errorDiv.replaceChildren()
