@@ -63,5 +63,18 @@ module.exports = {
     return {
       authenticated: true
     }
-  }
+  },
+  async getUser(_email) {
+    const email = checkEmail(_email)
+    const collection = await users()
+    const user = await collection.findOne({ email: email });
+		if (user === null) throw `Error: user with email ${email} was not found`;
+    return [user]
+  },
+  async getUsers() {
+		const collection = await users();
+		const userList = await collection.find({}).toArray();
+		if (!userList) throw "could not get all users";
+		return userList;
+	},
 }
