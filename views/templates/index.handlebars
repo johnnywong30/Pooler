@@ -3,55 +3,59 @@
 <header id="header">
     <nav id="nav-bar">
         <ul class="nav-list">
-            <ul class="nav-left">
-                <li>
-                    <a href="/">
-                        <img id="header-img" src="/public/imgs/pooler.png" alt="Pooler">
-                    </a>
-                </li>
-            </ul>
-            <div class="menu-wrap">
-                <input type="checkbox" class="toggler">
-                <div class="hamburger">
-                    <div></div>
-                </div>
-                <div class="menu">
-                    <div>
+            <li>
+                <ul class="nav-left">
+                    <li>
+                        <a href="/">
+                            <img id="header-img" src="/public/imgs/pooler.png" alt="Pooler">
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-wrap">
+                    <input type="checkbox" class="toggler">
+                    <div class="hamburger">
+                        <div></div>
+                    </div>
+                    <div class="menu">
                         <div>
-                            <ul class="nav-list">
-                                <li class="nav-elements">
-                                    <a class="nav-link" href="#about">About Us</a>
-                                </li>
-                                {{!-- TODO add hrefs to Events, History, Profile when they are made --}}
-                                {{#if authenticated}}
-                                <li class="nav-elements">
-                                    <a class="nav-link" href="/events">Events</a>
-                                </li>
-                                <li class="nav-elements">
-                                    <a class="nav-link" href="/history">History</a>
-                                </li>
-                                <li class="nav-elements">
-                                    <a class="nav-link" href="/profile">Profile</a>
-                                </li>
-                                {{/if}}
-                                {{#unless authenticated}}
-                                <li class="nav-elements">
-                                    <a class="nav-link" href="/login">Login</a>
-                                </li>
-                                <li class="nav-elements">
-                                    <a class="nav-link" href="/register">Register</a>
-                                </li>
-                                {{/unless}}
-                                {{#if authenticated}}
-                                <li class="nav-elements">
-                                    <a class="nav-link" href="/logout">Log Out</a>
-                                </li>
-                                {{/if}}
-                            </ul>
+                            <div>
+                                <ul class="nav-list">
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="#about">About Us</a>
+                                    </li>
+                                    {{!-- TODO add hrefs to Events, History, Profile when they are made --}}
+                                    {{#if authenticated}}
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/events">Events</a>
+                                    </li>
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/history">History</a>
+                                    </li>
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/profile">Profile</a>
+                                    </li>
+                                    {{/if}}
+                                    {{#unless authenticated}}
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/login">Login</a>
+                                    </li>
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/register">Register</a>
+                                    </li>
+                                    {{/unless}}
+                                    {{#if authenticated}}
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/logout">Log Out</a>
+                                    </li>
+                                    {{/if}}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </li>
         </ul>
     </nav>
 </header>
@@ -60,7 +64,7 @@
     <section id="hero">
         <div class="hero-text">
             <h1>
-                Explore 
+                Explore
             </h1>
             <p class="description">
                 Anywhere, with anyone.
@@ -153,96 +157,106 @@
     {{!-- TODO Change footer to relevant stuff --}}
     <footer id="footer">
         <ul class="footer-list">
-            <dd class="footer-list-item">
+            <li class="footer-list-item">
                 <a href="/">
                     <img id="logo" src="/public/imgs/pooler.png" alt="Pooler">
                 </a>
-            </dd>
-            <dl class="footer-list-container">
-                <dt class="footer-list-title">
-                    Solutions
-                </dt>
-                <dd class="footer-list-item">
-                    <a href="#">Why Us?</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Features</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Services</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Customer Stories</a>
-                </dd>
-            </dl>
+            </li>
+            <li class="footer-list-container">
+                <dl>
+                    <dt class="footer-list-title">
+                        Solutions
+                    </dt>
+                    <dd class="footer-list-item">
+                        <a href="#">Why Us?</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Features</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Services</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Customer Stories</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="footer-list-container">
+                <dl>
+                    <dt class="footer-list-title">
+                        Resources
+                    </dt>
+                    <dd class="footer-list-item">
+                        <a href="#">Documentation</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">API</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Help Center</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">App Directory</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Download</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Tips & Tricks</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Members Program</a>
+                    </dd>
+                </dl>
+            </li>
 
-            <dl class="footer-list-container">
-                <dt class="footer-list-title">
-                    Resources
-                </dt>
-                <dd class="footer-list-item">
-                    <a href="#">Documentation</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">API</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Help Center</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">App Directory</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Download</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Tips & Tricks</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Members Program</a>
-                </dd>
-            </dl>
+            <li class="footer-list-container">
+                <dl>
+                    <dt class="footer-list-title">
+                        Pricing
+                    </dt>
+                    <dd class="footer-list-item">
+                        <a href="#">Free Trial</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">For Teams</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Enterprise</a>
+                    </dd>
+                </dl>
+            </li>
 
-            <dl class="footer-list-container">
-                <dt class="footer-list-title">
-                    Pricing
-                </dt>
-                <dd class="footer-list-item">
-                    <a href="#">Free Trial</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">For Teams</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Enterprise</a>
-                </dd>
-            </dl>
-
-            <dl class="footer-list-container">
-                <dt class="footer-list-title">
-                    About
-                </dt>
-                <dd class="footer-list-item">
-                    <a href="#">Our Story</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Blog</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Careers</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">News Room</a>
-                </dd>
-                <dd class="footer-list-item">
-                    <a href="#">Legal</a>
-                </dd>
-            </dl>
+            <li class="footer-list-container">
+                <dl class="footer-list-container">
+                    <dt class="footer-list-title">
+                        About
+                    </dt>
+                    <dd class="footer-list-item">
+                        <a href="#">Our Story</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Blog</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Careers</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">News Room</a>
+                    </dd>
+                    <dd class="footer-list-item">
+                        <a href="#">Legal</a>
+                    </dd>
+                    <dd>
+                        <p class="footer-copyright align-center">
+                            Copyright &copy; 2022 Pooler Inc.
+                        </p>
+                    </dd>
+                </dl>
+            </li>
         </ul>
 
-        <p class="footer-copyright align-center">
-            Copyright &copy; 2022 Robot Inc.
-        </p>
+
 
     </footer>
 </div>
