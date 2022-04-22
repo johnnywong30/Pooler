@@ -168,6 +168,16 @@ editBtn.addEventListener('click', (e) => {
     }
 })
 
+saveChangesBtn.addEventListener('click', (e) => {
+    e.preventDefault()
+    if (contentEditable) {
+        contentEditable = !contentEditable
+        editables.map((element) => element.disabled = true)
+        editBtn.disabled = false
+        saveChangesBtn.disabled = true
+    }
+})
+
 //taken from validateRegister
 const createError = (error) => {
     // in case error had another error in it already; clear all children
