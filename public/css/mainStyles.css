@@ -1,4 +1,67 @@
-/* Login Page */
+/*=============General Styling============= */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+:root {
+    --primary: #fefeff;
+    --secondary: #181b1b;
+    --light: #181b1bb3;
+    --button: #c5e0e2;
+    --montserrat: "Montserrat", sans-serif;
+    --menu-speed: 0.75s;
+}
+
+
+/* Scroll bar */
+*,
+html {
+    scroll-behavior: smooth;
+}
+
+*,
+*:after,
+*:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+:root {
+    scrollbar-color: rgb(210, 210, 210) rgb(46, 54, 69) !important;
+    scrollbar-width: thin !important;
+    --white: #fff;
+    --black: #131417;
+    --gray: rgba(255, 255, 255, 0.7);
+    --lite: rgba(1, 1, 1, 0.6);
+    --default: 'Josefin Sans', sans-serif;
+    --title: 'Cormorant Garamond', serif;
+    --cursive: 'Dancing Script', cursive;
+}
+
+::-webkit-scrollbar {
+    height: 12px;
+    width: 8px;
+    background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: gray;
+    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--paleblue);
+}
+
+body {
+    background: var(--primary);
+    font-family: var(--montserrat) !important;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--secondary);
+}
+
+
+/*=============Login Page=============*/
 /* Source: https://mdbootstrap.com/docs/standard/extended/login/#section-5 */
 .bg-image-vertical {
     position: relative;
@@ -14,7 +77,17 @@
     }
 }
 
-/* Registration Page */
+.pooler-logo {
+    width: 15rem;
+    position: absolute;
+    left: 40px;
+}
+
+.login-container {
+    height: 80vh;
+}
+
+/*=============Registration Page============= */
 /* Source: https://mdbootstrap.com/docs/standard/extended/registration/#section-6 */
 @media (min-width: 1025px) {
     .h-custom {
