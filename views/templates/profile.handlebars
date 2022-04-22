@@ -32,23 +32,23 @@
                                 <input id="firstName" name="firstName" type="text" disabled='true' value="{{firstName}}" class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Last Name</p>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Last Name</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <input id="lastName" name="lastName" type="text" disabled='true' value="{{lastName}}" class="edit-field form-control form-control-lg" required />
+                            </div>
                         </div>
-                        <div class="col-sm-9">
-                            <input id="lastName" name="lastName" type="text" disabled='true' value="{{lastName}}" class="edit-field form-control form-control-lg" required />
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Phone Number</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <input id="phone" name="phone" type="tel" disabled='true' value="{{phone}}"class="edit-field form-control form-control-lg" required />
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Phone Number</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <input id="phone" name="phone" type="tel" disabled='true' value="{{phone}}"class="edit-field form-control form-control-lg" required />
+                            </div>
                         </div>
                     </div>
                 </div>         
@@ -103,7 +103,7 @@
                                 <div class="form-outline form-white">
                                     <select class="edit-field form-select pb-0" disabled='true' value='{{state}}' aria-label="state" id="state"
                                         name="state" required>
-                                        <option selected>State</option>
+                                        <option selected>{{state}}</option>
                                         {{#each states}}
                                         <option value={{this}}>{{this}}</option>
                                         {{/each}}

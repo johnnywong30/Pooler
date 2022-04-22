@@ -26,6 +26,7 @@ router
             }
             let { city, state, zipcode } = user.address
             let street = user.address.address
+            const states = Object.keys(US_States)
             const templateData = {
                 authenticated: true,
                 email: email,
@@ -37,7 +38,8 @@ router
                 city: city,
                 state: state,
                 zipcode: zipcode,
-                isDriver: driver
+                isDriver: driver,
+                states: states
             }
             return res.render('templates/profile', templateData)
         }
