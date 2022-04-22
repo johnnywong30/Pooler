@@ -1,4 +1,39 @@
-/* Login Page */
+/*=============General Styling============= */
+/* Scroll bar */
+*, html{
+    scroll-behavior: smooth;
+    }
+    *, *:after, *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    }
+    :root{
+    scrollbar-color: rgb(210,210,210) rgb(46,54,69) !important;
+    scrollbar-width: thin !important;
+    --white:#fff;
+    --black:#131417;
+    --gray:rgba(255,255,255,0.7);
+    --lite:rgba(1,1,1,0.6);
+    --default:'Josefin Sans', sans-serif;
+    --title:'Cormorant Garamond', serif;
+    --cursive:'Dancing Script', cursive;
+    }
+    ::-webkit-scrollbar {
+    height: 12px;
+    width: 8px;
+    background: var(--dark);
+    }
+    ::-webkit-scrollbar-thumb {
+    background: gray;
+    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+    }
+    ::-webkit-scrollbar-corner {
+    background: var(--paleblue);
+    }
+
+
+/*=============Login Page=============*/
 /* Source: https://mdbootstrap.com/docs/standard/extended/login/#section-5 */
 .bg-image-vertical {
     position: relative;
@@ -14,7 +49,17 @@
     }
 }
 
-/* Registration Page */
+.pooler-logo {
+    width: 15rem;
+    position: absolute;
+    left: 40px;
+}
+
+.login-container {
+    height: 80vh;
+}
+
+/*=============Registration Page============= */
 /* Source: https://mdbootstrap.com/docs/standard/extended/registration/#section-6 */
 @media (min-width: 1025px) {
     .h-custom {

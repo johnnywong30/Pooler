@@ -93,13 +93,14 @@ router
 router
     .route('/')
     .get(async (req, res) => {
-        if (req.session.user) {
-            const templateData = {
-                authenticated: true
-            }
-            return res.render('templates/index', templateData)
+        const templateData = {
+            isLandingPage: true,
+            authenticated: false
         }
-        else return res.render('templates/index')
+        if (req.session.user) {
+            templateData.authenticated = true
+        }
+        return res.render('templates/index', templateData)
     })
 
 
