@@ -77,4 +77,37 @@ module.exports = {
 		if (!userList) throw "could not get all users";
 		return userList;
 	},
+  //for editing profile or anything
+  async updateUser(email, password, firstName, lastName, phone, venmo, address, isDriver) {
+    const _email = checkEmail(email)
+    const _pass = checkPassword(password)
+    const _firstName = checkFirstName(firstName)
+    const _lastName = checkLastName(lastName)
+    const _phone = checkPhone(phone)
+    const _venmo = checkVenmo(venmo)
+    const _address = checkAddress(address)
+    const _isDriver = checkIsDriver(isDriver)
+    // Check if account exists
+    const collection = await users()
+    const account = await collection.findOne({ email: email })
+    if (account !== null) throw `updateUser: Account with email ${email} not found`
+    let newInfo = {
+      email: _email,
+      password: _pass,
+      firstName: _firstName,
+      lastName: _lastName,
+      phone: _phone,
+      venmo: _venmo,
+      address: _address,
+      driver: _isDriver
+    }
+    const updatedUser = collection.updateOne(
+      { _email: email},
+      { $set: newInfo}
+    )
+    if (updatedInfo.modifiedCount === 0) {
+      throw 'Error: updateUser could not update user successfully';
+    }
+    return await module.exports.getUser(_email)
+  }
 }
