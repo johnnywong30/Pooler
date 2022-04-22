@@ -12,24 +12,25 @@
             <div class="col-lg-8">
                 <div class="card mb-4">
                     <div class="card-body">
-                    {{!-- need to populate with actual variables --}}
-                    <h2>Account Information</h2>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Email</p>
+                        {{!-- need to populate with actual variables --}}
+                        <h2>Account Information</h2>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Email</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <input id="email" name="email" type="email" disabled='true' value="{{email}}" class="edit-field form-control form-control-lg" required />
+                            </div>
                         </div>
-                        <div class="col-sm-9">
-                            <input id="email" name="email" type="email" disabled='true' value="{{email}}" class="edit-field form-control form-control-lg" required />
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">First Name</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <input id="firstName" name="firstName" type="firstName" disabled='true' value="{{firstName}}" class="edit-field form-control form-control-lg" required />
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">First Name</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <input id="firstName" name="firstName" type="text" disabled='true' value="{{firstName}}" class="edit-field form-control form-control-lg" required />
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -38,7 +39,7 @@
                             <p class="mb-0">Last Name</p>
                         </div>
                         <div class="col-sm-9">
-                            <input id="lastName" name="lastName" type="lastName" disabled='true' value="{{lastName}}" class="edit-field form-control form-control-lg" required />
+                            <input id="lastName" name="lastName" type="text" disabled='true' value="{{lastName}}" class="edit-field form-control form-control-lg" required />
                         </div>
                     </div>
                     <hr>
@@ -47,7 +48,7 @@
                             <p class="mb-0">Phone Number</p>
                         </div>
                         <div class="col-sm-9">
-                            <input id="phone" name="phone" type="phone" disabled='true' value="{{phone}}"class="edit-field form-control form-control-lg" required />
+                            <input id="phone" name="phone" type="tel" disabled='true' value="{{phone}}"class="edit-field form-control form-control-lg" required />
                         </div>
                     </div>
                 </div>         
@@ -63,7 +64,7 @@
                                 <p class="mb-0">Venmo</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="venmo" name="venmo" type="venmo" disabled='true' value='{{venmo}}' class="edit-field form-control form-control-lg" required />
+                                <input id="venmo" name="venmo" type="text" disabled='true' value='{{venmo}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -72,7 +73,7 @@
                                 <p class="mb-0">Street Address</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="street" name="street" type="street" disabled='true' value='{{street}}' class="edit-field form-control form-control-lg" required />
+                                <input id="street" name="street" type="text" disabled='true' value='{{street}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -81,7 +82,7 @@
                                 <p class="mb-0">City</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="city" name="city" type="city" disabled='true' value='{{city}}' class="edit-field form-control form-control-lg" required />
+                                <input id="city" name="city" type="text" disabled='true' value='{{city}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -90,7 +91,7 @@
                                 <p class="mb-0">Zipcode</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="zipcode" name="zipcode" type="zipcode" disabled='true' value='{{zipcode}}' class="edit-field form-control form-control-lg" required />
+                                <input id="zipcode" name="zipcode" type="number" disabled='true' value='{{zipcode}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -117,7 +118,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="form-check">
-                                    <input class="edit-field form-check-input" disabled='true' type="checkbox" value="" id="isDriver" name="isDriver" disabled />
+                                    <input class="edit-field form-check-input" disabled='true' type="checkbox" value="" id="isDriver" name="isDriver"/>
                                 </div>
                             </div>
                         </div>

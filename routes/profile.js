@@ -1,6 +1,6 @@
 const express = require('express');
 const { users } = require('../data')
-const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver } = require('../misc/validate')
+const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver, checkZipcode } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const router = express.Router();
 
@@ -9,8 +9,7 @@ router
     .get(async (req, res) => {
         if (req.session.user) {
             const user = await users.getUser(req.session.user.email)
-            const { firstName, lastName, email, phone, venmo, driver, passenger} = user
-            const { address, city, state, zipcode } = user.address
+            let { firstName, lastName, email, phone, venmo, driver, address } = user
             try {
                 email = checkEmail(email)
                 firstName = checkFirstName(firstName)
@@ -18,15 +17,27 @@ router
                 phone = checkPhone(phone)
                 venmo = checkVenmo(venmo)
                 address = checkAddress(address)
-                
             } catch (e) {
                 const templateData = {
                     error: e
                 }
+                console.log(e)
                 return res.status(400).render('templates/profile', templateData)
             }
+            let { city, state, zipcode } = user.address
+            let street = user.address.address
             const templateData = {
-                authenticated: true
+                authenticated: true,
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone,
+                venmo: venmo,
+                street: street,
+                city: city,
+                state: state,
+                zipcode: zipcode,
+                isDriver: driver
             }
             return res.render('templates/profile', templateData)
         }
