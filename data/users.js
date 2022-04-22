@@ -101,7 +101,7 @@ module.exports = {
       address: _address,
       driver: _isDriver
     }
-    const updatedUser = collection.updateOne(
+    const updatedInfo = collection.updateOne(
       { _email: email},
       { $set: newInfo}
     )
