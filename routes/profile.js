@@ -23,19 +23,19 @@ router
                 const templateData = {
                     error: e
                 }
-                return res.status(400).render('templates/users', templateData)
+                return res.status(400).render('templates/profile', templateData)
             }
             const templateData = {
                 authenticated: true
             }
             return res.render('templates/profile', templateData)
         }
-        else return res.render('templates/index')
+        else return res.redirect('/')
     })
 
 router
     .route('/updateProfile')
-    .get(async (req, res) => {
+    .post(async (req, res) => {
 
     })
 
