@@ -147,15 +147,15 @@ let editables = Array.from(list).map(elem => elem)
 
 let contentEditable = false;
 const submittable = {
-    email: false,
-    firstName: false,
-    lastName: false,
-    phone: false,
-    venmo: false,
-    street: false,
-    city: false,
-    zipcode: false,
-    state: false
+    email: true,
+    firstName: true,
+    lastName: true,
+    phone: true,
+    venmo: true,
+    street: true,
+    city: true,
+    zipcode: true,
+    state: true
 }
 // reference https://codepen.io/Shokeen/pen/XXggZr for editable fields
 editBtn.addEventListener('click', (e) => {
@@ -165,16 +165,6 @@ editBtn.addEventListener('click', (e) => {
         editables.map((element) => element.disabled = false)
         editBtn.disabled = true
         saveChangesBtn.disabled = false
-    }
-})
-
-saveChangesBtn.addEventListener('click', (e) => {
-    e.preventDefault()
-    if (contentEditable) {
-        contentEditable = !contentEditable
-        editables.map((element) => element.disabled = true)
-        editBtn.disabled = false
-        saveChangesBtn.disabled = true
     }
 })
 
@@ -204,6 +194,7 @@ email.addEventListener('change', (e) => {
         const checked = checkEmail(input)
         if (checked) {
             submittable.email = true
+            console.log(submittable)
             resolveError()
         }
     } catch (e) {
@@ -337,7 +328,14 @@ editProfileForm.addEventListener('submit', (e) => {
         for (const [key, value] of Object.entries(submittable)) {
             if (! value) throw `${key.charAt(0).toUpperCase() + key.slice(1)} is invalid. Please fill out the form thoroughly.`
         }
+        if (contentEditable) {
+            contentEditable = !contentEditable
+            editables.map((element) => element.disabled = true)
+            editBtn.disabled = false
+            saveChangesBtn.disabled = true
+        }
     } catch (error) {
+        console.log(error)
         e.preventDefault()
         createError(error) 
     }

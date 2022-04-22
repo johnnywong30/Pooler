@@ -5,7 +5,7 @@ const US_States = require('../const/USStates.json')
 const router = express.Router();
 
 router
-    .route('/profile')
+    .route('/')
     .get(async (req, res) => {
         if (req.session.user) {
             const user = await users.getUser(req.session.user.email)
