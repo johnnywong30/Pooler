@@ -47,7 +47,6 @@ app.use('/register', async (req, res, next) => {
 
 // Logging middleware
 
-
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 

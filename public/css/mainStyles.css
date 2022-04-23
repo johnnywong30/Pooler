@@ -84,7 +84,13 @@ body {
 }
 
 .login-container {
-    height: 80vh;
+    height: 100vh;
+}
+
+@media (max-width: 1200px) {
+    .login-container {
+        height: 85vh;
+    }
 }
 
 /*=============Registration Page============= */
