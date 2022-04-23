@@ -1,9 +1,9 @@
 const authRouter = require('./auth')
-const eventRouter = require('./event')
+const poolRouter = require('./pool')
 
 const constructorMethod = (app) => {
     app.use('/', authRouter)
-    app.use('/event', eventRouter)
+    app.use('/pool', poolRouter) //change this to make more sense like '/events/pool'?
     app.use('*', (req, res) => {
         return res.status(404).json({ error: 'Route not found' });
     });
