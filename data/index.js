@@ -1,5 +1,5 @@
 const users = require('./users')
-const events = requre('./events')
+const events = require('./events')
 
 module.exports = {
     users: users,

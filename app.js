@@ -41,14 +41,14 @@ app.use('/register', async (req, res, next) => {
         next()
     }
   })
-
-  app.use('/event', (req, res, next) => {
-    if (!req.session.user) {
-      return res.redirect('/'); //THIS SHOULD REDIRECT TO SOMETHING SAYING "You must register to view event page"
-    } else {
-      next();
-    }
-  });
+  //*************** UNCOMMENT WHEN FINISHED WITH pool PAGE **************/
+  // app.use('/pool', (req, res, next) => {
+  //   if (!req.session.user) {
+  //     return res.redirect('/'); //THIS SHOULD REDIRECT TO SOMETHING SAYING "You must register to view pool page"
+  //   } else {
+  //     next();
+  //   }
+  // });
 // Authentication middleware
 
 // Logging middleware
