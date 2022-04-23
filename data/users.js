@@ -78,9 +78,8 @@ module.exports = {
 		return userList;
 	},
   //for editing profile or anything
-  async updateUser(email, password, firstName, lastName, phone, venmo, address, isDriver) {
+  async updateUser(email, firstName, lastName, phone, venmo, address, isDriver) {
     const _email = checkEmail(email)
-    const _pass = checkPassword(password)
     const _firstName = checkFirstName(firstName)
     const _lastName = checkLastName(lastName)
     const _phone = checkPhone(phone)
@@ -89,11 +88,11 @@ module.exports = {
     const _isDriver = checkIsDriver(isDriver)
     // Check if account exists
     const collection = await users()
-    const account = await collection.findOne({ email: email })
-    if (account !== null) throw `updateUser: Account with email ${email} not found`
+    const account = await collection.findOne({ email: _email })
+    if (account === null) throw `updateUser: Account with email ${email} not found`
     let newInfo = {
+      ...account,
       email: _email,
-      password: _pass,
       firstName: _firstName,
       lastName: _lastName,
       phone: _phone,
@@ -101,8 +100,8 @@ module.exports = {
       address: _address,
       driver: _isDriver
     }
-    const updatedInfo = collection.updateOne(
-      { _email: email},
+    const updatedInfo = await collection.updateOne(
+      { email: _email},
       { $set: newInfo}
     )
     if (updatedInfo.modifiedCount === 0) {

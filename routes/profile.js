@@ -51,9 +51,10 @@ router
     .post(async (req, res) => {
         if (req.session.user) {
             const user = await users.getUser(req.session.user.email)
-            let { firstName, lastName, email, phone, venmo, driver, address } = user
-            let updatedUser = [];
+            let { firstName, lastName, email, phone, venmo, street, city, zipcode, state, isDriver } = req.body
+            let updatedUser;
             try {
+                // use the actual request data
                 email = checkEmail(email)
                 firstName = checkFirstName(firstName)
                 lastName = checkLastName(lastName)
@@ -68,8 +69,6 @@ router
                 console.log(e)
                 return res.status(400).render('templates/profile', templateData)
             }
-            let { city, state, zipcode } = user.address
-            let street = user.address.address
             const states = Object.keys(US_States)
             const templateData = {
                 authenticated: true,
@@ -85,9 +84,13 @@ router
                 isDriver: driver,
                 states: states
             }
+            console.log("hello")
             return res.render('templates/profile', templateData)
         }
-        else return res.redirect('/')
+        else {
+            console.log("asdija")
+            return res.redirect('/')
+        }
     })
 
 module.exports = router
