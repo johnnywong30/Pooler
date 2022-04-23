@@ -42,7 +42,13 @@ app.use('/register', async (req, res, next) => {
     }
   })
 
-
+  app.use('/event', (req, res, next) => {
+    if (!req.session.user) {
+      return res.redirect('/'); //THIS SHOULD REDIRECT TO SOMETHING SAYING "You must register to view event page"
+    } else {
+      next();
+    }
+  });
 // Authentication middleware
 
 // Logging middleware
