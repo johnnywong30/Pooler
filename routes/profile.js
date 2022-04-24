@@ -45,14 +45,12 @@ router
         }
         else return res.redirect('/')
     })
-
-router
-    .route('/updateProfile')
     .post(async (req, res) => {
-        if (req.session.user) {
-            const user = await users.getUser(req.session.user.email)
+        if (req.session.user) {   
+            let test = req.body
+            console.log("p")
+            console.log(test)     
             let { firstName, lastName, email, phone, venmo, street, city, zipcode, state, isDriver } = req.body
-            let updatedUser;
             try {
                 // use the actual request data
                 email = checkEmail(email)
@@ -61,7 +59,7 @@ router
                 phone = checkPhone(phone)
                 venmo = checkVenmo(venmo)
                 address = checkAddress(address)
-                updatedUser = await users.updateUser(email, firstName, lastName, phone, venmo, address, driver)
+                isDriver = checkIsDriver(isDriver)
             } catch (e) {
                 const templateData = {
                     error: e
@@ -69,6 +67,25 @@ router
                 console.log(e)
                 return res.status(400).render('templates/profile', templateData)
             }
+            //check if the user exists
+            try {
+                await users.getUser(req.session.user.email)
+            } catch (e) {
+                const templateData = {
+                    error: e
+                }
+                return res.status(404).render('templates/profile', templateData)
+            }
+            //try to update the user
+            try {
+                await users.updateUser(email, firstName, lastName, phone, venmo, address, isDriver)
+            } catch (e) {
+                const templateData = {
+                    error: e
+                }
+                return res.status(400).render('templates/profile', templateData)
+            }
+            // at this point, we know all the data is valid
             const states = Object.keys(US_States)
             const templateData = {
                 authenticated: true,
@@ -84,11 +101,9 @@ router
                 isDriver: driver,
                 states: states
             }
-            console.log("hello")
             return res.render('templates/profile', templateData)
         }
         else {
-            console.log("asdija")
             return res.redirect('/')
         }
     })
