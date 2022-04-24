@@ -20,7 +20,7 @@
                                 <p class="mb-0">Email</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="email" name="email" type="email" disabled='true' value="{{email}}" class="form-control form-control-lg" required />
+                                <input id="email" name="email" type="email" readOnly='true' value="{{email}}" class="form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -29,7 +29,7 @@
                                 <p class="mb-0">First Name</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="firstName" name="firstName" type="text" disabled='true' value="{{firstName}}" class="edit-field form-control form-control-lg" required />
+                                <input id="firstName" name="firstName" type="text" readOnly='true' value="{{firstName}}" class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -38,7 +38,7 @@
                                 <p class="mb-0">Last Name</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="lastName" name="lastName" type="text" disabled='true' value="{{lastName}}" class="edit-field form-control form-control-lg" required />
+                                <input id="lastName" name="lastName" type="text" readOnly='true' value="{{lastName}}" class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -47,7 +47,7 @@
                                 <p class="mb-0">Phone Number</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="phone" name="phone" type="tel" disabled='true' value="{{phone}}"class="edit-field form-control form-control-lg" required />
+                                <input id="phone" name="phone" type="tel" readOnly='true' value="{{phone}}"class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                                 <p class="mb-0">Venmo</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="venmo" name="venmo" type="text" disabled='true' value='{{venmo}}' class="edit-field form-control form-control-lg" required />
+                                <input id="venmo" name="venmo" type="text" readOnly='true' value='{{venmo}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -73,7 +73,7 @@
                                 <p class="mb-0">Street Address</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="street" name="street" type="text" disabled='true' value='{{street}}' class="edit-field form-control form-control-lg" required />
+                                <input id="street" name="street" type="text" readOnly='true' value='{{street}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -82,7 +82,7 @@
                                 <p class="mb-0">City</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="city" name="city" type="text" disabled='true' value='{{city}}' class="edit-field form-control form-control-lg" required />
+                                <input id="city" name="city" type="text" readOnly='true' value='{{city}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -91,7 +91,7 @@
                                 <p class="mb-0">Zipcode</p>
                             </div>
                             <div class="col-sm-9">
-                                <input id="zipcode" name="zipcode" type="number" disabled='true' value='{{zipcode}}' class="edit-field form-control form-control-lg" required />
+                                <input id="zipcode" name="zipcode" type="number" readOnly='true' value='{{zipcode}}' class="edit-field form-control form-control-lg" required />
                             </div>
                         </div>
                         <hr>
@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="form-outline form-white">
-                                    <select class="edit-field form-select pb-0" disabled='true' value='{{state}}' aria-label="state" id="state"
+                                    <select class="edit-field form-select pb-0" readOnly='true' value='{{state}}' aria-label="state" id="state"
                                         name="state" required>
                                         <option selected>{{state}}</option>
                                         {{#each states}}
@@ -118,12 +118,12 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="form-check">
-                                    <input class="edit-field form-check-input" checked='{{isDriver}}' disabled='true' type="checkbox" value="" id="isDriver" name="isDriver"/>
+                                    <input class="edit-field form-check-input" checked='{{isDriver}}' readOnly='true' type="checkbox" value="" id="isDriver" name="isDriver"/>
                                 </div>
                             </div>
                         </div>
                         <hr>
-                        <button type="submit" id="saveChangesBtn" disabled='true' class="edit-field">
+                        <button type="submit" id="saveChangesBtn" readOnly='true' class="edit-field">
                             Save Changes
                         </button> 
                     </div>

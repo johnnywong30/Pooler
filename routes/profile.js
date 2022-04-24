@@ -47,10 +47,8 @@ router
     })
     .post(async (req, res) => {
         if (req.session.user) {   
-            let test = req.body
-            console.log("p")
-            console.log(test)     
-            let { firstName, lastName, email, phone, venmo, street, city, zipcode, state, isDriver } = req.body
+            let { firstName, lastName, email, phone, venmo, address, isDriver } = req.body
+            
             try {
                 // use the actual request data
                 email = checkEmail(email)

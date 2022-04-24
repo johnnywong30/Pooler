@@ -42,6 +42,7 @@ app.use('/register', async (req, res, next) => {
     }
   })
 
+// Profile middleware
 
 // Authentication middleware
 

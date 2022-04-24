@@ -162,7 +162,7 @@ editBtn.addEventListener('click', (e) => {
     e.preventDefault()
     if (!contentEditable) {
         contentEditable = !contentEditable
-        editables.map((element) => element.disabled = false)
+        editables.map((element) => element.readOnly = false)
         editBtn.disabled = true
         saveChangesBtn.disabled = false
     }
@@ -330,7 +330,7 @@ editProfileForm.addEventListener('submit', (e) => {
         }
         if (contentEditable) {
             contentEditable = !contentEditable
-            editables.map((element) => element.disabled = true)
+            editables.map((element) => element.readOnly = true)
             editBtn.disabled = false
             saveChangesBtn.disabled = true
         }
