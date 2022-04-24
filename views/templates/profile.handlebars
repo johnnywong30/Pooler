@@ -101,11 +101,11 @@
                             </div>
                             <div class="col-sm-9">
                                 <div class="form-outline form-white">
-                                    <select class="edit-field form-select pb-0" readOnly='true' value='{{state}}' aria-label="state" id="state"
+                                    <select class="form-select pb-0" value='{{state}}' aria-label="state" id="state"
                                         name="state" required>
                                         <option selected>{{state}}</option>
                                         {{#each states}}
-                                        <option value={{this}}>{{this}}</option>
+                                        <option class="edit-option" disabled='true'value={{this}}>{{this}}</option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <hr>
-                        <button type="submit" id="saveChangesBtn" readOnly='true' class="edit-field">
+                        <button type="submit" id="saveChangesBtn" disabled='true'>
                             Save Changes
                         </button> 
                     </div>

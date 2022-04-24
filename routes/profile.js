@@ -47,6 +47,16 @@ router
     })
     .post(async (req, res) => {
         if (req.session.user) {   
+            //check if the user exists
+            let user = {}
+            try {
+                user = await users.getUser(req.session.user.email)
+            } catch (e) {
+                const templateData = {
+                    error: e
+                }
+                return res.status(404).render('templates/profile', templateData)
+            }
             let { firstName, lastName, email, phone, venmo, address, isDriver } = req.body
             
             try {
@@ -60,25 +70,17 @@ router
                 isDriver = checkIsDriver(isDriver)
             } catch (e) {
                 const templateData = {
+                    ...user,
                     error: e
                 }
-                console.log(e)
                 return res.status(400).render('templates/profile', templateData)
-            }
-            //check if the user exists
-            try {
-                await users.getUser(req.session.user.email)
-            } catch (e) {
-                const templateData = {
-                    error: e
-                }
-                return res.status(404).render('templates/profile', templateData)
             }
             //try to update the user
             try {
                 await users.updateUser(email, firstName, lastName, phone, venmo, address, isDriver)
             } catch (e) {
                 const templateData = {
+                    ...user,
                     error: e
                 }
                 return res.status(400).render('templates/profile', templateData)
@@ -92,11 +94,11 @@ router
                 lastName: lastName,
                 phone: phone,
                 venmo: venmo,
-                street: street,
-                city: city,
-                state: state,
-                zipcode: zipcode,
-                isDriver: driver,
+                street: address.address,
+                city: address.city,
+                state: address.state,
+                zipcode: address.zipcode,
+                isDriver: isDriver,
                 states: states
             }
             return res.render('templates/profile', templateData)

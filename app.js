@@ -43,6 +43,23 @@ app.use('/register', async (req, res, next) => {
   })
 
 // Profile middleware
+app.use('/profile', async (req, res, next) => {
+    if (req.session.user && req.method === 'POST') {
+        // Clean up address data to be an object
+        const { street, city, state, zipcode } = req.body
+        req.body.address = {
+            address: street,
+            city: city,
+            state: state,
+            zipcode: zipcode
+        }
+        const { isDriver } = req.body
+        req.body.isDriver = isDriver === undefined ? false : true
+        console.log(req.body)
+        next()
+    }
+    else next()
+  })
 
 // Authentication middleware
 

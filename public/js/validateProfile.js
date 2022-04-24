@@ -142,8 +142,10 @@ let editBtn = document.getElementById('editBtn')
 let saveChangesBtn = document.getElementById('saveChangesBtn')
 
 let list = document.querySelectorAll('.edit-field')
+let options = document.querySelectorAll('.edit-option')
 // https://stackoverflow.com/questions/53350019/how-to-use-map-in-nodelist-in-javascript
 let editables = Array.from(list).map(elem => elem)
+options = Array.from(options).map(elem => elem)
 
 let contentEditable = false;
 const submittable = {
@@ -163,6 +165,7 @@ editBtn.addEventListener('click', (e) => {
     if (!contentEditable) {
         contentEditable = !contentEditable
         editables.map((element) => element.readOnly = false)
+        options.map((element) => element.disabled = false)
         editBtn.disabled = true
         saveChangesBtn.disabled = false
     }
@@ -331,8 +334,12 @@ editProfileForm.addEventListener('submit', (e) => {
         if (contentEditable) {
             contentEditable = !contentEditable
             editables.map((element) => element.readOnly = true)
+            options.map((element) => element.disabled = true)
             editBtn.disabled = false
             saveChangesBtn.disabled = true
+        }
+        else {
+            throw `Error: edit mode is not enabled, please click the edit button`
         }
     } catch (error) {
         console.log(error)
