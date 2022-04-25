@@ -140,3 +140,16 @@ body {
         border-bottom-right-radius: 8px;
     }
 }
+
+/*=============Pool Page============= */
+.leavePool {
+    background-color: #ff000042;
+    transform: translate(50%, 0);
+}
+
+.joinPool {
+    background-color: #00ff0042;
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+}

@@ -125,5 +125,17 @@ module.exports = {
     return id
   },
   
+  checkName(name) {
+    let _name = module.exports.checkString(name)
+    const nameArray = _name.split(' ')
+    if (nameArray.length < 2) throw 'name must contain a first and last name'
+    try {
+      module.exports.checkFirstName(nameArray[0])
+      module.exports.checkLastName(nameArray[1])
+    } catch (e) {
+      throw 'first or last name is invalid'
+    }
+    return _name;
+  },
 }
 
