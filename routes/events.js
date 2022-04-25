@@ -15,10 +15,11 @@ router
             const renderedEvents = importEvents.map(event => {
                 const dateParts = event.date.split('/') // [MM, DD, YYYY]
                 return {
+                    _id: event._id,
                     month: months[dateParts[0]],
                     date: dateParts[1],
                     title: event.name,
-                    description: event.description 
+                    description: event.description
                 }
             })
             const templateData = {
@@ -76,6 +77,31 @@ router
         }
     })
 
+router
+    .route('/list')
+    .get(async (req, res) => {
+        if (req.session.user) {
+            // fetch all events even if they're private
+            const importEvents = Object.values(fakeEvents)
+            const renderedEvents = importEvents.map(event => {
+                const dateParts = event.date.split('/') // [MM, DD, YYYY]
+                return {
+                    _id: event._id,
+                    month: months[dateParts[0]],
+                    date: dateParts[1],
+                    title: event.name,
+                    description: event.description
+                }
+            })
+            try {
+                return res.json(renderedEvents)
+            } catch (e) {
+                return res.status(500).json({ error: e })
+            }
+        } else {
+            return res.redirect('/')
+        }
+    })
 
 
 

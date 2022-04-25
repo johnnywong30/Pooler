@@ -258,6 +258,7 @@ ul.nav-list,
 .event-container:hover {
     border-left-width: 10px;
     background: #eceff1;
+    cursor: pointer;
 }
 
 .event-date-container {

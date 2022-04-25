@@ -7,17 +7,16 @@
                 </h2>
             </div>
             <div class="search-box">
-                <input type="text" class="search-input" placeholder="Search for an Event...">
+                <input id="search-term" type="text" class="search-input" placeholder="Search for an Event...">
                 <button class="search-button">
                     <span class="fas fa-search"></span>
                 </button>
-
             </div>
             <div class="event-calendar">
                 {{> eventsorts}}
-                <div class="event-list">
+                <div id="eventList" class="event-list">
                     {{#each events}}
-                        {{> eventcard date=date month=month title=title description=description}}
+                    {{> eventcard date=date month=month title=title description=description}}
                     {{/each}}
                 </div>
             </div>
@@ -25,4 +24,7 @@
     </div>
 
     {{> footer}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="/public/js/eventList.js" events={{events}}></script>
 </div>
