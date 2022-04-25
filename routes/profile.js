@@ -86,22 +86,7 @@ router
                 return res.status(400).render('templates/profile', templateData)
             }
             // at this point, we know all the data is valid
-            const states = Object.keys(US_States)
-            const templateData = {
-                authenticated: true,
-                email: email,
-                firstName: firstName,
-                lastName: lastName,
-                phone: phone,
-                venmo: venmo,
-                street: address.address,
-                city: address.city,
-                state: address.state,
-                zipcode: address.zipcode,
-                isDriver: isDriver,
-                states: states
-            }
-            return res.render('templates/profile', templateData)
+            return res.redirect('/profile')
         }
         else {
             return res.redirect('/')

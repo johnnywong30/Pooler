@@ -142,10 +142,19 @@ let editBtn = document.getElementById('editBtn')
 let saveChangesBtn = document.getElementById('saveChangesBtn')
 
 let list = document.querySelectorAll('.edit-field')
-let options = document.querySelectorAll('.edit-option')
+// let options = document.querySelectorAll('.edit-option')
 // https://stackoverflow.com/questions/53350019/how-to-use-map-in-nodelist-in-javascript
 let editables = Array.from(list).map(elem => elem)
-options = Array.from(options).map(elem => elem)
+// options = Array.from(options).map(elem => elem)
+
+
+// source to deal with state before form is editable: https://stackoverflow.com/a/14019867
+let stateAttributes = ["data-value", "onfocus", "onchange"]
+let beforeEditStateAttr = {
+    dataValue: state.getAttribute("data-value"),
+    onFocus: state.getAttribute("onfocus"),
+    onChange: state.getAttribute("onchange")
+}
 
 let contentEditable = false;
 const submittable = {
@@ -165,7 +174,9 @@ editBtn.addEventListener('click', (e) => {
     if (!contentEditable) {
         contentEditable = !contentEditable
         editables.map((element) => element.readOnly = false)
-        options.map((element) => element.disabled = false)
+        for (const attr of stateAttributes) {
+            state.removeAttribute(attr)
+        }
         editBtn.disabled = true
         saveChangesBtn.disabled = false
     }

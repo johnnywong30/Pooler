@@ -16,10 +16,10 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(session({
     name: 'AuthCookie',
-    secret: '9y$B&E)H@McQfTjWnZr4t7w!z%C*F-JaNdRgUkXp2s5v8x/A?D(G+KbPeShVmYq3t6w9z$B&E)H@McQfTjWnZr4u7x!A%D*F-JaNdRgUkXp2s5v8y/B?E(H+KbPeShVm',
+    secret: '9y$B&E)H@McQfTjWnZr4t7w!',
     resave: false,
     saveUninitialized: true
-  }))
+}))
 
 // Middleware here
 
@@ -40,7 +40,7 @@ app.use('/register', async (req, res, next) => {
         console.log(req.body)
         next()
     }
-  })
+})
 
 // Profile middleware
 app.use('/profile', async (req, res, next) => {
@@ -59,7 +59,7 @@ app.use('/profile', async (req, res, next) => {
         next()
     }
     else next()
-  })
+})
 
 // Authentication middleware
 
@@ -76,7 +76,7 @@ app.listen(port, async () => {
     const db = await connection.connectToDb();
     console.log('\x1b[32m%s\x1b[0m', `*************************************\n${appName} Application Started Smoothly on port ${port}\n`)
     console.log('\x1b[32m%s\x1b[0m', `Your routes will be running on http://localhost:${port}\n*************************************`)
-    
+
 });
 
 // Process killed callback
