@@ -16,10 +16,10 @@
 
 const { users, events } = require('../config/mongoCollections')
 const eventFunc = require('./events');
-const { checkName, checkDate, checkId } = require('../misc/validate')
+const { checkName, checkDate, checkId, checkEmail } = require('../misc/validate')
 
 module.exports = {
-  async createHistory(_eventId, _name, _date, _carpool) {]
+  async createHistory(_eventId, _name, _date, _carpool) {
     const eventId = checkId(_eventId)
     const name = checkName(_name)
     const date = checkDate(_date)
@@ -52,5 +52,23 @@ module.exports = {
 
     const userHistory = user.history;
     userHistory.push(newHistory);
+
+    // finish updating user to have new history
+  },
+  async getAll(_email) {
+    const email = checkEmail(_email);
+
+    let user;
+    try {
+      user = userFunc.getUser(email)
+    } catch(e) {
+      throw 'user does not exist'
+    }
+
+    if (user.history.length === 0) {
+      throw 'no carpool history for this user'
+    }
+
+    return user.history;
   }
 }
