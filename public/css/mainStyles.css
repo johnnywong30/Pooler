@@ -1,4 +1,67 @@
-/* Login Page */
+/*=============General Styling============= */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
+
+:root {
+    --primary: #fefeff;
+    --secondary: #181b1b;
+    --light: #181b1bb3;
+    --button: #c5e0e2;
+    --montserrat: "Montserrat", sans-serif;
+    --menu-speed: 0.75s;
+}
+
+
+/* Scroll bar */
+*,
+html {
+    scroll-behavior: smooth;
+}
+
+*,
+*:after,
+*:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+:root {
+    scrollbar-color: rgb(210, 210, 210) rgb(46, 54, 69) !important;
+    scrollbar-width: thin !important;
+    --white: #fff;
+    --black: #131417;
+    --gray: rgba(255, 255, 255, 0.7);
+    --lite: rgba(1, 1, 1, 0.6);
+    --default: 'Josefin Sans', sans-serif;
+    --title: 'Cormorant Garamond', serif;
+    --cursive: 'Dancing Script', cursive;
+}
+
+::-webkit-scrollbar {
+    height: 12px;
+    width: 8px;
+    background: var(--dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: gray;
+    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--paleblue);
+}
+
+body {
+    background: var(--primary);
+    font-family: var(--montserrat) !important;
+    font-weight: 400;
+    line-height: 1.75;
+    color: var(--secondary);
+}
+
+
+/*=============Login Page=============*/
 /* Source: https://mdbootstrap.com/docs/standard/extended/login/#section-5 */
 .bg-image-vertical {
     position: relative;
@@ -14,7 +77,31 @@
     }
 }
 
-/* Registration Page */
+.pooler-logo {
+    width: 15rem;
+    position: absolute;
+    left: 40px;
+}
+
+.login-container {
+    height: 100vh;
+}
+
+.login-btn {
+    background-color: #0081a2;
+}
+
+.auth-link {
+    color: #0081a2 !important;
+}
+
+@media (max-width: 1200px) {
+    .login-container {
+        height: 85vh;
+    }
+}
+
+/*=============Registration Page============= */
 /* Source: https://mdbootstrap.com/docs/standard/extended/registration/#section-6 */
 @media (min-width: 1025px) {
     .h-custom {
@@ -45,7 +132,16 @@
 }
 
 .bg-teal {
-    background-color: #77cbef;
+    background-color: #2397a2;
+}
+
+.register-btn {
+    background-color: #00829b;
+    color: #ffffff;
+}
+
+.register-heading {
+    font-size: 1.8rem;
 }
 
 @media (min-width: 992px) {
@@ -60,4 +156,17 @@
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
     }
+}
+
+/*=============Pool Page============= */
+.leavePool {
+    background-color: #ff000042;
+    transform: translate(50%, 0);
+}
+
+.joinPool {
+    background-color: #00ff0042;
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
 }

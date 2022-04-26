@@ -1,0 +1,59 @@
+<header id="header">
+    <nav id="nav-bar">
+        <ul class="nav-list">
+            <li>
+                <ul class="nav-left">
+                    <li>
+                        <a href="/">
+                            <img id="header-img" src="/public/imgs/pooler.png" alt="Pooler">
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <div class="menu-wrap">
+                    <input type="checkbox" class="toggler">
+                    <div class="hamburger">
+                        <div></div>
+                    </div>
+                    <div class="menu">
+                        <div>
+                            <div>
+                                <ul class="nav-list">
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/#about">About Us</a>
+                                    </li>
+                                    {{!-- TODO add hrefs to Events, History, Profile when they are made --}}
+                                    {{#if authenticated}}
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/events">Events</a>
+                                    </li>
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/history">History</a>
+                                    </li>
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/profile">Profile</a>
+                                    </li>
+                                    {{/if}}
+                                    {{#unless authenticated}}
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/login">Login</a>
+                                    </li>
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/register">Register</a>
+                                    </li>
+                                    {{/unless}}
+                                    {{#if authenticated}}
+                                    <li class="nav-elements">
+                                        <a class="nav-link" href="/logout">Log Out</a>
+                                    </li>
+                                    {{/if}}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>

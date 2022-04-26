@@ -1,11 +1,97 @@
-{{#if authenticated}}
-<p>
-    you are authenticated
-</p>
-<a href="/logout">Logout</a>
-{{else }}
-<a href="/login">Go login</a>
-<a href="/register">Go register</a>
-{{/if}}
+{{!-- Inspiration source: https://codepen.io/nandanholla/pen/xxXzmgd --}}
 
-main page
+<div class="container">
+    <section id="hero">
+        <div class="hero-text">
+            <h1>
+                Explore
+            </h1>
+            <p class="description">
+                Anywhere, with anyone.
+            </p>
+            {{#unless authenticated}}
+            <a href="/register" class="hero-btn btn align-center text-small btn-2">Get Started</a>
+            {{/unless}}
+            {{#if authenticated}}
+            {{!-- TODO events href here --}}
+            <a href="/events" class="hero-btn btn align-center text-small btn-2">Upcoming Events</a>
+            {{/if}}
+        </div>
+        <div class="hero-image image-container">
+            <img src="/public/imgs/carpool.png" alt="Hero Image" style="border-radius: 15px;">
+        </div>
+    </section>
+
+    <div id="about"></div>
+    <section class="section">
+        <div class="section-title">
+            <h2  class="title">
+                About Us
+            </h2>
+        </div>
+        <p class="title-description align-center">
+            Pooler is a Software as a Service (SaaS) with the purpose of helping communities organize events and travel
+            to them together.
+            Pooler is designed for clubs and groups to ease the hassle of figuring out how many cars can be used to
+            travel to an event and help users
+            determine what car they should be in on their own locations. It can also be used to find public events that
+            are looking to invite more people to join the fun.
+        </p>
+
+        <div class="section-container">
+            <div class="image-container">
+                <img src="/public/imgs/travel.png" alt="Traveling" style="border-radius: 15px;">
+            </div>
+            <div class="text-container">
+                <h2 class="heading">
+                    Events
+                </h2>
+                <p class="description">
+                    Our users are able to list events publicly for people to find to join in and meet other people with
+                    similar interests.
+                    If you want to avoid strangers and keep things to a closed group, you can also host private events.
+                </p>
+
+                {{#if authenticated}}<a href="/events" class="btn align-center text-small btn-2">Explore</a>{{/if}}
+                {{#unless authenticated}}<a href="/register" class="btn align-center text-small btn-2">Get
+                    started</a>{{/unless}}
+
+            </div>
+
+            <div class="text-container">
+                <h2 class="heading">
+                    History
+                </h2>
+                <p class="description">
+                    View past events that you participated in to experience some nostalgia.
+                    Get a glimpse of upcoming events that you plan on attending.
+                    Make scheduling easy with Pooler.
+                </p>
+
+                {{#if authenticated}}<a href="/history" class="btn align-center text-small btn-2">View</a>{{/if}}
+                {{#unless authenticated}}<a href="/register" class="btn align-center text-small btn-2">Get
+                    started</a>{{/unless}}
+
+            </div>
+            <div class="image-container">
+                <img src="/public/imgs/car3.png" alt="Car">
+            </div>
+
+            <div class="image-container">
+                <img src="/public/imgs/map.png" alt="Map">
+            </div>
+            <div class="text-container">
+                <h2 class="heading">
+                    Transform Adventures
+                </h2>
+                <p class="description">
+                    What are you waiting for? Start pooling today.
+                </p>
+                {{#if authenticated}}<a href="/events" class="btn align-center text-small btn-2">Explore</a>{{/if}}
+                {{#unless authenticated}}<a href="/register" class="btn align-center text-small btn-2">Get
+                    started</a>{{/unless}}
+            </div>
+        </div>
+    </section>
+    {{> footer}}
+</div>

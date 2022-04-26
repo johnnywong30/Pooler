@@ -111,7 +111,6 @@ module.exports = {
 		module.exports.checkTime(data[1]);
 		return dateTime;
 	},
-
 	checkCapacity(capacity) {
 		if (!capacity) throw `capacity must be supplied`;
 		if (typeof capacity !== "number" || isNaN(capacity)) throw `${capacity} must be a number`;
