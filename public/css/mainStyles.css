@@ -87,6 +87,14 @@ body {
     height: 100vh;
 }
 
+.login-btn {
+    background-color: #0081a2;
+}
+
+.auth-link {
+    color: #0081a2 !important;
+}
+
 @media (max-width: 1200px) {
     .login-container {
         height: 85vh;
@@ -124,7 +132,16 @@ body {
 }
 
 .bg-teal {
-    background-color: #77cbef;
+    background-color: #2397a2;
+}
+
+.register-btn {
+    background-color: #00829b;
+    color: #ffffff;
+}
+
+.register-heading {
+    font-size: 1.8rem;
 }
 
 @media (min-width: 992px) {
