@@ -7,7 +7,8 @@
 
     let eventList = $('#eventList'),
         sortButton = $('#sort-button'),
-        sortIcon = $('#sort-icon')
+        sortIcon = $('#sort-icon'),
+        searchTerm = $('#search-term')
 
     // -1 is descending order
     // 1 is ascending order
@@ -24,6 +25,7 @@
     }
 
     let events = await $.get('/events/list')
+    const originalEvents = [...events]
     events.sort(sorts[toggle])
 
     const createEventItem = (event) => {
@@ -65,7 +67,20 @@
 
     populateList(events)
 
-    
-
+    searchTerm.on('keyup', (e) => {
+        const currentTerm = e.target.value.trim().toLowerCase()
+        if (currentTerm.length === 0) {
+            events = [...originalEvents].sort(sorts[toggle])
+            populateList(events)
+        }
+        else {
+            events = [...originalEvents].filter(event => {
+                const title = event.title.trim().toLowerCase()
+                return title.includes(currentTerm)
+            })
+            .sort(sorts[toggle]) 
+            populateList(events)
+        }
+    })
 
 })(window.jQuery);
