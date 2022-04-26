@@ -51,8 +51,17 @@ module.exports = {
 		// Check if capacity is reached
 		if (carpool.members.length === carpool.capacity) throw `Carpool capacity reached`;
 		// Add user to carpool
+		let newMembers = carpool.members;
+		if (newMembers.includes(userId)) throw `User already part of pool with ID: ${_poolId}`; // don't add if user in pool
+		else newMembers.push(userId); // otherwise add them
+		const updatedCarpool = {
+			...carpool,
+			members: newMembers,
+		};
+		let updatedCarpools = event.carpools.remove(carpool => carpool._id === _poolId);
+		updatedCarpools.push(updatedCarpool);
 		const query = { _id: _eventId, carpools: { $elemMatch: { _id: _poolId } } };
-    const options = { $push: { carpools: { $elemMatch: { _id: _poolId } } }: _userId }; // Fix options
+		const options = { $set: { carpools: updatedCarpools } }; // Fix options
 		const updateEvents = await collection.updateOne(query, options);
 		if (updateEvents.modifiedCount === 0) throw "Could not add pooler successfully";
 		// On success

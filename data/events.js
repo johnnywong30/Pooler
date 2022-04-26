@@ -5,7 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 const saltRounds = 10;
 
 module.exports = {
-	async createEvent(name, date, startTime, host, description, capacity, private, password, destination) {
+	async createEvent(name, date, startTime, host, description, capacity, private, password) {
+		// add back destination
 		// Initial Checks
 		const _name = checkEventName(name);
 		const _date = checkDate(date);
@@ -15,8 +16,7 @@ module.exports = {
 		const _capacity = checkCapacity(capacity);
 		const _private = checkPrivate(private);
 		const _pass = checkPassword(password);
-		const _destination = checkAddress(destination);
-		// Not gonna check for events that already exist for now
+		// const _destination = checkAddress(destination);
 		// Create event
 		const saltedPass = await bcrypt.hash(_pass, saltRounds);
 		const newEvent = {
@@ -30,7 +30,7 @@ module.exports = {
 			private: _private,
 			password: saltedPass,
 			carpools: [],
-			destination: destination,
+			// destination: destination,
 		};
 		// Register Event
 		const collection = await events();
