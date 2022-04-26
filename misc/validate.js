@@ -95,10 +95,12 @@ module.exports = {
 	},
 	checkIsDriver(isDriver) {
 		if (isDriver === undefined) throw `isDriver does not exist`;
+		if (typeof isDriver !== 'boolean') throw `isDriver is not a boolean`;
 		return isDriver;
 	},
 	checkPrivate(isPrivate) {
 		if (isPrivate === undefined) throw `isPrivate does not exist`;
+		if (typeof isPrivate !== 'boolean') throw `isPrivate is not a boolean`;
 		return isPrivate;
 	},
 	//separate functions to check strings with both date and time

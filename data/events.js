@@ -6,141 +6,190 @@ const { v4: uuidv4 } = require("uuid");
 const saltRounds = 10;
 
 module.exports = {
-	async createEvent(name, date, startTime, host, description, capacity, private, password, destination) {
-		// Initial Checks
-    const _name = checkString(name);
-    const _date = checkDate(date);
-    const _startTime = checkTime(startTime);
-    const _host = checkEmail(host);
-    const _description = checkString(description);
-    const _capacity = checkCapacity(capacity);
-    const _private = checkBool(private);
-    const _pass = checkPassword(password);
-    const _destination = checkAddress(destination);
-		
-    // check to see if user exists
-    let user;
-    try {
-      user = await userFuncs.getUser(_host);
-    } catch (e) {
-      throw e
+  async createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _password = '') {
+    // Initial checks
+    const name = checkString(_name)
+    const date = checkDate(_date)
+    const startTime = checkTime(_startTime)
+    const host = checkEmail(_host)
+    const description = checkString(_description)
+    const capacity = checkCapacity(_capacity)
+    const destination = checkAddress(_destination)
+    const private = checkPrivate(_private)
+    // only need a password if the event is private
+    const password = private ? checkPassword(_password) : ''
+
+    // Check if user exists
+    const user = await userFuncs.getUser(host)
+    if (!user) throw `${host} is not a user`
+
+    // Create event
+    const pass = private ? await bcrypt.hash(password, saltRounds) : password
+    const newEvent = {
+      _id: uuidv4(),
+      name: name,
+      date: date,
+      startTime: startTime,
+      host: host,
+      description: description,
+      capacity: capacity,
+      private: private,
+      password: pass,
+      carpools: [],
+      destination: destination
     }
 
-		// Create event
-		const saltedPass = await bcrypt.hash(_pass, saltRounds);
-		const newEvent = {
-			_id: uuidv4(),
-			name: _name,
-			date: _date,
-			startTime: _startTime,
-			host: _host,
-			description: _description,
-			capacity: _capacity,
-			private: _private,
-			password: saltedPass,
-			carpools: [],
-			destination: _destination,
-		};
-		// Register Event
-		const eventsCollection = await events();
-		const insertInfo = await eventsCollection.insertOne(newEvent);
-		if (!insertInfo.acknowledged || !insertInfo.insertedId) throw "Could not register event";
-		// On success
-		return {
-			eventRegistered: true,
-		};
-	},
+    // Insert event
+    const collection = await events()
+    const insertInfo = await collection.insertOne(newEvent)
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw "Could not register event";
 
-  async getEvent(id) {
-    const _id = checkId(id)
-    const eventsCollection = await events();
-    let event = await eventsCollection.findOne({ _id: _id });
-    if (event === null) {
-      throw 'no event with that id';
-    }
+    // On success
+    return {
+      eventRegistered: true,
+    };
 
-    event._id = (event._id).toString();
-    return event;
   },
 
-  async updateEvent(id, name, date, startTime, host, description, capacity, private, password, carpools) {
-    const _id = checkId(id)
-    const _name = checkString(name)
-    const _date = checkDate(date)
-    const _startTime = checkTime(startTime)
-    const _host = checkEmail(host)
-    const _description = checkString(description)
-    const _capacity = checkNum(capacity)
-    const _private = checkBool(private)
-    const _carpools = checkArray(carpools)
-    const _password = checkPassword(password)
-    const eventCollection = await events()
-    const eventExists = await this.getEvent(_id);
-		const errorMsg = "Invalid id or password";
-		if (eventExists.length < 1) throw errorMsg;
-		const event = eventExists[0];
-    const saltedPass = await bcrypt.hash(_password, saltRounds)
-    // const { password } = event;
-    // const match = await bcrypt.compare(inputPassword, password)
-		// if (match) {
-		// 	return {
-		// 		...event,
-		// 		password: "thats not very froggers of you",
-		// 	};
-		// } else {
-		// 	throw 'invalid password';
-		// }
-
-    let updatedEventData = {
-      name: _name,
-      date: _date,
-      startTime: _startTime,
-      host: _host,
-      description: _description,
-      capacity: _capacity,
-      private: _private,
-      password: saltedPass,
-      carpools: _carpools
-    }
-
-    const updatedInfo = await eventCollection.updateOne(
-      {_id: ObjectId(id)},
-      {$set: updatedEventData}
-    );
-    
-    if (updatedInfo.modifiedCount === 0) {
-        throw 'could not update event successfully';
-    }
-
-    return await this.getEvent(_id);
+  async getEvent(_id) {
+    // Initial checks
+    const id = checkId(_id)
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    return event
   },
 
-  async validateEvent(id, password) {
-		const _id = checkId(id);
-		const inputPassword = checkPassword(password);
-    let event;
-    try {
-      event = await this.getEvent(_id);
-    } catch (e) {
-      throw "event does not exist"
-    }
-		
-		const errorMsg = "Invalid id or password";
-		const match = await bcrypt.compare(inputPassword, event.password);
-		if (match) {
-			return {
-				authenticated: true,
-			};
-		} else {
-			throw errorMsg;
-		}
-	},
+  async updateName(_id, _name) {
+    const id = checkId(_id)
+    const name = checkString(_name)
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const updatedInfo = await collection.updateOne(
+      { _id: id },
+      { $set: { name: name } }
+    )
+    if (updatedInfo.modifiedCount === 0) throw 'Could not update event name'
+    return await this.getEvent(id)
+  },
 
-  async deleteEvent(id) {
-		const _id = checkId(id)
-		const eventCollection = await events();
-		const deletionInfo = await eventCollection.deleteOne({ _id: _id });
-		if (deletionInfo.deleteCount === 0) throw `Could not delete event for ${_id}`;
-		return true;
-	},
+  async updateDate(_id, _date) {
+    const id = checkId(_id)
+    const date = checkDate(_date)
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const updatedInfo = await collection.updateOne(
+      { _id: id },
+      { $set: { date: date } }
+    )
+    if (updatedInfo.modifiedCount === 0) throw 'Could not update event date'
+    return await this.getEvent(id)
+  },
+
+  async updateStartTime(_id, _startTime) {
+    const id = checkId(_id)
+    const startTime = checkTime(_startTime)
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const updatedInfo = await collection.updateOne(
+      { _id: id },
+      { $set: { startTime: startTime } }
+    )
+    if (updatedInfo.modifiedCount === 0) throw 'Could not update event startTime'
+    return await this.getEvent(id)
+  },
+
+  async updateDescription(_id, _description) {
+    const id = checkId(_id)
+    const description = checkString(_description)
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const updatedInfo = await collection.updateOne(
+      { _id: id },
+      { $set: { description: description } }
+    )
+    if (updatedInfo.modifiedCount === 0) throw 'Could not update event description'
+    return await this.getEvent(id)
+  },
+
+  async updateCapacity(_id, _capacity) {
+    const id = checkId(_id)
+    const capacity = checkCapacity(_capacity)
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const updatedInfo = await collection.updateOne(
+      { _id: id },
+      { $set: { capacity: capacity } }
+    )
+    if (updatedInfo.modifiedCount === 0) throw 'Could not update event capacity'
+    return await this.getEvent(id)
+  },
+
+  async updatePrivacy(_id, _private, _password = '') {
+    const id = checkId(_id)
+    const private = checkPrivate(_private)
+    const password = private ? checkPassword(_password) : ''
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const pass = private ? await bcrypt.hash(password, saltRounds) : ''
+    const updatedInfo = await collection.updateOne(
+      { _id: id },
+      { $set: { private: private, password: pass } }
+    )
+    if (updatedInfo.modifiedCount === 0) throw 'Could not update event privacy '
+    return await this.getEvent(id)
+  },
+  // maybe move this in addresses.js
+  async updateDestination(_id, _destination) {
+    const id = checkId(_id)
+    const destination = checkAddress(_destination)
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const updatedInfo = await collection.updateOne(
+      { _id: id },
+      { $set: { destination: destination } }
+    )
+    if (updatedInfo.modifiedCount === 0) throw 'Could not update event destination'
+    return await this.getEvent(id)
+  },
+
+  async validateEvent(_id, _password = '') {
+    const id = checkId(_id)
+    // Check if event exists
+    const collection = await events()
+    const event = await collection.findOne({ _id: id })
+    if (event === null) throw 'Event does not exist'
+    const isPrivate = event.private
+    // only check password if the event is private
+    const password = isPrivate ? checkPassword(_password) : ''
+    if (isPrivate) {
+      const match = await bcrypt.compare(password, event.password)
+      if (match) return { authenticated: true }
+      else throw 'Invalid password'
+    }
+    else {
+      return { authenticated: true }
+    }
+  },
+  async deleteEvent(_id) {
+    const id = checkId(_id)
+    const collection = await events()
+    const deletionInfo = await collection.deleteOne({ _id: id })
+    if (deletionInfo.deleteCount === 0) throw `Could not delete event of id ${_id}`;
+    return true;
+  },
 };

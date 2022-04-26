@@ -3,14 +3,14 @@ const eventFunc = require('./events');
 const { checkName, checkDate, checkId } = require('../misc/validate')
 
 module.exports = {
-  async createHistory(_eventId, _name, _date, _carpool) {]
+  async createHistory(_eventId, _name, _date, _carpool) {
     const eventId = checkId(_eventId)
     const name = checkName(_name)
     const date = checkDate(_date)
     const carpool = checkId(_carpool)
 
-    const historyCollection = await history()
-    const eventCollection = await events()
+    // check if event exists
+    
 
     const newHistory = {
       _id: eventId,
