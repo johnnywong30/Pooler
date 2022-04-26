@@ -1,19 +1,3 @@
-// TODO: Write history data methods here
-/*
-            _     _
-           /@\---/@\
-         ,'         `.
-        |             |
-        <`-----------'>
-       / `. `-----' ,' \
-      /    `-------'    \
-     :  |   _______   |  :
-     |  `.,'       `.,'  |
-    ,`.   \    o    /   ,'.
-   /   `.  `.     ,'  ,'   \
- ^^^^----^^^^-----^^^^----^^^^
-    */
-
 const { users, events } = require('../config/mongoCollections')
 const eventFunc = require('./events');
 const { checkName, checkDate, checkId } = require('../misc/validate')
@@ -52,5 +36,22 @@ module.exports = {
 
     const userHistory = user.history;
     userHistory.push(newHistory);
+  },
+
+  async getAll(_email) {
+    const email = checkEmail(_email);
+
+    let user;
+    try {
+      user = userFunc.getUser(email)
+    } catch(e) {
+      throw 'user does not exist'
+    }
+
+    if (user.history.length === 0) {
+      throw 'no carpool history for this user'
+    }
+
+    return user.history;
   }
 }
