@@ -8,7 +8,7 @@ module.exports = {
     async getComment(commentId, userId) {
 
     },
-    async deleteComment(commentId, userId, description, timestamp) {
+    async deleteComment(commentId, userId) {
 
     },
     async updateComment(commentId, userId, description, timestamp) {
