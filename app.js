@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(session({
     name: 'AuthCookie',
-    secret: '9y$B&E)H@McQfTjWnZr4t7w!z%C*F-JaNdRgUkXp2s5v8x/A?D(G+KbPeShVmYq3t6w9z$B&E)H@McQfTjWnZr4u7x!A%D*F-JaNdRgUkXp2s5v8y/B?E(H+KbPeShVm',
+    secret: '9y$B&E)H@McQfTjWnZr',
     resave: false,
     saveUninitialized: true
   }))

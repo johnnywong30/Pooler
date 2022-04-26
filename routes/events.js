@@ -19,7 +19,8 @@ router
                     month: months[dateParts[0]],
                     date: dateParts[1],
                     title: event.name,
-                    description: event.description
+                    description: event.description,
+                    fullDate: event.date
                 }
             })
             const templateData = {
@@ -90,7 +91,8 @@ router
                     month: months[dateParts[0]],
                     date: dateParts[1],
                     title: event.name,
-                    description: event.description
+                    description: event.description,
+                    fullDate: event.date
                 }
             })
             try {
