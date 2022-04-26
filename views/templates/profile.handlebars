@@ -1,152 +1,97 @@
-{{!-- referenced https://codepen.io/Shokeen/pen/XXggZr --}}
-<section>
-    <div class="container-fluid">
-        <h1>Profile</h1>
-        <div id="client-error" class="row" hidden>
-                    
-        </div>
-        <button id="editBtn">
-            Edit Profile
-        </button>
-        <form id="edit-profile-form" action="/profile" method="POST">
-            <div class="col-lg-8">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        {{!-- need to populate with actual variables --}}
-                        <h2>Account Information</h2>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Email</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="email" name="email" type="email" readOnly='true' value="{{email}}" class="form-control form-control-lg" required />
-                                <label for="email" hidden>Email</label>
-                            </div>
+<div class="container">
+    <div class="section-container">
+        <section class="section">
+            <div class="section-title">
+                <h1 class="title profile-heading">
+                    Profile
+                </h1>
+            </div>
+            <div class="button-container">
+                <button id="editBtn">Edit Profile</button>
+            </div>
+            <div id="client-error" hidden>
+
+            </div>
+            <form id="edit-profile-form" action="/profile" method="POST">
+                <div class="section-container profile-container">
+                    <div class="text-container account-info">
+                        <h2 class="account-heading">
+                            Account Information
+                        </h2>
+                        <div class="profile-form-item">
+                            <input id="email" name="email" type="email" readonly='readonly' value="{{email}}"
+                                required />
+                            <label for="email">Email</label>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">First Name</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="firstName" name="firstName" type="text" readOnly='true' value="{{firstName}}" class="edit-field form-control form-control-lg" required />
-                                <label for="firstName" hidden>First Name</label>
-                            </div>
+                        <div class="profile-form-item">
+                            <input class="editable" id="firstName" name="firstName" type="text" readonly='readonly'
+                                value="{{firstName}}" required />
+                            <label for="firstName">First Name</label>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Last Name</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="lastName" name="lastName" type="text" readOnly='true' value="{{lastName}}" class="edit-field form-control form-control-lg" required />
-                                <label for="lastName" hidden>Last Name</label>
-                            </div>
+                        <div class="profile-form-item">
+                            <input class="editable" id="lastName" name="lastName" type="text" readonly='readonly'
+                                value="{{lastName}}" required />
+                            <label for="lastName">Last Name</label>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Phone Number</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="phone" name="phone" type="tel" readOnly='true' value="{{phone}}"class="edit-field form-control form-control-lg" required />
-                                <label for="phone" hidden>Phone Number</label>
-                            </div>
+                        <div class="profile-form-item">
+                            <input class="editable" id="phone" name="phone" type="tel" readonly='readonly'
+                                value="{{phone}}" required />
+                            <label for="phone">Phone Number</label>
                         </div>
                     </div>
-                </div>         
-            </div>
-
-            <div class="col-lg-8">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h2>Personal Information</h2>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Venmo</p>
+                    <div class="text-container personal-info">
+                        <h2 class="personal-heading">
+                            Personal Information
+                        </h2>
+                        <div class="profile-form-item">
+                            <input class="editable" id="venmo" name="venmo" type="text" readonly='readonly'
+                                value="{{venmo}}" required />
+                            <label for="venmo">Venmo</label>
+                        </div>
+                        <div class="profile-form-item">
+                            <input class="editable" id="street" name="street" type="text" readonly='readonly'
+                                value="{{street}}" required />
+                            <label for="street">Street Address</label>
+                        </div>
+                        <div class="address-form-container">
+                            <div class="city-input-container">
+                                <input class="editable address-input city-input" id="city" name="city" type="text"
+                                    readonly='readonly' value="{{city}}" required />
+                                <label class="address-label city-label" for="city">City</label>
                             </div>
-                            <div class="col-sm-9">
-                                <input id="venmo" name="venmo" type="text" readOnly='true' value='{{venmo}}' class="edit-field form-control form-control-lg" required />
-                                <label for="venmo" hidden>Venmo</label>
+                            <div class="zip-input-container">
+                                <input class="editable address-input zip-input" id="zipcode" name="zipcode"
+                                    type="number" readonly='readonly' value="{{zipcode}}" required />
+                                <label class="address-label zip-label" for="zipcode">Zip</label>
+                            </div>
+                            <div class="state-input-container">
+                                <select class="address-input state-select" id="state" name="state" aria-label="state"
+                                    data-value="{{State}}"
+                                    
+                                    onfocus="this.setAttribute('data-value', this.value);"
+                                    onchange="this.value = this.getAttribute('data-value');" required>
+                                    <option class="state-option" label="State"></option>
+                                    {{#each states}}
+                                        <option class="state-option" value={{this}} {{#ifEq this ../state }}selected="selected"{{/ifEq}}>{{this}}</option>
+                                    {{/each}}
+                                </select>
                             </div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Street Address</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="street" name="street" type="text" readOnly='true' value='{{street}}' class="edit-field form-control form-control-lg" required />
-                                <label for="street" hidden>Street</label>
-                            </div>
+                        <div class="checkbox-container">
+                            <input class="editable driver-checkbox" disabled="disabled" checked="{{#if isDriver}}checked{{else}}{{/if}}"
+                                type="checkbox" value="" id="isDriver" name="isDriver" required />
+                            <label class="driver-label" for="isDriver">Are you a driver?</label>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">City</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="city" name="city" type="text" readOnly='true' value='{{city}}' class="edit-field form-control form-control-lg" required />
-                                <label for="city" hidden>City</label>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Zipcode</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="zipcode" name="zipcode" type="number" readOnly='true' value='{{zipcode}}' class="edit-field form-control form-control-lg" required />
-                                <label for="zipcode" hidden>Zipcode</label>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">State</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="form-outline form-white">
-                                    <select class="form-select pb-0" value='{{state}}' aria-label="state" id="state"
-                                        name="state" required
-                                        data-value={{state}} 
-                                        onfocus="this.setAttribute('data-value', this.value);" 
-                                        onchange="this.value = this.getAttribute('data-value');"
-                                        >
-                                        <option class="edit-option" selected>{{state}}</option>
-                                        {{#each states}}
-                                        <option class="edit-option" value={{this}}>{{this}}</option>
-                                        {{/each}}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">I am a driver</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="form-check">
-                                    <input class="edit-field form-check-input" checked='{{isDriver}}' readOnly='true' type="checkbox" value="" id="isDriver" name="isDriver"/>
-                                    <label for="isDriver" hidden>Is Driver</label>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <button id="cancelBtn" disabled="true">
-                            Cancel Changes
-                        </button>
-                        <button type="submit" id="saveChangesBtn" disabled='true'>
-                            Save Changes
-                        </button> 
+                    </div>
+                    <div class="bottom-button-container">
+                        <button class="profile-button" id="cancelBtn" disabled="disabled">Cancel</button>
+                        <button class="profile-button" type="submit" id="saveChangesBtn" disabled="disabled">Save</button>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+
+        </section>
     </div>
-</section>
+</div>
 
 <script type="text/javascript" src="/public/js/validateProfile.js"></script>

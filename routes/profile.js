@@ -3,7 +3,6 @@ const { users } = require('../data')
 const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver, checkZipcode } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const router = express.Router();
-
 router
     .route('/')
     .get(async (req, res) => {
@@ -19,7 +18,8 @@ router
                 address = checkAddress(address)
             } catch (e) {
                 const templateData = {
-                    error: e
+                    error: e,
+                    layout: 'custom'
                 }
                 console.log(e)
                 return res.status(400).render('templates/profile', templateData)
@@ -39,7 +39,8 @@ router
                 state: state,
                 zipcode: zipcode,
                 isDriver: driver,
-                states: states
+                states: states,
+                layout: 'custom'
             }
             return res.render('templates/profile', templateData)
         }
@@ -53,12 +54,13 @@ router
                 user = await users.getUser(req.session.user.email)
             } catch (e) {
                 const templateData = {
-                    error: e
+                    error: e,
+                    layout: 'custom'
                 }
                 return res.status(404).render('templates/profile', templateData)
             }
             let { firstName, lastName, email, phone, venmo, address, isDriver } = req.body
-            
+            console.log(address)
             try {
                 // use the actual request data
                 email = checkEmail(email)
@@ -71,17 +73,19 @@ router
             } catch (e) {
                 const templateData = {
                     ...user,
-                    error: e
+                    error: e,
+                    layout: 'custom'
                 }
                 return res.status(400).render('templates/profile', templateData)
             }
-            //try to update the user
+            // try to update the user
             try {
                 await users.updateUser(email, firstName, lastName, phone, venmo, address, isDriver)
             } catch (e) {
                 const templateData = {
                     ...user,
-                    error: e
+                    error: e,
+                    layout: 'custom'
                 }
                 return res.status(400).render('templates/profile', templateData)
             }
