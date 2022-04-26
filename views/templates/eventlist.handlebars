@@ -1,0 +1,28 @@
+<div class="container">
+    <div id="events" class="section-container">
+        <section class="section">
+            <div class="section-title">
+                <h2 class="title">
+                    Events
+                </h2>
+            </div>
+            <div class="search-box">
+                <input id="search-term" type="text" class="search-input" placeholder="Search for an Event...">
+                <button class="search-button">
+                    <span class="fas fa-search"></span>
+                </button>
+            </div>
+            <div class="event-calendar">
+                {{> eventsorts}}
+                <div id="eventList" class="event-list">
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {{> footer}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="/public/js/eventList.js" events={{events}}></script>
+</div>

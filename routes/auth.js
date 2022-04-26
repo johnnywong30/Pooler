@@ -52,7 +52,7 @@ router
     .route('/login')
     .get(async (req, res) => {
         if (req.session.user) return res.redirect('/')
-        else return res.render('templates/login')
+        else return res.render('templates/login', {layout: 'main'})
     })
     .post(async (req, res) => {
         const { email, password } = req.body
@@ -94,8 +94,8 @@ router
     .route('/')
     .get(async (req, res) => {
         const templateData = {
-            isLandingPage: true,
-            authenticated: false
+            authenticated: false,
+            layout: 'custom'
         }
         if (req.session.user) {
             templateData.authenticated = true
