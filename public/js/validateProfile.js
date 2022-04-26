@@ -140,13 +140,13 @@ let zipcode = document.getElementById('zipcode')
 let state = document.getElementById('state')
 let editBtn = document.getElementById('editBtn')
 let saveChangesBtn = document.getElementById('saveChangesBtn')
+let cancelBtn = document.getElementById('cancelBtn')
 
 let list = document.querySelectorAll('.edit-field')
-// let options = document.querySelectorAll('.edit-option')
 // https://stackoverflow.com/questions/53350019/how-to-use-map-in-nodelist-in-javascript
 let editables = Array.from(list).map(elem => elem)
-// options = Array.from(options).map(elem => elem)
-
+let currentValues = editables.map((element) => (element.value) ? element.value : element.checked)
+console.log(currentValues)
 
 // source to deal with state before form is editable: https://stackoverflow.com/a/14019867
 let stateAttributes = ["data-value", "onfocus", "onchange"]
@@ -179,6 +179,13 @@ editBtn.addEventListener('click', (e) => {
         }
         editBtn.disabled = true
         saveChangesBtn.disabled = false
+        cancelBtn.disabled = false
+    }
+})
+
+cancelBtn.addEventListener('click', (e) => {
+    if (contentEditable) {
+        contentEditable = !contentEditable
     }
 })
 
@@ -345,9 +352,9 @@ editProfileForm.addEventListener('submit', (e) => {
         if (contentEditable) {
             contentEditable = !contentEditable
             editables.map((element) => element.readOnly = true)
-            options.map((element) => element.disabled = true)
             editBtn.disabled = false
             saveChangesBtn.disabled = true
+            cancelBtn.disabled = true
         }
         else {
             throw `Error: edit mode is not enabled, please click the edit button`
