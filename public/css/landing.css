@@ -170,6 +170,10 @@ ul.nav-list,
     grid-area: img;
 }
 
+#about {
+    padding: 7.5px 0;
+}
+
 #events {
     padding-top: 55px;
 }
