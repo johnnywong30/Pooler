@@ -137,5 +137,22 @@ module.exports = {
     }
     return _name;
   },
+
+  checkNum(num) {
+    if (isNaN(num)) throw 'input is not a number'
+    if (Number.isInteger(num)) throw 'input is not a whole number'
+    if (num < 1) throw 'integer cannot be less than 1'
+    return num;
+  },
+
+  checkBool(bool) {
+    if (typeof variable !== "boolean") throw 'variable is not a boolean'
+    return bool;
+  }, 
+
+  checkArray(array) {
+    if (!array || !Array.isArray(array)) throw `variable provided is not an array`
+    return array;
+  }
 }
 
