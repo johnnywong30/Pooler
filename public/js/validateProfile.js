@@ -146,7 +146,7 @@ let list = document.querySelectorAll('.edit-field')
 // https://stackoverflow.com/questions/53350019/how-to-use-map-in-nodelist-in-javascript
 let editables = Array.from(list).map(elem => elem)
 let currentValues = editables.map((element) => (element.value) ? element.value : element.checked)
-console.log(currentValues)
+let currentState = state.value
 
 // source to deal with state before form is editable: https://stackoverflow.com/a/14019867
 let stateAttributes = ["data-value", "onfocus", "onchange"]
@@ -181,11 +181,28 @@ editBtn.addEventListener('click', (e) => {
         saveChangesBtn.disabled = false
         cancelBtn.disabled = false
     }
+    else {
+        throw `Error: edit mode is enabled. Please cancel or save changes`
+    }
 })
 
 cancelBtn.addEventListener('click', (e) => {
     if (contentEditable) {
         contentEditable = !contentEditable
+        for (let i = 0; i < editables.length; i++) {
+            if (editables[i].value)
+                editables[i].value = currentValues[i]
+            else
+                editables[i].checked = currentValues[i]
+        }
+        state.value = currentState
+        editables.map((element) => element.readOnly = true)
+        for (const attr in beforeEditStateAttr) {
+            state.setAttribute(attr, beforeEditStateAttr[attr])
+        }
+        editBtn.disabled = false
+        saveChangesBtn.disabled = true
+        cancelBtn.disabled = true
     }
 })
 
