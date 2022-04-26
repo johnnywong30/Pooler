@@ -16,7 +16,11 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(session({
     name: 'AuthCookie',
+<<<<<<< HEAD
     secret: '9y$B&E)H@McQfTjWnZr4t7w!',
+=======
+    secret: '9y$B&E)H@McQfTjWnZr',
+>>>>>>> main
     resave: false,
     saveUninitialized: true
 }))
@@ -40,6 +44,7 @@ app.use('/register', async (req, res, next) => {
         console.log(req.body)
         next()
     }
+<<<<<<< HEAD
 })
 
 // Profile middleware
@@ -61,10 +66,20 @@ app.use('/profile', async (req, res, next) => {
     else next()
 })
 
+=======
+  })
+  //*************** UNCOMMENT WHEN FINISHED WITH pool PAGE **************/
+  // app.use('/pool', (req, res, next) => {
+  //   if (!req.session.user) {
+  //     return res.redirect('/'); //THIS SHOULD REDIRECT TO SOMETHING SAYING "You must register to view pool page"
+  //   } else {
+  //     next();
+  //   }
+  // });
+>>>>>>> main
 // Authentication middleware
 
 // Logging middleware
-
 
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
