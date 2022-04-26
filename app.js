@@ -3,6 +3,7 @@ const app = express();
 const static = express.static(__dirname + '/public');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
+const hbHelpers = require('./views/helpers')
 
 const configRoutes = require('./routes');
 const connection = require('./config/mongoConnection');
@@ -65,7 +66,10 @@ app.use('/profile', async (req, res, next) => {
 
 // Logging middleware
 
-app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }))
+app.engine('handlebars', exphbs.engine({
+    defaultLayout: 'main',
+    helpers: hbHelpers
+}))
 app.set('view engine', 'handlebars')
 
 configRoutes(app);

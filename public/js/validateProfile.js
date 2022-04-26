@@ -140,13 +140,16 @@ let zipcode = document.getElementById('zipcode')
 let state = document.getElementById('state')
 let editBtn = document.getElementById('editBtn')
 let saveChangesBtn = document.getElementById('saveChangesBtn')
+let isDriver = document.getElementById('isDriver')
 let cancelBtn = document.getElementById('cancelBtn')
 
-let list = document.querySelectorAll('.edit-field')
+let list = document.querySelectorAll('.editable')
 // https://stackoverflow.com/questions/53350019/how-to-use-map-in-nodelist-in-javascript
 let editables = Array.from(list).map(elem => elem)
 let currentValues = editables.map((element) => (element.value) ? element.value : element.checked)
 let currentState = state.value
+
+console.log(editables)
 
 // source to deal with state before form is editable: https://stackoverflow.com/a/14019867
 let stateAttributes = ["data-value", "onfocus", "onchange"]
@@ -166,7 +169,8 @@ const submittable = {
     street: true,
     city: true,
     zipcode: true,
-    state: true
+    state: true,
+    isDriver: true
 }
 // reference https://codepen.io/Shokeen/pen/XXggZr for editable fields
 editBtn.addEventListener('click', (e) => {
@@ -177,6 +181,7 @@ editBtn.addEventListener('click', (e) => {
         for (const attr of stateAttributes) {
             state.removeAttribute(attr)
         }
+        isDriver.disabled = false
         editBtn.disabled = true
         saveChangesBtn.disabled = false
         cancelBtn.disabled = false
@@ -200,25 +205,33 @@ cancelBtn.addEventListener('click', (e) => {
         for (const attr in beforeEditStateAttr) {
             state.setAttribute(attr, beforeEditStateAttr[attr])
         }
+        isDriver.disabled = true
         editBtn.disabled = false
         saveChangesBtn.disabled = true
         cancelBtn.disabled = true
     }
 })
 
+
+
 //taken from validateRegister
 const createError = (error) => {
     // in case error had another error in it already; clear all children
     errorDiv.replaceChildren()
     errorDiv.hidden = false
-    let col = document.createElement('div')
-    col.className = 'col-12 d-flex align-items-center mb-3'
-    let alert = document.createElement('div')
-    alert.className = 'alert alert-danger alert-dismissible fade show'
-    alert.innerHTML = `Error: ${error}`
-    col.appendChild(alert)
-    errorDiv.appendChild(col)
+    const clearButton = document.createElement('span')
+    clearButton.className = 'fa-solid fa-xmark'
+    clearButton.id = 'close-error'
+    const clearError = () => {
+        errorDiv.replaceChildren()
+        errorDiv.hidden = true
+    }
+    clearButton.addEventListener('click', clearError)
+    errorDiv.innerHTML = `Error: ${error}`
+    errorDiv.appendChild(clearButton)
 }
+
+
 
 const resolveError = () => {
     errorDiv.replaceChildren()
@@ -227,7 +240,7 @@ const resolveError = () => {
 
 email.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkEmail(input)
         if (checked) {
@@ -243,7 +256,7 @@ email.addEventListener('change', (e) => {
 
 firstName.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkFirstName(input)
         if (checked) {
@@ -258,7 +271,7 @@ firstName.addEventListener('change', (e) => {
 
 lastName.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkLastName(input)
         if (checked) {
@@ -273,7 +286,7 @@ lastName.addEventListener('change', (e) => {
 
 phone.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkPhone(input)
         if (checked) {
@@ -288,7 +301,7 @@ phone.addEventListener('change', (e) => {
 
 venmo.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkVenmo(input)
         if (checked) {
@@ -303,7 +316,7 @@ venmo.addEventListener('change', (e) => {
 
 street.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkStreet(input)
         if (checked) {
@@ -318,7 +331,7 @@ street.addEventListener('change', (e) => {
 
 city.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkCity(input)
         if (checked) {
@@ -333,7 +346,7 @@ city.addEventListener('change', (e) => {
 
 zipcode.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkZipcode(input)
         if (checked) {
@@ -348,7 +361,7 @@ zipcode.addEventListener('change', (e) => {
 
 state.addEventListener('change', (e) => {
     e.preventDefault()
-    const input = e.target.value 
+    const input = e.target.value
     try {
         const checked = checkState(input)
         if (checked) {
@@ -364,7 +377,7 @@ state.addEventListener('change', (e) => {
 editProfileForm.addEventListener('submit', (e) => {
     try {
         for (const [key, value] of Object.entries(submittable)) {
-            if (! value) throw `${key.charAt(0).toUpperCase() + key.slice(1)} is invalid. Please fill out the form thoroughly.`
+            if (!value) throw `${key.charAt(0).toUpperCase() + key.slice(1)} is invalid. Please edit your profile correctly.`
         }
         if (contentEditable) {
             contentEditable = !contentEditable
@@ -379,6 +392,6 @@ editProfileForm.addEventListener('submit', (e) => {
     } catch (error) {
         console.log(error)
         e.preventDefault()
-        createError(error) 
+        createError(error)
     }
 })
