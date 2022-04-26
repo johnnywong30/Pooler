@@ -2,7 +2,7 @@ const authRouter = require('./auth')
 const profileRouter = require('./profile')
 const eventRouter = require('./events')
 const poolRouter = require('./pool')
-const poolRouter = require('./history')
+const historyRouter = require('./history')
 
 const constructorMethod = (app) => {
     app.use('/', authRouter)

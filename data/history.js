@@ -1,29 +1,29 @@
-const { users, events } = require('../config/mongoCollections')
+const { events } = require('../config/mongoCollections')
 const eventFunc = require('./events');
 const { checkName, checkDate, checkId } = require('../misc/validate')
 
 module.exports = {
-  async createHistory(_eventId, _name, _date, _carpool) {
+  async createHistory(_eventId, _carpool) {
+    console.log('hi')
     const eventId = checkId(_eventId)
-    const name = checkName(_name)
-    const date = checkDate(_date)
     const carpool = checkId(_carpool)
 
-    const historyCollection = await history()
     const eventCollection = await events()
-
-    const newHistory = {
-      _id: eventId,
-      name: name,
-      date: date,
-      carpool: carpool
-    }
 
     let event;
     try {
       event = await eventFunc.getEvent(eventId)
     } catch (e) {
       throw 'event does not exist'
+    }
+
+    //check if carpool exists
+
+    const newHistory = {
+      _id: eventId,
+      name: event.name,
+      date: event.date,
+      carpool: carpool
     }
 
     let userEmail = event.host;
@@ -36,9 +36,17 @@ module.exports = {
 
     const userHistory = user.history;
     userHistory.push(newHistory);
+
+    const updatedInfo = await eventCollection.updateOne(
+      {_id: eventId},
+      {$set: { history: userHistory}}
+    )
+
+    if (updatedInfo.insertedCount === 0) throw 'Could not add album';
+    return eventFunc.getEvent(event._id);
   },
 
-  async getAll(_email) {
+  async getHistory(_email) {
     const email = checkEmail(_email);
 
     let user;
@@ -54,4 +62,4 @@ module.exports = {
 
     return user.history;
   }
-}
+};
