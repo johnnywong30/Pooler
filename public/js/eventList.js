@@ -34,6 +34,7 @@
         privateEventForm = $('#private-event-form')
     
     let errorDiv = document.getElementById('client-error')
+    let privateEventLink;
 
 
     modalCloseBtn.on('click', () => {
@@ -80,7 +81,9 @@
                         visibility: 'visible'
                     }
                 )
-                privateEventForm.attr('action', `/events/validateEvent/${event._id}`)
+                const link = `/events/validateEvent/${event._id}`
+                privateEventForm.attr('action', link)
+                privateEventLink = `/events/view/${event._id}`
             })
         }
         // event container
@@ -162,8 +165,11 @@
             const data = await $.post(url, { password: password })
             const { authenticated } = data
             if (authenticated) {
-                // TODO figure this out
+                // go to private event's page
+                const privatePage = `${privateEventLink}?pwd=${password}`
+                window.location.href = privatePage
             }
+            else throw 'Invalid password'
             
         } catch (error) {
             createError("Invalid password")

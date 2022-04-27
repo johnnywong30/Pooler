@@ -3,7 +3,8 @@ const { events } = require('../data')
 const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const months = require('../const/months.json')
-const xss = require('xss')
+const xss = require('xss');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 
 
@@ -28,23 +29,26 @@ router
             try {
                 const id = checkId(xss(req.params.id))
                 const eventData = await events.getEvent(id)
-                // if event has password
-                // check if user is in a carpool already (means they had the password)
-                
-                // otherwise render the event page
+                const { carpools, private, password } = eventData
+                // if event has password, see if it is correct
+                if (private) {
+                    // use a query instead of a POST for the password so users
+                    // can share the event link with their friends 
+                    // and not have random strangers get it, unless they somehow get the link
+                    // then that was the users' fault 🤷
+                    // kinda like Zoom
+                    const pass = checkPassword(xss(req.query.pwd))
+                    const match = await bcrypt.compare(pass, password)
+                    if (! match) return res.redirect('/events')
+                }         
+                const templateData = {
+
+                }       
+                // render the event page
                 return res.json(eventData)
             } catch (e) {
-                return res.status(400).json({ error: e })
+                return res.status(400).json({ error: 'Invalid password'})
             }
-        } else {
-            return res.redirect('/')
-        }
-    })
-    .post(async (req, res) => {
-        if (req.session.user) {
-            // check if there is a password on the event or not
-            // check if password is valid
-            // if not then redirect to /view/:id after changing the request method to GET
         } else {
             return res.redirect('/')
         }
@@ -160,7 +164,7 @@ router
         }
 
         if (auth.authenticated) {
-            return res.status(200).json({ authenticated: "success" })
+            return res.status(200).json({ authenticated: true })
         }
     })
 module.exports = router
