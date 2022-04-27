@@ -2,7 +2,8 @@
 
     const DOM = {
         div: '<div></div>',
-        span: '<span></span>'
+        span: '<span></span>',
+        a: '<a></a>'
     }
 
     let eventList = $('#eventList'),
@@ -30,6 +31,8 @@
 
     const createEventItem = (event) => {
         // event container
+        const eventLink = $(DOM.a)
+        eventLink.attr('href', `/events/view/${event._id}`)
         const eventContainer = $(DOM.div, {'class': 'event-container'})
         const dateContainer = $(DOM.span, {'class': 'event-date-container'})
         const date = $(DOM.span, {'class': 'date'}).text(`${event.date}`)
@@ -40,10 +43,11 @@
         const description = $(DOM.span, {'class': 'description'}).text(`${event.description}`)
         detailContainer.append([title, description])
         eventContainer.append([dateContainer, detailContainer])
+        eventLink.append(eventContainer)
         // spacer
         const spacer = $(DOM.div, {'class': 'spacer'})
         return {
-            item: eventContainer,
+            item: eventLink,
             spacer: spacer
         }
     }

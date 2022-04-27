@@ -39,7 +39,14 @@ router
     .route('/view/:id') // specific event page with details
     .get(async (req, res) => {
         if (req.session.user) {
-
+            console.log(req.params.id)
+            const id = checkId(req.params.id)
+            try {
+                const eventData = await events.getEvent(id)
+                return res.json(eventData)
+            } catch (e) {
+                return res.status(400).json({ error: e })
+            }
         } else {
             return res.redirect('/')
         }
@@ -132,38 +139,38 @@ router.get('/:id', async (req, res) => {
     try {
         const id = checkId(req.params.id)
         const event = await events.getEvent(req.params.id)
-        return res.status(200).json({event});
+        return res.status(200).json({ event });
     } catch (e) {
-        return res.status(400).json({error: e});
+        return res.status(400).json({ error: e });
     }
 })
 
 router
-    .delete('/:id', async(req, res) => {
+    .delete('/:id', async (req, res) => {
         try {
             const id = checkId(req.params.id)
             const event = await events.getEvent(id)
             console.log(event)
             await events.deleteEvent(id)
-            return res.status(200).json({eventId: id, deleted: true});
+            return res.status(200).json({ eventId: id, deleted: true });
         } catch (e) {
-            return res.status(400).json({error: e});
+            return res.status(400).json({ error: e });
         }
     })
 
 router
-    .post('/validateEvent/:id', async(req, res) => {
+    .post('/validateEvent/:id', async (req, res) => {
         let auth = {}
         try {
             const id = checkId(req.params.id);
             const password = checkPassword(req.body.password)
             auth = await events.validateEvent(id, password)
         } catch (e) {
-            return res.status(400).json({error: e})
+            return res.status(400).json({ error: e })
         }
 
         if (auth.authenticated) {
-            return res.status(200).json({authenticated: "success"})
+            return res.status(200).json({ authenticated: "success" })
         }
     })
 module.exports = router
