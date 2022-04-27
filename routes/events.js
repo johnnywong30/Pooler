@@ -3,7 +3,7 @@ const { events } = require('../data')
 const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const months = require('../const/months.json')
-const fakeEvents = require('../const/seedevents.json')
+const xss = require('xss')
 const router = express.Router();
 
 
@@ -11,24 +11,10 @@ router
     .route('/') // event list the user can view
     .get(async (req, res) => {
         if (req.session.user) {
-            const importEvents = await events.getEvents()
-            const renderedEvents = importEvents.map(event => {
-                const dateParts = event.date.split('/') // [MM, DD, YYYY]
-                return {
-                    _id: event._id,
-                    month: months[dateParts[0]],
-                    date: dateParts[1],
-                    title: event.name,
-                    description: event.description,
-                    fullDate: event.date
-                }
-            })
             const templateData = {
                 authenticated: true,
-                events: renderedEvents,
                 layout: 'custom'
             }
-            console.log(renderedEvents)
             return res.render('templates/eventlist', templateData)
         } else {
             return res.redirect('/')
@@ -39,10 +25,13 @@ router
     .route('/view/:id') // specific event page with details
     .get(async (req, res) => {
         if (req.session.user) {
-            console.log(req.params.id)
-            const id = checkId(req.params.id)
             try {
+                const id = checkId(xss(req.params.id))
                 const eventData = await events.getEvent(id)
+                // if event has password
+                // check if user is in a carpool already (means they had the password)
+                
+                // otherwise render the event page
                 return res.json(eventData)
             } catch (e) {
                 return res.status(400).json({ error: e })
@@ -99,7 +88,8 @@ router
                     date: dateParts[1],
                     title: event.name,
                     description: event.description,
-                    fullDate: event.date
+                    fullDate: event.date,
+                    private: event.private
                 }
             })
             try {
@@ -162,8 +152,8 @@ router
     .post('/validateEvent/:id', async (req, res) => {
         let auth = {}
         try {
-            const id = checkId(req.params.id);
-            const password = checkPassword(req.body.password)
+            const id = checkId(xss(req.params.id));
+            const password = checkPassword(xss(req.body.password))
             auth = await events.validateEvent(id, password)
         } catch (e) {
             return res.status(400).json({ error: e })

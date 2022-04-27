@@ -1,5 +1,24 @@
 (async function ($) {
 
+    const checkString = (str, fieldName = 'input', additionalCheck = str => true) => {
+        if (!str) throw `${fieldName} is required`
+        if (typeof str !== 'string') throw `${fieldName} is not a string`
+        const trimmed = str.trim()
+        if (trimmed.length < 1) throw `${fieldName} cannot be empty spaces`
+        if (!additionalCheck(trimmed)) throw `${fieldName} is invalid`
+        return trimmed
+    }
+
+    const checkPassword = (password) => {
+        return checkString(password, 'Password', (password) => {
+            // regex source: https://stackoverflow.com/a/16334856
+            const regex = /^\S*$/
+            if (!regex.test(password)) throw 'password cannot contain spaces'
+            if (password.length < 6) throw 'password must be at least 6 characters long'
+            return true
+        })
+    }
+
     const DOM = {
         div: '<div></div>',
         span: '<span></span>',
@@ -9,7 +28,23 @@
     let eventList = $('#eventList'),
         sortButton = $('#sort-button'),
         sortIcon = $('#sort-icon'),
-        searchTerm = $('#search-term')
+        searchTerm = $('#search-term'),
+        passwordModal = $('#password-modal'),
+        modalCloseBtn = $('#modal-close-btn'),
+        privateEventForm = $('#private-event-form')
+    
+    let errorDiv = document.getElementById('client-error')
+
+
+    modalCloseBtn.on('click', () => {
+        passwordModal.css(
+            {
+                opacity: 0,
+                visibility: 'hidden'
+            }
+        )
+    })
+
 
     // -1 is descending order
     // 1 is ascending order
@@ -30,22 +65,38 @@
     events.sort(sorts[toggle])
 
     const createEventItem = (event) => {
+        const { private } = event
+        let eventLink;
+        if (!private) {
+            eventLink = $(DOM.a)
+            eventLink.attr('href', `/events/view/${event._id}`)
+        }
+        else {
+            eventLink = $(DOM.div)
+            eventLink.on('click', () => {
+                passwordModal.css(
+                    {
+                        opacity: 1,
+                        visibility: 'visible'
+                    }
+                )
+                privateEventForm.attr('action', `/events/validateEvent/${event._id}`)
+            })
+        }
         // event container
-        const eventLink = $(DOM.a)
-        eventLink.attr('href', `/events/view/${event._id}`)
-        const eventContainer = $(DOM.div, {'class': 'event-container'})
-        const dateContainer = $(DOM.span, {'class': 'event-date-container'})
-        const date = $(DOM.span, {'class': 'date'}).text(`${event.date}`)
-        const month = $(DOM.span, {'class': 'month'}).text(`${event.month}`)
+        const eventContainer = $(DOM.div, { 'class': 'event-container' })
+        const dateContainer = $(DOM.span, { 'class': 'event-date-container' })
+        const date = $(DOM.span, { 'class': 'date' }).text(`${event.date}`)
+        const month = $(DOM.span, { 'class': 'month' }).text(`${event.month}`)
         dateContainer.append([date, month])
-        const detailContainer = $(DOM.span, {'class': 'event-detail-container'})
-        const title = $(DOM.span, {'class': 'event-title'}).text(`${event.title}`)
-        const description = $(DOM.span, {'class': 'description'}).text(`${event.description}`)
+        const detailContainer = $(DOM.span, { 'class': 'event-detail-container' })
+        const title = $(DOM.span, { 'class': 'event-title' }).text(`${event.title}`)
+        const description = $(DOM.span, { 'class': 'description' }).text(`${event.description}`)
         detailContainer.append([title, description])
         eventContainer.append([dateContainer, detailContainer])
         eventLink.append(eventContainer)
         // spacer
-        const spacer = $(DOM.div, {'class': 'spacer'})
+        const spacer = $(DOM.div, { 'class': 'spacer' })
         return {
             item: eventLink,
             spacer: spacer
@@ -82,9 +133,42 @@
                 const title = event.title.trim().toLowerCase()
                 return title.includes(currentTerm)
             })
-            .sort(sorts[toggle]) 
+                .sort(sorts[toggle])
             populateList(events)
         }
+    })
+
+    const createError = (error) => {
+        // in case error had another error in it already; clear all children
+        errorDiv.replaceChildren()
+        errorDiv.hidden = false
+        const clearButton = document.createElement('span')
+        clearButton.className = 'fa-solid fa-xmark'
+        clearButton.id = 'close-error'
+        const clearError = () => {
+            errorDiv.replaceChildren()
+            errorDiv.hidden = true
+        }
+        clearButton.addEventListener('click', clearError)
+        errorDiv.innerHTML = `Error: ${error}`
+        errorDiv.appendChild(clearButton)
+    }
+
+    privateEventForm.on('submit', async (e) => {
+        e.preventDefault()
+        try {
+            const password = checkPassword(e.target[0].value)
+            const url = privateEventForm.attr('action')
+            const data = await $.post(url, { password: password })
+            const { authenticated } = data
+            if (authenticated) {
+                // TODO figure this out
+            }
+            
+        } catch (error) {
+            createError("Invalid password")
+        }
+        
     })
 
 })(window.jQuery);
