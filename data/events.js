@@ -8,7 +8,7 @@ const saltRounds = 10;
 module.exports = {
   async createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _password = '') {
     // Initial checks
-    const name = checkString(_name)
+    const name = checkEventName(_name)
     const date = checkDate(_date)
     const startTime = checkTime(_startTime)
     const host = checkEmail(_host)
@@ -62,7 +62,7 @@ module.exports = {
 
   async updateName(_id, _name) {
     const id = checkId(_id)
-    const name = checkString(_name)
+    const name = checkEventName(_name)
     // Check if event exists
     const collection = await events()
     const event = await collection.findOne({ _id: id })
