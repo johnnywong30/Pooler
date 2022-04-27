@@ -151,6 +151,7 @@ module.exports = {
     if (updatedInfo.modifiedCount === 0) throw 'Could not update event privacy '
     return await this.getEvent(id)
   },
+
   // maybe move this in addresses.js
   async updateDestination(_id, _destination) {
     const id = checkId(_id)
@@ -185,6 +186,7 @@ module.exports = {
       return { authenticated: true }
     }
   },
+  
   async deleteEvent(_id) {
     const id = checkId(_id)
     const collection = await events()
