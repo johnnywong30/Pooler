@@ -11,7 +11,7 @@ router
     .route('/') // event list the user can view
     .get(async (req, res) => {
         if (req.session.user) {
-            const importEvents = Object.values(fakeEvents)
+            const importEvents = await events.getEvents()
             const renderedEvents = importEvents.map(event => {
                 const dateParts = event.date.split('/') // [MM, DD, YYYY]
                 return {
@@ -83,7 +83,7 @@ router
     .get(async (req, res) => {
         if (req.session.user) {
             // fetch all events even if they're private
-            const importEvents = Object.values(fakeEvents)
+            const importEvents = await events.getEvents()
             const renderedEvents = importEvents.map(event => {
                 const dateParts = event.date.split('/') // [MM, DD, YYYY]
                 return {

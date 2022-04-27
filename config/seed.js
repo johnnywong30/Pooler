@@ -12,6 +12,7 @@ const setup = async () => {
     } catch (e) {
         // collections do not exist yet
     }
+    console.log("Start seeding...\n")
 
     const userCollection = await db.collection('users')
     const eventCollection = await db.collection('events')
@@ -214,7 +215,7 @@ const setup = async () => {
 
     await userCollection.insertMany(Object.values(users))
     await eventCollection.insertMany(seedEvents)
-    console.log('Done seeding...')
+    console.log('Done seeding...\n')
     process.exit()
 }
 
