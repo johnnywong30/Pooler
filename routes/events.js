@@ -1,6 +1,6 @@
 const express = require('express');
-const { users } = require('../data')
-const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver } = require('../misc/validate')
+const { events } = require('../data')
+const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const months = require('../const/months.json')
 const fakeEvents = require('../const/seedevents.json')
@@ -105,7 +105,65 @@ router
         }
     })
 
+router
+    .route('/createEvent')
+    .post(async (req, res) => {
+        try {
+            const { name, date, startTime, host, description, capacity, private, password, destination } = req.body;
+            const _name = checkString(name);
+            const _date = checkDate(date);
+            const _startTime = checkTime(startTime);
+            const _host = checkEmail(host);
+            const _description = checkString(description);
+            const _capacity = checkCapacity(capacity);
+            const _private = checkBool(private);
+            const _pass = checkPassword(password);
+            const _destination = checkAddress(destination);
+            const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _private, _pass, _destination);
+            res.json(event).end();
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            res.status(200).json({ errorMsg: e }).end();
+        }
+    });
 
+router.get('/:id', async (req, res) => {
+    try {
+        const id = checkId(req.params.id)
+        const event = await events.getEvent(req.params.id)
+        return res.status(200).json({event});
+    } catch (e) {
+        return res.status(400).json({error: e});
+    }
+})
 
+router
+    .delete('/:id', async(req, res) => {
+        try {
+            const id = checkId(req.params.id)
+            const event = await events.getEvent(id)
+            console.log(event)
+            await events.deleteEvent(id)
+            return res.status(200).json({eventId: id, deleted: true});
+        } catch (e) {
+            return res.status(400).json({error: e});
+        }
+    })
 
+router
+    .post('/validateEvent/:id', async(req, res) => {
+        let auth = {}
+        try {
+            const id = checkId(req.params.id);
+            const password = checkPassword(req.body.password)
+            auth = await events.validateEvent(id, password)
+        } catch (e) {
+            return res.status(400).json({error: e})
+        }
+
+        if (auth.authenticated) {
+            return res.status(200).json({authenticated: "success"})
+        }
+    })
 module.exports = router
