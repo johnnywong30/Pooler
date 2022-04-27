@@ -29,7 +29,8 @@ router
             try {
                 const id = checkId(xss(req.params.id))
                 const eventData = await events.getEvent(id)
-                const { carpools, private, password } = eventData
+                const { name, date, startTime, host, description } = eventData
+                const { capacity, carpools, destination, private, password } = eventData
                 // if event has password, see if it is correct
                 if (private) {
                     // use a query instead of a POST for the password so users
@@ -42,10 +43,19 @@ router
                     if (! match) return res.redirect('/events')
                 }         
                 const templateData = {
-
+                    name: name, 
+                    date: date,
+                    startTime: startTime,
+                    host: host,
+                    description: description,
+                    capacity: capacity,
+                    carpools: carpools,
+                    destination: destination,
+                    layout: 'custom',
+                    authenticated: true
                 }       
                 // render the event page
-                return res.json(eventData)
+                return res.render('templates/event', templateData)
             } catch (e) {
                 return res.status(400).json({ error: 'Invalid password'})
             }

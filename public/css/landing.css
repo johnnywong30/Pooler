@@ -298,6 +298,7 @@ ul.nav-list,
     text-decoration: none;
 }
 
+
 .event-container {
     color: var(--secondary);
     transition: all 0.2s ease;
@@ -1041,6 +1042,14 @@ footer {
     position: relative;
     top: -7.5px;
     left: 5px;
+}
+
+/* Event Page */
+
+.event-heading {
+    font-size: 3rem;
+    margin: 5rem auto 1rem auto;
+    z-index: 0;
 }
 
 
