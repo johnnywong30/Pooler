@@ -27,7 +27,6 @@
     let events = await $.get('/events/list')
     const originalEvents = [...events]
     events.sort(sorts[toggle])
-
     const createEventItem = (event) => {
         // event container
         const eventContainer = $(DOM.div, {'class': 'event-container'})
