@@ -1,5 +1,6 @@
 const { checkId, checkString, checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver, checkDateTime } = require("../misc/validate");
 const { users, events } = require("../config/mongoCollections");
+const moment = require("moment")
 const { v4: uuidv4 } = require("uuid");
 const events = require("./events");
 
@@ -19,11 +20,12 @@ module.exports = {
         const carpool = event.carpools.find(carpool => carpool._id === _poolId)
         if (!carpool) throw `Error: createComment carpool ${_poolId} does not exist`
         //create comment 
+        const format = "MM/DD/YYYY HH:MM:SS"
         const newComment = {
             _id: uuidv4(),
             from: _email,
             details: _details,
-            timestamp: new Date()
+            timestamp: moment(new Date()).format(format)
         }
         const updateCarpool = await eventCollection.updateOne(
             {_id: _eventId, "carpools._id": _poolId},
@@ -87,9 +89,10 @@ module.exports = {
         if (!carpool) throw `Error: getComment carpool ${_poolId} does not exist`
         const comment = carpool.comments.find(comment => comment._id === _commentId)
         if (!comment) throw `Error: getComment comment ${commentId} does not exist`
+        const format = "MM/DD/YYYY HH:MM:SS"
         const newComment = {
             details: _details,
-            timestamp: new Date()
+            timestamp: moment(new Date()).format(format)
         }
         const updateComment = await eventCollection.updateOne(
             {_id: _eventId, "carpools._id": _poolId, "carpool.$.comments._id": _commentId},
