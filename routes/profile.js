@@ -3,6 +3,8 @@ const { users } = require('../data')
 const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver, checkZipcode } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const router = express.Router();
+const xss = require('xss')
+
 router
     .route('/')
     .get(async (req, res) => {
@@ -50,6 +52,7 @@ router
         if (req.session.user) {   
             //check if the user exists
             let user = {}
+            console.log('here a')
             try {
                 user = await users.getUser(req.session.user.email)
             } catch (e) {
@@ -60,16 +63,16 @@ router
                 return res.status(404).render('templates/profile', templateData)
             }
             let { firstName, lastName, email, phone, venmo, address, isDriver } = req.body
-            console.log(address)
             try {
                 // use the actual request data
-                email = checkEmail(email)
-                firstName = checkFirstName(firstName)
-                lastName = checkLastName(lastName)
-                phone = checkPhone(phone)
-                venmo = checkVenmo(venmo)
+                email = checkEmail(xss(email))
+                firstName = checkFirstName(xss(firstName))
+                lastName = checkLastName(xss(lastName))
+                phone = checkPhone(xss(phone))
+                venmo = checkVenmo(xss(venmo))
                 address = checkAddress(address)
                 isDriver = checkIsDriver(isDriver)
+                
             } catch (e) {
                 const templateData = {
                     ...user,
