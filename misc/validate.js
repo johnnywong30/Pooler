@@ -148,7 +148,7 @@ module.exports = {
 	checkTime(time) {
 		if (!time) throw `time must be supplied`;
 		//modified from https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
-		const regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
+		const regex = /(?:[01]\d|2[0123]):(?:[012345]\d)/;
 		const _time = time.trim();
 		let matches = _time.match(regex);
 		if (!matches) throw `${_time} is not in a valid military time format`;

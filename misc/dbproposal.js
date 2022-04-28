@@ -72,7 +72,7 @@ const event = {
 	],
 	destination: {
 		_id: "9d9e8e3f-67c6-4c72-9720-e9fe46ae9a2e",
-		address: "422 Monroe St, Hoboken, NJ 07030",
+		address: "422 Monroe St",
 		city: "Hoboken",
 		state: "NJ",
 		zipcode: "07030",
