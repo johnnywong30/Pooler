@@ -6,6 +6,38 @@
                     {{name}}
                 </h1>
             </div>
+            <div class="section-container">
+                <div class="text-container event-details-container">
+                    <h2 class="event-details-heading">
+                        Details
+                    </h2>
+                    <dl class="event-details">
+                        <dt class="event-detail-label dt-inline">Host</dt>
+                        <dd class="event-detail-info dd-inline">{{host}}</dd>
+
+                        <dt class="event-detail-label dt-inline">Time</dt>
+                        <dd class="event-detail-info dd-inline">{{date}} {{startTime}}</dd>
+
+                        <dt class="event-detail-label dt-inline">Address</dt>
+                        <dd class="event-detail-info dd-inline">{{displayAddress}}</dd>
+                                
+                        <dt class="event-detail-label">Description</dt>
+                        <dd class="event-detail-info">{{description}}</dd>
+                    </dl>
+                </div>
+                <div class="text-container event-carpool-container">
+                    <h2 class="event-details-heading">
+                        Carpools
+                    </h2>
+                    <dl class="event-details">
+                        <dt class="event-detail-label dt-inline">Capacity</dt>
+                        <dd id="capacity" class="event-detail-info dd-inline">{{occupied}}/{{capacity}}</dd>
+                        
+                        {{!-- TODO Client side js to render carpools here --}}
+                    
+                    </dl>
+                </div>
+            </div>
         </section>
     </div>
 </div>

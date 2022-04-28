@@ -1048,8 +1048,52 @@ footer {
 
 .event-heading {
     font-size: 3rem;
-    margin: 5rem auto 1rem auto;
+    margin: 5rem auto 0 auto;
     z-index: 0;
+}
+
+.event-details-container{
+    text-align: left;
+    justify-content: start;
+}
+
+.event-details-heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: underline;
+    margin: 5px 0;
+}
+
+.event-details {
+    margin-top: -5px;
+}
+
+.event-detail-label {
+    font-weight: 600;
+}
+
+.event-detail-info {
+    margin: -5px auto 2.5px auto;
+    
+}
+
+.event-carpool-container {
+    justify-content: start;
+}
+
+.dt-inline {
+    display: inline-block;
+    min-width: 100px;
+}
+
+.dd-inline {
+    display: inline;
+    margin: 0;
+}
+
+.dd-inline:after{
+    display: block;
+    content: '';
 }
 
 

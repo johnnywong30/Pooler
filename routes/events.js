@@ -42,6 +42,9 @@ router
                     const match = await bcrypt.compare(pass, password)
                     if (! match) return res.redirect('/events')
                 }         
+                const { address, city, state, zipcode } = destination
+                const displayAddress = `${address}, ${city}, ${state}, ${zipcode}` 
+                const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
                 const templateData = {
                     name: name, 
                     date: date,
@@ -49,8 +52,11 @@ router
                     host: host,
                     description: description,
                     capacity: capacity,
+                    occupied: 0, // TODO compute this valued 
                     carpools: carpools,
                     destination: destination,
+                    googleMapsUrl: googleMapsUrl,
+                    displayAddress: displayAddress,
                     layout: 'custom',
                     authenticated: true
                 }       
