@@ -1,30 +1,42 @@
 const connection = require('./mongoConnection')
+const data = require('../data/')
 const { ObjectId } = require('mongodb')
+const users = data.users
 
 
 const setup = async () => {
     const db = await connection.connectToDb()
-    try {
-        await db.collection('users').drop()
-        await db.collection('events').drop()
+    await db.dropDatabase()
+    
+    /*          CREATING USERS
+     * createUser(email, password, firstName, lastName, phone, venmo, address, isDriver)
+     */
+    try { //
+        await users.createUser(
+            "email@gmail.com", 
+            "password1",
+            "Adam", 
+            "Smith", 
+            "2315232251", 
+            "a.smith", 
+            {
+                address: "406 Jefferson St",
+                city: "Hoboken",
+                state: "NJ",
+                zipcode: "07030"
+            }, 
+            true)
     } catch (e) {
-        // collections do not exist yet
+        console.log(e);
     }
-    // TODO: write seed file here
-    /*
-            _     _
-           /@\---/@\
-         ,'         `.
-        |             |
-        <`-----------'>
-       / `. `-----' ,' \
-      /    `-------'    \
-     :  |   _______   |  :
-     |  `.,'       `.,'  |
-    ,`.   \    o    /   ,'.
-   /   `.  `.     ,'  ,'   \
- ^^^^----^^^^-----^^^^----^^^^
-    */
+
+
+
+
+
+    console.log('Done seeding database');
+
+    await connection.closeConnection();
 }
 
 setup()
