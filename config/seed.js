@@ -62,6 +62,5 @@ const setup = async () => {
 
 setup()
 
-module.exports = {
-    setup: setup
-}
+
+exports = module.exports = {setup}

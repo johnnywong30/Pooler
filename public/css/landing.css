@@ -219,15 +219,81 @@ ul.nav-list,
     display: flex;
     animation-duration: 1.5s;
     animation-name: slidein;
-    /* justify-content: space-between; */
+    width: 100%;
 }
+
+.sort-container-btn:first-of-type{
+    margin-right: auto;
+}
+.sort-container-btn:last-of-type{
+    margin-left: 80%;
+}
+
 
 #sort-button {
     text-align: center;
     height: 25px;
     width: 20px;
     cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    margin: 0;
 }
+
+#create-button {
+    text-align: left;
+    height: 25px;
+    width: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+#create-button:hover {
+    color: rgba(50, 180, 207, 0.737);
+}
+
+.modal-box {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.267);
+    transition: all 0.3s ease-in-out;
+
+}
+
+.modal-title {
+    font-size: 1.5rem;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 500px;
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+}
+
+.modal-footer {
+    text-align: right;
+}
+
+.modal-close {
+    font-size: 20px;
+    font-weight: 700;
+    position: absolute;
+    top: 5px;
+    right: 7.5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
 
 .event-calendar {
     margin-top: 15px;
@@ -250,6 +316,7 @@ ul.nav-list,
 .event {
     text-decoration: none;
 }
+
 
 .event-container {
     color: var(--secondary);
@@ -429,6 +496,22 @@ ul.nav-list,
 
 .heading {
     font-size: 2rem;
+}
+
+.submit-btn {
+    max-height: 30px;
+    padding: 6px 14px;
+    margin: 0 auto;
+    font-family: var(--montserrat);
+    border-radius: 6px;
+    color: var(--secondary);
+    background: #fff;
+    border: none;
+    box-shadow: 0px 0.5px 3px rgba(0, 0, 0, 0.1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
 }
 
 
@@ -799,7 +882,7 @@ footer {
 #saveChangesBtn:disabled {
     background-color: rgb(184, 184, 178);
     cursor: not-allowed;
-    
+
 }
 
 #editBtn {
@@ -834,9 +917,7 @@ footer {
     padding: 1.2rem 0;
 }
 
-.profile-container {
-
-}
+.profile-container {}
 
 .account-heading,
 .personal-heading {
@@ -980,6 +1061,58 @@ footer {
     position: relative;
     top: -7.5px;
     left: 5px;
+}
+
+/* Event Page */
+
+.event-heading {
+    font-size: 3rem;
+    margin: 5rem auto 0 auto;
+    z-index: 0;
+}
+
+.event-details-container{
+    text-align: left;
+    justify-content: start;
+}
+
+.event-details-heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: underline;
+    margin: 5px 0;
+}
+
+.event-details {
+    margin-top: -5px;
+}
+
+.event-detail-label {
+    font-weight: 600;
+}
+
+.event-detail-info {
+    margin: -5px auto 2.5px auto;
+    
+}
+
+.event-carpool-container {
+    justify-content: start;
+}
+
+.dt-inline {
+    display: inline-block;
+    min-width: 100px;
+}
+
+.dd-inline {
+    display: inline;
+    margin: 0;
+}
+
+.dd-inline:after{
+    display: block;
+    content: '';
 }
 
 

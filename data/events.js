@@ -60,6 +60,13 @@ module.exports = {
     return event
   },
 
+  async getEvents() {
+    const collection = await events()
+    const eventList = await collection.find({ }).toArray()
+    if (!eventList) throw 'Could not get Events'
+    return eventList
+  },
+
   async updateName(_id, _name) {
     const id = checkId(_id)
     const name = checkEventName(_name)

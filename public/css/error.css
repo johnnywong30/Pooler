@@ -16,3 +16,8 @@
     float: right;
     cursor: pointer;
 }
+
+.modal-error {
+    width: 100% !important;
+    margin: 15px auto 15px auto !important;
+}
