@@ -137,11 +137,11 @@ router
             const _pass = checkPassword(password);
             const _destination = checkAddress(destination);
             const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _private, _pass, _destination);
-            res.json(event).end();
+            return res.json(event).end();
         } catch (e) {
             console.log(e);
             res.statusMessage = e;
-            res.status(200).json({ errorMsg: e }).end();
+            return res.status(200).json({ errorMsg: e }).end();
         }
     });
 

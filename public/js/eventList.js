@@ -64,7 +64,6 @@
     let events = await $.get('/events/list')
     const originalEvents = [...events]
     events.sort(sorts[toggle])
-
     const createEventItem = (event) => {
         const { private } = event
         let eventLink;

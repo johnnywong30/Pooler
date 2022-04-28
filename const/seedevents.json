@@ -9,7 +9,7 @@
         "capacity": 40,
         "private": false,
         "password": "",
-        "carpools": [],
+        "carpools": ["6140c4f6-6a13-4552-93ba-7ecc25f05ef4", "2505140f-9437-4061-ab2a-462f6aef7cee"],
         "destination": {
             "_id": "9d9e8e3f-67c6-4c72-9720-e9fe46ae9a2e",
             "address": "422 Monroe St",
