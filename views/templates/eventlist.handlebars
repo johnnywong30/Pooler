@@ -39,6 +39,26 @@
                         <span id="modal-close-btn" class="modal-close">&times;</span>
                     </div>
                 </div>
+                {{!-- TODO create modal for event hosting --}}
+                <div id="create-event-modal" class="modal-box">
+                    <div class="modal-content">
+                        <h1 class="modal-title">Host Event</h1>
+                        <form id="create-event-form" action="/" method="POST" autocomplete="off">
+                            <div id="client-error-host-event" class="modal-error" hidden>
+
+                            </div>
+                            <div class="profile-form-item">
+                                <input id="private-event-password" name="password" type="password" required />
+                                <label for="private-event-password">Password</label>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="create-event-submit" class="submit-btn" type="submit"
+                                    value="submit">Submit</button>
+                            </div>
+                        </form>
+                        <span id="event-close-modal" class="modal-close">&times;</span>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
