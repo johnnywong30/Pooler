@@ -1,5 +1,67 @@
 (async function ($) {
 
+    const US_States = {
+        "AL": "Alabama",
+        "AK": "Alaska",
+        "AS": "American Samoa",
+        "AZ": "Arizona",
+        "AR": "Arkansas",
+        "CA": "California",
+        "CO": "Colorado",
+        "CT": "Connecticut",
+        "DE": "Delaware",
+        "DC": "District Of Columbia",
+        "FM": "Federated States Of Micronesia",
+        "FL": "Florida",
+        "GA": "Georgia",
+        "GU": "Guam",
+        "HI": "Hawaii",
+        "ID": "Idaho",
+        "IL": "Illinois",
+        "IN": "Indiana",
+        "IA": "Iowa",
+        "KS": "Kansas",
+        "KY": "Kentucky",
+        "LA": "Louisiana",
+        "ME": "Maine",
+        "MH": "Marshall Islands",
+        "MD": "Maryland",
+        "MA": "Massachusetts",
+        "MI": "Michigan",
+        "MN": "Minnesota",
+        "MS": "Mississippi",
+        "MO": "Missouri",
+        "MT": "Montana",
+        "NE": "Nebraska",
+        "NV": "Nevada",
+        "NH": "New Hampshire",
+        "NJ": "New Jersey",
+        "NM": "New Mexico",
+        "NY": "New York",
+        "NC": "North Carolina",
+        "ND": "North Dakota",
+        "MP": "Northern Mariana Islands",
+        "OH": "Ohio",
+        "OK": "Oklahoma",
+        "OR": "Oregon",
+        "PW": "Palau",
+        "PA": "Pennsylvania",
+        "PR": "Puerto Rico",
+        "RI": "Rhode Island",
+        "SC": "South Carolina",
+        "SD": "South Dakota",
+        "TN": "Tennessee",
+        "TX": "Texas",
+        "UT": "Utah",
+        "VT": "Vermont",
+        "VI": "Virgin Islands",
+        "VA": "Virginia",
+        "WA": "Washington",
+        "WV": "West Virginia",
+        "WI": "Wisconsin",
+        "WY": "Wyoming"
+    }
+
     const checkString = (str, fieldName = 'input', additionalCheck = str => true) => {
         if (!str) throw `${fieldName} is required`
         if (typeof str !== 'string') throw `${fieldName} is not a string`
@@ -16,6 +78,35 @@
             if (!regex.test(password)) throw 'password cannot contain spaces'
             if (password.length < 6) throw 'password must be at least 6 characters long'
             return true
+        })
+    }
+
+    const checkFirstName = (firstName) => {
+        return checkString(firstName, 'First Name')
+    }
+
+    const checkLastName = (lastName) => {
+        return checkString(lastName, 'Last Name')
+    }
+
+    const checkStreet = (street) => {
+        return checkString(street, 'Street')
+    }
+
+    const checkCity = (city) => {
+        return checkString(city, 'City')
+    }
+
+    const checkState = (state) => {
+        return checkString(state, 'State', (state) => {
+            if (US_States[state] === undefined) throw `${state} does not exist in the United States`
+            return true
+        })
+    }
+
+    const checkZipcode = (zipcode) => {
+        return checkString(zipcode, 'Zipcode', (str) => {
+            return str.length === 5 && /^\d+$/.test(str)
         })
     }
 
@@ -44,12 +135,16 @@
         hostEventCapacity = $('#host-event-capacity'),
         hostEventDescription = $('#host-event-description'),
         hostEventPrivate = $('#host-event-private'),
+        hostEventStreet = $('#host-event-street'),
+        hostEventCity = $('#host-event-city'),
+        hostEventZip = $('#host-event-zip'),
+        hostEventState = $('#host-event-state'),
         hostEventPassword = $('#host-event-password')
 
-
-
+    let hostErrorDiv = document.getElementById('host-event-error')
 
     let errorDiv = document.getElementById('client-error')
+
     let privateEventLink;
 
 
@@ -221,7 +316,7 @@
             const passwordInput = $(DOM.input)
             passwordInput.attr('id', 'host-event-password')
             passwordInput.attr('name', 'password')
-            passwordInput.attr('type', 'text')
+            passwordInput.attr('type', 'password')
             passwordInput.attr('required', true)
             const passwordLabel = $(DOM.label)
             passwordLabel.attr('for', 'host-event-password')
@@ -235,6 +330,25 @@
         }
     })
 
+    hostEventForm.on('submit', (e) => {
+        try {
+            // TODO finish validation and then submit
+            const name = hostEventName[0].value
+            const time = hostEventTime[0].value
+            const capacity = hostEventCapacity[0].value
+            const description = hostEventDescription[0].value
+            const private = hostEventPrivate[0].value === 'private'
+            const street = hostEventStreet[0].value
+            const city = hostEventCity[0].value
+            const zip = hostEventZip[0].value
+            const state = hostEventState[0].value
+
+        } catch (error) {
+            e.preventDefault()
+            createError(hostErrorDiv, `Error: ${error}`)
+        }
+
+    })
 
     // Initial populate event list
     populateList(events)

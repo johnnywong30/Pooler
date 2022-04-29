@@ -13,6 +13,7 @@ router
     .get(async (req, res) => {
         if (req.session.user) {
             const templateData = {
+                states: Object.keys(US_States),
                 authenticated: true,
                 layout: 'custom'
             }

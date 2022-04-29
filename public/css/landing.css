@@ -1063,6 +1063,10 @@ footer {
     max-width: 400px;
 }
 
+.host-event-address-container {
+    margin: 10px auto;
+}
+
 
 .city-input-container {
     max-width: 40%;
@@ -1103,6 +1107,15 @@ footer {
     left: 150px;
 }
 
+#host-event-city:focus+label {
+    top: -20px;
+}
+
+.host-city-label {
+    top: 0px;
+    left: -50px;
+}
+
 .zip-input-container {
     max-width: 30%;
     margin-left: 50px;
@@ -1118,6 +1131,15 @@ footer {
     padding: 0 5px;
 }
 
+#host-event-zip:focus+label {
+    top: -20px;
+}
+
+.host-zip-label {
+    top: 0px;
+    left: -50px;
+}
+
 .state-input-container {
     max-width: 20%;
 }
@@ -1126,6 +1148,7 @@ footer {
     width: 70px;
     color: var(--secondary);
     padding: 0 5px;
+    font-weight: 600;
 }
 
 .checkbox-container {

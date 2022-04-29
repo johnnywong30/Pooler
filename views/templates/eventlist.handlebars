@@ -70,11 +70,25 @@
                                 <label for="host-event-street">Street Address</label>
                             </div>
 
-                            <div class="address-form-container">
+                            <div class="address-form-container host-event-address-container">
                                 <div class="city-input-container">
                                     <input class="address-input city-input" id="host-event-city" name="city" type="text"
                                         required />
-                                    <label class="address-label city-label" for="host-event-city">City</label>
+                                    <label class="address-label city-label host-city-label" for="host-event-city">City</label>
+                                </div>
+                                <div class="zip-input-container">
+                                    <input class="address-input zip-input" id="host-event-zip" name="zipcode"
+                                        type="number" required />
+                                    <label class="address-label zip-label host-zip-label" for="host-event-zipcode">Zip</label>
+                                </div>
+                                <div class="state-input-container">
+                                    <select class="address-input state-select" id="host-event-state" name="state"
+                                        aria-label="state" required>
+                                        <option class="state-option" label="State"></option>
+                                        {{#each states}}
+                                        <option class="state-option" value={{this}}>{{this}}</option>
+                                        {{/each}}
+                                    </select>
                                 </div>
                             </div>
 
