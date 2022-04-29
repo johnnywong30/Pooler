@@ -48,7 +48,7 @@ module.exports = {
 		const collection = await users();
 		const account = await collection.findOne({ email: email });
 		if (account === null) throw `Account with id ${_id} does not exist`;
-		return user;
+		return account;
 	},
 	async checkUser(email, password) {
 		// Initial checks
