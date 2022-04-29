@@ -3,6 +3,8 @@ const app = express();
 const static = express.static(__dirname + '/public');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
+const xss = require('xss')
+const hbHelpers = require('./views/helpers')
 
 const configRoutes = require('./routes');
 const connection = require('./config/mongoConnection');
@@ -30,13 +32,14 @@ app.use('/register', async (req, res, next) => {
         // Clean up address data to be an object
         const { street, city, state, zipcode } = req.body
         req.body.address = {
-            address: street,
-            city: city,
-            state: state,
-            zipcode: zipcode
+            address: xss(street),
+            city: xss(city),
+            state: xss(state),
+            zipcode: xss(zipcode)
         }
         const { isDriver } = req.body
         req.body.isDriver = isDriver === undefined ? false : true
+        console.log('middleware')
         console.log(req.body)
         next()
     }
@@ -65,7 +68,10 @@ app.use('/profile', async (req, res, next) => {
 
 // Logging middleware
 
-app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }))
+app.engine('handlebars', exphbs.engine({
+    defaultLayout: 'main',
+    helpers: hbHelpers
+}))
 app.set('view engine', 'handlebars')
 
 configRoutes(app);

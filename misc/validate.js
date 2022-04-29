@@ -95,10 +95,12 @@ module.exports = {
 	},
 	checkIsDriver(isDriver) {
 		if (isDriver === undefined) throw `isDriver does not exist`;
+		if (typeof isDriver !== 'boolean') throw `isDriver is not a boolean`;
 		return isDriver;
 	},
 	checkPrivate(isPrivate) {
 		if (isPrivate === undefined) throw `isPrivate does not exist`;
+		if (typeof isPrivate !== 'boolean') throw `isPrivate is not a boolean`;
 		return isPrivate;
 	},
 	//separate functions to check strings with both date and time
@@ -147,10 +149,24 @@ module.exports = {
 		if (!time) throw `time must be supplied`;
 		//modified from https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
 		const regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
-		time = time.match(regex);
-		if (!time) throw `${time} is not in a valid military time format`;
-		return time;
+		const _time = time.trim();
+		let matches = _time.match(regex);
+		if (!matches) throw `${_time} is not in a valid military time format`;
+		return _time;
 	},
+	// checks if capacity is a valid positive whole number
+	checkCapacity(capacity) {
+		if (!capacity) throw `capacity must be supplied`
+		if (typeof capacity !== 'number' || isNaN(capacity)) throw `${capacity} must be a number`
+		if (capacity < 1) throw `cannot have capacity ${capacity} < 1`
+		return capacity
+	  },
+
+	checkBool(bool) {
+		if (typeof bool !== "boolean") throw 'variable is not a boolean'
+		return bool;
+	}, 
+	
 
 	/**********************
   Carpool Parameter Check

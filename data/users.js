@@ -75,7 +75,7 @@ module.exports = {
 		const email = checkEmail(_email)
 		const collection = await users()
 		const user = await collection.findOne({ email: email });
-			if (user === null) throw `Error: user with email ${email} was not found`;
+		if (user === null) throw `Error: user with email ${email} was not found`;
 		return user
 	},
 	async getUsers() {
@@ -108,8 +108,8 @@ module.exports = {
 			driver: _isDriver
 		}
 		const updatedInfo = await collection.updateOne(
-			{ email: _email},
-			{ $set: newInfo}
+			{ email: _email },
+			{ $set: newInfo }
 		)
 		if (updatedInfo.modifiedCount === 0) {
 			throw 'Error: updateUser could not update user successfully';

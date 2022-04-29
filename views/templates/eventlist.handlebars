@@ -20,6 +20,25 @@
                 <div id="eventList" class="event-list">
 
                 </div>
+                <div id="password-modal" class="modal-box">
+                    <div class="modal-content">
+                        <h1 class="modal-title">Private Event</h1>
+                        <form id="private-event-form" action="/" method="POST" autocomplete="off">
+                            <div id="client-error" class="modal-error" hidden>
+
+                            </div>
+                            <div class="profile-form-item">
+                                <input id="private-event-password" name="password" type="password" required />
+                                <label for="private-event-password">Password</label>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="private-event-submit" class="submit-btn" type="submit"
+                                    value="submit">Submit</button>
+                            </div>
+                        </form>
+                        <span id="modal-close-btn" class="modal-close">&times;</span>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -27,5 +46,5 @@
     {{> footer}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="/public/js/eventList.js" events={{events}}></script>
+    <script src="/public/js/eventList.js"></script>
 </div>
