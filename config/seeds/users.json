@@ -1,0 +1,131 @@
+{
+    "users": [
+    {
+        "email": "phill123@stevens.edu",
+        "password": "password",
+        "firstName": "Patrick",
+        "lastName": "Hill",
+        "phone": "+13474121759",
+        "venmo": "patrickonhill",
+        "address": {
+            "address": "320 Edward Allen Stevens St",
+            "city": "Hoboken",
+            "state": "NJ",
+            "zipcode": "07030"
+        },
+        "driver": true,
+        "passenger": true,
+        "history": []
+    },
+    {
+        "email": "jwong9@stevens.edu",
+        "password": "password",
+        "firstName": "Johnny",
+        "lastName": "Wong",
+        "phone": "+19082382914",
+        "venmo": "Johnny-Wong-35",
+        "address": {
+            "address": "603 Adams St",
+            "city": "Hoboken",
+            "state": "NJ",
+            "zipcode": "07030"
+        },
+        "driver": true,
+        "passenger": true,
+        "history": []
+    },
+    {
+        "email": "jwang203@stevens.edu",
+        "password": "password",
+        "firstName": "Jordan",
+        "lastName": "Wang",
+        "phone": "2012009104",
+        "venmo": "JordanWang",
+        "address": {
+            "address": "222 Babbio Place",
+            "city": "Hoboken",
+            "state": "NJ",
+            "zipcode": "07030"
+        },
+        "driver": true,
+        "passenger": true,
+        "history": []
+    },
+    {
+        
+        "email": "szuo1@stevens.edu",
+        "password": "password",
+        "firstName": "Sophia",
+        "lastName": "Zuo",
+        "phone": "2012020661",
+        "venmo": "sophialovesdogs",
+        "address": {
+            
+            "address": "603 Monroe St",
+            "city": "Hoboken",
+            "state": "NJ",
+            "zipcode": "07030"
+        },
+        "driver": true,
+        "passenger": true,
+        "history": []
+    },
+    {
+        
+        "email": "nsoriano@stevens.edu",
+        "password": "password",
+        "firstName": "Nicholas",
+        "lastName": "Soriano",
+        "phone": "2012009104",
+        "venmo": "nikkysnailsalon",
+        "address": {
+            
+            "address": "444 Jefferson St",
+            "city": "Hoboken",
+            "state": "NJ",
+            "zipcode": "07030"
+        },
+        "driver": true,
+        "passenger": true,
+        "history": []
+    },
+    {
+        
+        "email": "rtumboko@stevens.edu",
+        "password": "password",
+        "firstName": "Roland",
+        "lastName": "Tumbokon",
+        "phone": "2012009104",
+        "venmo": "roland.tumbokon",
+        "address": {
+            
+            "address": "123 N Union Ave",
+            "city": "Cranford",
+            "state": "NJ",
+            "zipcode": "07016"
+        },
+        "driver": true,
+        "passenger": true,
+        "history": []
+    },
+    {
+        
+        "email": "tester@gmail.com",
+        "password": "password",
+        "firstName": "Not",
+        "lastName": "driver",
+        "phone": "2012009104",
+        "venmo": "venmo",
+        "address": {
+            
+            "address": "123 Beech Street",
+            "city": "Newark",
+            "state": "NJ",
+            "zipcode": "07046"
+        },
+        "driver": false,
+        "passenger": true,
+        "history": []
+    }
+    ]
+}

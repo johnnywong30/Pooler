@@ -1,0 +1,89 @@
+	/**********************
+  History Page CSS
+  ***********************/
+
+.history-calendar {
+    margin-top: 15px;
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#history {
+    padding-top: 55px;
+}
+
+.history-list {
+  display: block;
+  border-right: 1px solid rgb(229, 229, 229);
+  animation-duration: 1.5s;
+  animation-name: slidein;
+}
+
+.history {
+  text-decoration: none;
+}
+
+.history-container {
+  color: var(--secondary);
+  transition: all 0.2s ease;
+  border-left: 3px solid;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  
+}
+
+.history-container:hover {
+  border-left-width: 10px;
+  background: #eceff1;
+  cursor: pointer;
+}
+
+.history-date-container {
+  display: inline-block;
+  width: 5em;
+  padding: inherit 8px 2px 16px;
+  margin: 0 10px 0 10px;
+  font-family: Oswald;
+  font-weight: 700;
+  color: #343434;
+}
+
+.history-date-container>.date {
+  font-size: 2.5em;
+  display: block;
+}
+
+.history-date-container>.month {
+  display: block;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: -.8em;
+  text-transform: uppercase;
+}
+
+.history-detail-container>.history-title {
+  text-transform: uppercase;
+  font-family: var(--montserrat);
+  font-weight: 400;
+  font-size: 1.5em;
+}
+
+.history-button-sort-section {
+  display: flex;
+  justify-content: space-evenly;
+  padding-top: 25px;
+}
+
+.history-sort-button {
+  padding: 5px 10px 5px 10px;  
+  margin: 0;
+  transition: all 0.2s ease;
+}
+
+.history-sort-button:hover {
+  border-bottom-width: 10px;
+  background: #eceff1;
+  cursor: pointer;
+  border-radius: 7px;
+}

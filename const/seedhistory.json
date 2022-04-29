@@ -1,0 +1,22 @@
+{
+    "0": {
+        "_id": "6140c4f6-6a13-4552-93ba-7ecc25f05ef4",
+        "name": "Sophia's Pants Party",
+        "date": "11/19/2022",
+        "carpool": "2505140f-9437-4061-ab2a-462f6aef7cee"
+    },
+
+    "1": {
+        "_id": "0708be67-9948-4191-ae22-d87cd8bbda5f",
+        "name": "Sophia's Track Meet",
+        "date": "03/12/2020",
+        "carpool": "81be689e-d6cf-499a-8f04-f8ab15b6cb65"
+    },
+    
+    "2": {
+        "_id": "24e0e2db-470c-4c07-9691-b4dfe50d59d6",
+        "name": "Sophia's 21st Birthday",
+        "date": "04/01/2022",
+        "carpool": "8023670da-408d-4f38-ab8b-e46aae73683d"
+    }
+}
