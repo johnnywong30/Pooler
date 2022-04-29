@@ -22,7 +22,9 @@
     const DOM = {
         div: '<div></div>',
         span: '<span></span>',
-        a: '<a></a>'
+        a: '<a></a>',
+        input: '<input/>',
+        label: '<label></label>'
     }
 
     let eventList = $('#eventList'),
@@ -32,7 +34,21 @@
         passwordModal = $('#password-modal'),
         modalCloseBtn = $('#modal-close-btn'),
         privateEventForm = $('#private-event-form')
-    
+
+    let hostEventModal = $('#host-modal'),
+        hostEventBtn = $('#create-button'),
+        hostEventCloseBtn = $('#event-close-btn'),
+        hostEventForm = $('#host-event-form'),
+        hostEventName = $('#host-event-name'),
+        hostEventTime = $('#host-event-time'),
+        hostEventCapacity = $('#host-event-capacity'),
+        hostEventDescription = $('#host-event-description'),
+        hostEventPrivate = $('#host-event-private'),
+        hostEventPassword = $('#host-event-password')
+
+
+
+
     let errorDiv = document.getElementById('client-error')
     let privateEventLink;
 
@@ -42,6 +58,24 @@
             {
                 opacity: 0,
                 visibility: 'hidden'
+            }
+        )
+    })
+
+    hostEventCloseBtn.on('click', () => {
+        hostEventModal.css(
+            {
+                opacity: 0,
+                visibility: 'hidden'
+            }
+        )
+    })
+
+    hostEventBtn.on('click', () => {
+        hostEventModal.css(
+            {
+                opacity: 1,
+                visibility: 'visible'
             }
         )
     })
@@ -62,8 +96,10 @@
     }
 
     let events = await $.get('/events/list')
+    console.log(events)
     const originalEvents = [...events]
     events.sort(sorts[toggle])
+
     const createEventItem = (event) => {
         const { private } = event
         let eventLink;
@@ -122,7 +158,7 @@
         populateList(events)
     })
 
-    populateList(events)
+
 
     searchTerm.on('keyup', (e) => {
         const currentTerm = e.target.value.trim().toLowerCase()
@@ -140,20 +176,20 @@
         }
     })
 
-    const createError = (error) => {
+    const createError = (div, error) => {
         // in case error had another error in it already; clear all children
-        errorDiv.replaceChildren()
-        errorDiv.hidden = false
+        div.replaceChildren()
+        div.hidden = false
         const clearButton = document.createElement('span')
         clearButton.className = 'fa-solid fa-xmark'
         clearButton.id = 'close-error'
         const clearError = () => {
-            errorDiv.replaceChildren()
-            errorDiv.hidden = true
+            div.replaceChildren()
+            div.hidden = true
         }
         clearButton.addEventListener('click', clearError)
-        errorDiv.innerHTML = `Error: ${error}`
-        errorDiv.appendChild(clearButton)
+        div.innerHTML = `Error: ${error}`
+        div.appendChild(clearButton)
     }
 
     privateEventForm.on('submit', async (e) => {
@@ -169,11 +205,38 @@
                 window.location.href = privatePage
             }
             else throw 'Invalid password'
-            
+
         } catch (error) {
-            createError("Invalid password")
+            createError(errorDiv, "Invalid password")
         }
-        
+
     })
+
+    let passwordDiv = null;
+
+    // Host Event Functionality
+    hostEventPrivate.on('change', (e) => {
+        if (e.target.value === 'private' && passwordDiv === null) {
+            passwordDiv = $(DOM.div).addClass("profile-form-item")
+            const passwordInput = $(DOM.input)
+            passwordInput.attr('id', 'host-event-password')
+            passwordInput.attr('name', 'password')
+            passwordInput.attr('type', 'text')
+            passwordInput.attr('required', true)
+            const passwordLabel = $(DOM.label)
+            passwordLabel.attr('for', 'host-event-password')
+            passwordLabel.text('Password')
+            passwordDiv.append([passwordInput, passwordLabel])
+            $('#host-footer').before(passwordDiv)
+        }
+        else {
+            passwordDiv.remove()
+            passwordDiv = null;
+        }
+    })
+
+
+    // Initial populate event list
+    populateList(events)
 
 })(window.jQuery);

@@ -141,7 +141,7 @@ router
         } catch (e) {
             console.log(e);
             res.statusMessage = e;
-            return res.status(200).json({ errorMsg: e }).end();
+            return res.status(404).json({ errorMsg: e }).end();
         }
     });
 
