@@ -9,7 +9,31 @@
         "capacity": 40,
         "private": false,
         "password": "",
-        "carpools": [],
+        "carpools": [
+            {
+			"_id": "3e90e42d-bcd2-411e-9057-9b8da947a001",
+			"driver": "Sophia Zuo",
+			"departureTime": "04/01/2022 13:00:00",
+			"capacity": 4,
+			"members": ["f4a5489d-8f6e-4997-a3a8-22519b5cc55e", "94e10771-543c-4a95-b27f-b1a74065428d"],
+			"comments": [
+				{
+					"_id": "7b7ffeef-c9d6-4c42-93d5-dee015e56eac",
+					"from": "jwang203@stevens.edu",
+					"details": "Don't be late or you won't get any food",
+					"timestamp": "04/01/2022 09:32:14"
+				}
+			]
+            },
+            {
+                "_id": "e55ee618-9a73-4872-a423-39191259f44d",
+                "driver": "Nicholas Soriano",
+                "departureTime": "04/01/2022 13:00:00",
+                "capacity": 3,
+                "members": ["a06a6109-bb1a-4489-92ef-386c0b1a3996"],
+                "comments": []
+            }
+        ],
         "destination": {
             "address": "422 Monroe St",
             "city": "Hoboken",

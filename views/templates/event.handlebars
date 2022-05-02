@@ -35,7 +35,20 @@
                         
                         {{!-- TODO Client side js to render carpools here --}}
                         {{!-- TODO To join an event, you must join a carpool with open seats --}}
-                    
+                        {{#each carpools}}
+                        <div class="">
+                            <a href="/pools/{{this._id}}">
+                                <div class="col-3">
+                                    <p>{{this.driver}}</p>
+                                </div>
+
+                                <div class="col-9">
+                                    <p class="mb-2">{{this.capacity}}</p>
+                                    {{!-- <p>{{this.phone}}</p> --}}
+                                </div>
+                            </a>
+                        </div>
+                        {{/each}}
                     </dl>
                 </div>
             </div>
