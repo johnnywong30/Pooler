@@ -71,6 +71,37 @@
         return trimmed
     }
 
+    const checkName = (name) => {
+        return checkString(name, 'Name')
+    }
+
+    const checkTime = (time) => {
+        const _time = checkString(time, 'Time')
+        const date = new Date(_time)
+        if (date instanceof Date && isNaN(date.getTime())) throw 'Invalid time' 
+        const day = date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
+        const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
+        const year = `${date.getFullYear()}`.slice(2)
+        const hours = date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
+        const minutes =  `${date.getMinutes()}`
+        return {
+            date: `${month}/${day}/${year}`,
+            startTime: `${hours}:${minutes}:00`
+        }   
+    }
+
+    const checkCapacity = (capacity) => {
+        const _cap = Number(checkString(capacity, 'Capacity'))
+        if (isNaN(_cap) || _cap < 1) throw 'Capacity must be at least 1'
+        console.log(typeof _cap)
+        console.log(_cap)
+        return _cap
+    }
+
+    const checkDescription = (description) => {
+        return checkString(description, 'Description')
+    }
+
     const checkPassword = (password) => {
         return checkString(password, 'Password', (password) => {
             // regex source: https://stackoverflow.com/a/16334856
@@ -79,14 +110,6 @@
             if (password.length < 6) throw 'password must be at least 6 characters long'
             return true
         })
-    }
-
-    const checkFirstName = (firstName) => {
-        return checkString(firstName, 'First Name')
-    }
-
-    const checkLastName = (lastName) => {
-        return checkString(lastName, 'Last Name')
     }
 
     const checkStreet = (street) => {
@@ -109,6 +132,8 @@
             return str.length === 5 && /^\d+$/.test(str)
         })
     }
+
+
 
     const DOM = {
         div: '<div></div>',
@@ -139,7 +164,7 @@
         hostEventCity = $('#host-event-city'),
         hostEventZip = $('#host-event-zip'),
         hostEventState = $('#host-event-state'),
-        hostEventPassword = $('#host-event-password')
+        hostEventPassword;
 
     let hostErrorDiv = document.getElementById('host-event-error')
 
@@ -283,7 +308,7 @@
             div.hidden = true
         }
         clearButton.addEventListener('click', clearError)
-        div.innerHTML = `Error: ${error}`
+        div.innerHTML = `${error}`
         div.appendChild(clearButton)
     }
 
@@ -311,7 +336,7 @@
 
     // Host Event Functionality
     hostEventPrivate.on('change', (e) => {
-        if (e.target.value === 'private' && passwordDiv === null) {
+        if (e.target.value === 'private' && passwordDiv == null) {
             passwordDiv = $(DOM.div).addClass("profile-form-item")
             const passwordInput = $(DOM.input)
             passwordInput.attr('id', 'host-event-password')
@@ -322,29 +347,64 @@
             passwordLabel.attr('for', 'host-event-password')
             passwordLabel.text('Password')
             passwordDiv.append([passwordInput, passwordLabel])
+            hostEventPassword = passwordInput
+            console.log(hostEventPassword)
             $('#host-footer').before(passwordDiv)
         }
         else {
             passwordDiv.remove()
+            hostEventPassword = null
             passwordDiv = null;
         }
     })
 
-    hostEventForm.on('submit', (e) => {
+    hostEventForm.on('submit', async (e) => {
+        e.preventDefault()
         try {
-            // TODO finish validation and then submit
-            const name = hostEventName[0].value
-            const time = hostEventTime[0].value
-            const capacity = hostEventCapacity[0].value
-            const description = hostEventDescription[0].value
-            const private = hostEventPrivate[0].value === 'private'
-            const street = hostEventStreet[0].value
-            const city = hostEventCity[0].value
-            const zip = hostEventZip[0].value
-            const state = hostEventState[0].value
+            const name = checkName(hostEventName[0].value)
+            const { date, startTime } = checkTime(hostEventTime[0].value)
+            const capacity = checkCapacity(hostEventCapacity[0].value)
+            const description = checkDescription(hostEventDescription[0].value)        
+            const private = hostEventPrivate.is(':checked')
+            const street = checkStreet(hostEventStreet[0].value) 
+            const city = checkCity(hostEventCity[0].value)
+            const zip = checkZipcode(hostEventZip[0].value)
+            const state = checkState(hostEventState[0].value)
+            const password = private && hostEventPassword ? checkPassword(hostEventPassword[0].value) : ''
+
+            const reqBody = {
+                name: name,
+                date: date,
+                startTime: startTime,
+                description: description,
+                capacity: capacity,
+                street: street,
+                city: city,
+                state: state,
+                zipcode: zip,
+                private: private,
+                password: password
+            }
+
+
+            const response = await $.post('/events/createEvent', reqBody)
+            if (response.success) {
+                hostEventForm[0].reset()
+                events = await $.get('/events/list')
+                populateList(events)
+                hostEventModal.css(
+                    {
+                        opacity: 0,
+                        visibility: 'hidden'
+                    }
+                    )
+                // go to event's page
+                let page = `/events/view/${response.eventId}`
+                if (private) page = `${page}?pwd=${password}`
+                window.location.href = page 
+            }
 
         } catch (error) {
-            e.preventDefault()
             createError(hostErrorDiv, `Error: ${error}`)
         }
 

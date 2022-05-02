@@ -113,12 +113,7 @@ module.exports = {
 		module.exports.checkTime(data[1]);
 		return dateTime;
 	},
-	checkCapacity(capacity) {
-		if (!capacity) throw `capacity must be supplied`;
-		if (typeof capacity !== "number" || isNaN(capacity)) throw `${capacity} must be a number`;
-		if (capacity < 1) throw `cannot have capacity ${capacity} < 1`;
-		return capacity;
-	},
+
 	checkId(id) {
 		if (!id) throw `id must be supplied`;
 		if (!validate(id)) throw `${id} is not a valid id`;
@@ -157,9 +152,10 @@ module.exports = {
 	// checks if capacity is a valid positive whole number
 	checkCapacity(capacity) {
 		if (!capacity) throw `capacity must be supplied`
-		if (typeof capacity !== 'number' || isNaN(capacity)) throw `${capacity} must be a number`
-		if (capacity < 1) throw `cannot have capacity ${capacity} < 1`
-		return capacity
+		const _capacity = Number(capacity)
+		if (typeof _capacity !== 'number' || isNaN(_capacity)) throw `${_capacity} must be a number`
+		if (_capacity < 1) throw `cannot have capacity ${_capacity} < 1`
+		return _capacity
 	  },
 
 	checkBool(bool) {
