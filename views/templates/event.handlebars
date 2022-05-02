@@ -33,20 +33,19 @@
                         <dt class="event-detail-label dt-inline">Capacity</dt>
                         <dd id="capacity" class="event-detail-info dd-inline">{{occupied}}/{{capacity}}</dd>
                         
-                        {{!-- TODO Client side js to render carpools here --}}
-                        {{!-- TODO To join an event, you must join a carpool with open seats --}}
                         {{#each carpools}}
                         
                             
-                                <div class="col-6">
-                                    <p>{{this.driver}}</p>
-                                    <p class="mb-2">Capacity {{this.capacity}}</p>
-                                </div>
+                        <div class="col-6" style="display: inline-block">
+                            <p>{{this.driver}}</p>
+                            <p class="mb-2">{{this.occupance}}/{{this.capacity}}</p>
+                        </div>
 
-                                <div class="col-6">
-                                     <a href="/pool/{{this._id}}" class="btn align-center text-small btn-2">Join Pool</a>
-                                    {{!-- <p>{{this.phone}}</p> --}}
-                                </div>
+                        <div class="col-6" style="display: inline-block">
+                                <a href="/pool/{{this._id}}" class="btn align-center text-small btn-2">Join Pool</a>
+                            {{!-- <p>{{this.phone}}</p> --}}
+                        </div>
+                        <br>
                         
                         {{/each}}
                         {{#if isUserDriver}}

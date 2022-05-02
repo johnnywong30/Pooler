@@ -46,11 +46,15 @@ router
                 const { address, city, state, zipcode } = destination
                 const displayAddress = `${address}, ${city}, ${state}, ${zipcode}` 
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
+                let isUserDriver = (userData._id === eventData.driver)
                 let occupied = 0;
                 for (carpool of carpools) {
                     occupied += carpool.members.length
+                    let driver = await users.getUserById(carpool.driver)
+                    carpool.driver = `${driver.firstName} ${driver.lastName}`
+                    carpool.occupance = carpool.members.length
                 }
-                let isUserDriver = (userData._id === eventData.driver)
+                
                 const templateData = {
                     name: name, 
                     date: date,
