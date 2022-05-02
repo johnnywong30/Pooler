@@ -13,6 +13,7 @@ router
     .get(async (req, res) => {
         if (req.session.user) {
             const templateData = {
+                states: Object.keys(US_States),
                 authenticated: true,
                 layout: 'custom'
             }
@@ -40,13 +41,13 @@ router
                     // kinda like Zoom
                     const pass = checkPassword(xss(req.query.pwd))
                     const match = await bcrypt.compare(pass, password)
-                    if (! match) return res.redirect('/events')
-                }         
+                    if (!match) return res.redirect('/events')
+                }
                 const { address, city, state, zipcode } = destination
-                const displayAddress = `${address}, ${city}, ${state}, ${zipcode}` 
+                const displayAddress = `${address}, ${city}, ${state}, ${zipcode}`
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
                 const templateData = {
-                    name: name, 
+                    name: name,
                     date: date,
                     startTime: startTime,
                     host: host,
@@ -59,11 +60,11 @@ router
                     displayAddress: displayAddress,
                     layout: 'custom',
                     authenticated: true
-                }       
+                }
                 // render the event page
                 return res.render('templates/event', templateData)
             } catch (e) {
-                return res.status(400).json({ error: 'Invalid password'})
+                return res.status(400).json({ error: 'Invalid password' })
             }
         } else {
             return res.redirect('/')
@@ -125,23 +126,32 @@ router
 router
     .route('/createEvent')
     .post(async (req, res) => {
-        try {
-            const { name, date, startTime, host, description, capacity, private, password, destination } = req.body;
-            const _name = checkString(name);
-            const _date = checkDate(date);
-            const _startTime = checkTime(startTime);
-            const _host = checkEmail(host);
-            const _description = checkString(description);
-            const _capacity = checkCapacity(capacity);
-            const _private = checkBool(private);
-            const _pass = checkPassword(password);
-            const _destination = checkAddress(destination);
-            const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _private, _pass, _destination);
-            return res.json(event).end();
-        } catch (e) {
-            console.log(e);
-            res.statusMessage = e;
-            return res.status(200).json({ errorMsg: e }).end();
+        if (req.session.user) {
+            const host = req.session.user.email
+            try {
+                const { name, date, startTime, description, capacity, private, password, destination } = req.body;
+                const _name = checkString(xss(name));
+                const _date = checkDate(xss(date));
+                const _startTime = checkTime(xss(startTime));
+                const _host = checkEmail(host); // should be in session
+                const _description = checkString(xss(description));
+                const _capacity = checkCapacity(capacity); // is a number
+                const _private = checkBool(private); // is a bool
+                const _pass = _private ? checkPassword(xss(password)) : null;
+                const _destination = checkAddress(destination);
+                const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass, );
+                
+                console.log(event)
+                return res.json({ success: true, eventId: event.eventId }).end()
+
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+        }
+        else {
+            return res.redirect('/')
         }
     });
 

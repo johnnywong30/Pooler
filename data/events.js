@@ -25,8 +25,9 @@ module.exports = {
 
     // Create event
     const pass = private ? await bcrypt.hash(password, saltRounds) : password
+    const eventId = uuidv4()
     const newEvent = {
-      _id: uuidv4(),
+    _id: eventId,
       name: name,
       date: date,
       startTime: startTime,
@@ -47,6 +48,7 @@ module.exports = {
     // On success
     return {
       eventRegistered: true,
+      eventId: eventId
     };
 
   },
