@@ -1,0 +1,142 @@
+	/**********************
+  Event Page CSS
+  ***********************/
+#update-button, #delete-button {
+  padding: 6px 14px;
+  margin: 0 auto;
+  font-family: var(--montserrat);
+  border-radius: 6px;
+  color: var(--secondary);
+  background: #fff;
+  border: none;
+  box-shadow: 0px 0.5px 3px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.button-section {
+  display: flex;
+  justify-content: space-around;
+  align-content: center;
+  margin-top: 1.5rem;
+}
+
+#update-button:hover, #delete-button:hover {
+  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 1.5px var(--button);
+  outline: 0;
+}
+
+.event-form-item {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.event-form-item input {
+  display: block;
+  width: 400px;
+  height: 40px;
+  background: transparent;
+  border: solid 1px var(--secondary);
+  border-radius: 5px;
+  transition: all .3s ease;
+  padding: 0 25px
+}
+
+.event-form-item input:focus {
+  border-color: var(--button);
+}
+
+.event-form-item label {
+  position: absolute;
+  cursor: text;
+  z-index: 2;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  background: var(--primary);
+  padding: 0 10px;
+  color: var(--secondary);
+  transition: all .3s ease
+}
+
+.event-form-item input:focus+label,
+.form-item input:valid+label {
+  font-size: 12px;
+  top: -10px
+}
+
+.event-form-item input:focus+label {
+  color: var(--secondary)
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 15px 0 2px 0;
+}
+
+.bottom-profile-button-containe {
+  display: flex;
+  margin: -50px auto 0px auto;
+  width: 60%;
+  justify-content: space-between;
+  /* padding: 10px; */
+}
+
+#cancelBtn {
+  max-height: 30px;
+  padding: 6px 14px;
+  margin: 0 auto;
+  font-family: var(--montserrat);
+  border-radius: 6px;
+  color: var(--secondary);
+  background: #fff;
+  border: none;
+  box-shadow: 0px 0.5px 3px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+#cancelBtn:hover {
+  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 1.5px var(--button);
+  outline: 0;
+}
+
+#cancelBtn:disabled {
+  background-color: rgb(184, 184, 178);
+  cursor: not-allowed;
+}
+
+#saveChangesBtn {
+  max-height: 30px;
+  padding: 6px 14px;
+  margin: 0 auto;
+  font-family: var(--montserrat);
+  border-radius: 6px;
+  color: var(--secondary);
+  background: #fff;
+  border: none;
+  box-shadow: 0px 0.5px 3px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+
+}
+
+#saveChangesBtn:hover {
+  box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 1.5px var(--button);
+  outline: 0;
+}
+
+#saveChangesBtn:disabled {
+  background-color: rgb(184, 184, 178);
+  cursor: not-allowed;
+
+}

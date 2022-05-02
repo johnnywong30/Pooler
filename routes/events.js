@@ -29,7 +29,7 @@ router
             try {
                 const id = checkId(xss(req.params.id))
                 const eventData = await events.getEvent(id)
-                const { name, date, startTime, host, description } = eventData
+                const { _id, name, date, startTime, host, description } = eventData
                 const { capacity, carpools, destination, private, password } = eventData
                 // if event has password, see if it is correct
                 if (private) {
@@ -44,8 +44,10 @@ router
                 }         
                 const { address, city, state, zipcode } = destination
                 const displayAddress = `${address}, ${city}, ${state}, ${zipcode}` 
+                const states = Object.keys(US_States)
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
                 const templateData = {
+                    id: _id,
                     name: name, 
                     date: date,
                     startTime: startTime,
@@ -56,6 +58,11 @@ router
                     carpools: carpools,
                     destination: destination,
                     googleMapsUrl: googleMapsUrl,
+                    street: address,
+                    city: city,
+                    state: state,
+                    states: states,
+                    zipcode: zipcode,
                     displayAddress: displayAddress,
                     layout: 'custom',
                     authenticated: true
@@ -136,7 +143,8 @@ router
             const _private = checkBool(private);
             const _pass = checkPassword(password);
             const _destination = checkAddress(destination);
-            const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _private, _pass, _destination);
+            console.log("checked", _destination)
+            const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
             return res.json(event).end();
         } catch (e) {
             console.log(e);
