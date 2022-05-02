@@ -1,5 +1,5 @@
 const express = require('express');
-const { events } = require('../data')
+const { events, users } = require('../data')
 const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const months = require('../const/months.json')
@@ -28,6 +28,7 @@ router
         if (req.session.user) {
             try {
                 const id = checkId(xss(req.params.id))
+                const userData = await users.getUser(req.session.user.email)
                 const eventData = await events.getEvent(id)
                 const { name, date, startTime, host, description } = eventData
                 const { capacity, carpools, destination, private, password } = eventData
@@ -45,6 +46,11 @@ router
                 const { address, city, state, zipcode } = destination
                 const displayAddress = `${address}, ${city}, ${state}, ${zipcode}` 
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
+                let occupied = 0;
+                for (carpool of carpools) {
+                    occupied += carpool.members.length
+                }
+                let isUserDriver = (userData._id === eventData.driver)
                 const templateData = {
                     name: name, 
                     date: date,
@@ -52,17 +58,20 @@ router
                     host: host,
                     description: description,
                     capacity: capacity,
-                    occupied: 0, // TODO compute this valued 
+                    occupied: occupied,
                     carpools: carpools,
                     destination: destination,
                     googleMapsUrl: googleMapsUrl,
                     displayAddress: displayAddress,
                     layout: 'custom',
+                    isUserDriver: isUserDriver,
+                    eventID: req.params.id,
                     authenticated: true
                 }       
                 // render the event page
                 return res.render('templates/event', templateData)
             } catch (e) {
+                console.log(e)
                 return res.status(400).json({ error: 'Invalid password'})
             }
         } else {

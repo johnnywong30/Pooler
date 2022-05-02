@@ -48,7 +48,8 @@ const setup = async () => {
                 event_.capacity,
                 event_.destination,
                 event_.private,
-                event_.password
+                event_.password,
+                event_.carpools
             )
         } catch (e) {
             console.log(e);

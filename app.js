@@ -64,6 +64,13 @@ app.use('/profile', async (req, res, next) => {
     else next()
 })
 
+app.use('/pool', async (req, res, next) => {
+    if (!req.session.user) {
+        return res.redirect('/');
+    }
+    else next()
+})
+
 // Authentication middleware
 
 // Logging middleware

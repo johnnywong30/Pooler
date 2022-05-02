@@ -36,19 +36,32 @@
                         {{!-- TODO Client side js to render carpools here --}}
                         {{!-- TODO To join an event, you must join a carpool with open seats --}}
                         {{#each carpools}}
-                        <div class="">
-                            <a href="/pools/{{this._id}}">
-                                <div class="col-3">
+                        
+                            
+                                <div class="col-6">
                                     <p>{{this.driver}}</p>
+                                    <p class="mb-2">Capacity {{this.capacity}}</p>
                                 </div>
 
-                                <div class="col-9">
-                                    <p class="mb-2">{{this.capacity}}</p>
+                                <div class="col-6">
+                                     <a href="/pool/{{this._id}}" class="btn align-center text-small btn-2">Join Pool</a>
                                     {{!-- <p>{{this.phone}}</p> --}}
                                 </div>
-                            </a>
-                        </div>
+                        
                         {{/each}}
+                        {{#if isUserDriver}}
+                        <div class="row mb-4 pb-2" >
+                            <div class="col-12">
+                            <a href="/events/{{eventID}}/leave" class="btn align-center text-small btn-2">Leave Drivers</a>
+                            </div>
+                        </div>
+                        {{else}}
+                        <div class="row mb-4 pb-2" >
+                            <div class="col-12" style="text-align: center">
+                            <a href="/events/{{eventID}}/join" class="btn align-center text-small btn-2">Become a Driver</a>
+                            </div>
+                        </div>
+                        {{/if}}
                     </dl>
                 </div>
             </div>
