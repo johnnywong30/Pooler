@@ -10,51 +10,13 @@ const setup = async () => {
     const db = await connection.connectToDb()
     await db.dropDatabase()
 
-    const userCollection = await db.collection('users')
-    const eventCollection = await db.collection('events')
-    
     // Seeding Users
-    // createUser(email, password, firstName, lastName, phone, venmo, address, isDriver)
-
-    for (user of usersJson.users) {
-        console.log(`Seeding user ${user.firstName} ${user.lastName}`)
-        try {
-            await usersData.createUser(
-                user.email,
-                user.password,
-                user.firstName,
-                user.lastName,
-                user.phone,
-                user.venmo,
-                user.address,
-                user.driver
-            )
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
+    const userCollection = await db.collection('users')
+    await userCollection.insertMany(usersJson)
+    
     // Seeding events 
-    // createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _password = '')
-    for (event_ of eventsJson.events) {
-        console.log(`Seeding event ${event_.name}`)
-        try {
-            await eventsData.createEvent(
-                event_.name,
-                event_.date,
-                event_.startTime,
-                event_.host,
-                event_.description,
-                event_.capacity,
-                event_.destination,
-                event_.private,
-                event_.password,
-                event_.carpools
-            )
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    const eventCollection = await db.collection('events')
+    await eventCollection.insertMany(eventsJson)
 
     console.log('Done seeding database');
 
