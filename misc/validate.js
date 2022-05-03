@@ -147,8 +147,8 @@ module.exports = {
 	// checks if the time is in military format
 	checkTime(time) {
 		if (!time) throw `time must be supplied`;
-		//modified from https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
-		const regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
+		//modified from https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s06.html
+		const regex = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$";
 		const _time = time.trim();
 		let matches = _time.match(regex);
 		if (!matches) throw `${_time} is not in a valid military time format`;

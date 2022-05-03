@@ -1,6 +1,6 @@
 const express = require('express');
 const { events } = require('../data')
-const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
+const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity, checkName } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const months = require('../const/months.json')
 const xss = require('xss');
@@ -26,8 +26,6 @@ router
     .route('/getUser')
     .get(async (req, res) => {
         if (req.session.user) {
-
-            console.log("hello")
             return res.json(req.session.user.email);
         }
         else {
@@ -191,11 +189,11 @@ router
 
 router
     .delete('/:id', async (req, res) => {
-        console.log(req.session.user)
+        // console.log(req.session.user)
         try {
             const id = checkId(req.params.id)
-            const event = await events.getEvent(id)
-            console.log(event)
+            // const event = await events.getEvent(id)
+            // console.log(event)
             await events.deleteEvent(id)
             return res.status(200).json({ eventId: id, deleted: true });
         } catch (e) {
@@ -217,5 +215,48 @@ router
         if (auth.authenticated) {
             return res.status(200).json({ authenticated: true })
         }
+    })
+router
+    .post('/updateEvent/:id', async (req, res) => {
+        const { name, date, startTime, description, destination } = req.body;
+        try {  
+            const id = checkId(req.params.id)
+            let _name = checkString(name, "event name")
+            let _date = checkDate(date)
+            let _startTime = checkTime(startTime)
+            let _description = checkString(description)
+            let _destination = checkAddress(destination)
+
+            const currentEvent = await events.getEvent(id);
+        
+            if (currentEvent.name !== _name) {
+                const updateName = await events.updateName(id, _name)
+            }
+            
+
+            if (currentEvent.date != _date) {
+                const updateDate = await events.updateDate(id, _date)
+            }
+
+            if (currentEvent.startTime !== _startTime) {
+                const updateTime = await events.updateStartTime(id, _startTime)
+            }
+
+            if (currentEvent.description !== _description) {
+                const updateDescription = await events.updateDescription(id, _description)
+            }
+            
+            if (currentEvent.destination !== _destination) {
+                const updateDestination = await events.updateDestination(id, _destination)
+            }
+
+
+            const updatedEvent = await events.getEvent(id);
+
+            return res.status(200).json({event: updatedEvent, updated: true})
+        } catch (e) {
+            return res.status(400).json({error: e})
+        }
+    
     })
 module.exports = router

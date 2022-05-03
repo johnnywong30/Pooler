@@ -89,13 +89,33 @@
     // checks if the time is in military format
     const checkTime = (time) => {
         if (!time) throw `time must be supplied`;
-        //modified from https://www.geeksforgeeks.org/how-to-validate-time-in-24-hour-format-using-regular-expression/
-        const regex = "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
+        //modified from https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s06.html
+        const regex = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$";
         const _time = time.trim();
         let matches = _time.match(regex);
         if (!matches) throw `${_time} is not in a valid military time format`;
         return _time;
     }
+
+    const checkStreet = (street) => {
+		return checkString(street, "Street");
+	}
+
+	const checkCity = (city) => {
+		return checkString(city, "City");
+	}
+
+	const checkState = (state) => {
+		const curr = checkString(state, "State");
+		if (US_States[state] === undefined) throw `${state} does not exist in the United States`;
+		return state;
+	}
+
+	const checkZipcode = (zipcode) => {
+		return checkString(zipcode, "Zipcode", str => {
+			return str.length === 5 && /^\d+$/.test(str);
+		});
+	}
 
     const checkName = (name) => {
         return checkString(name, 'Event Name')
@@ -109,23 +129,20 @@
         return checkTime(time)
     }
 
-    const checkStreet = (street) => {
-        return checkString(street, 'street')
-    }
-
-    const checkCity = (city) => {
-        return checkString(city, 'city')
-    }
-
-    const checkZip = (zipcode) => {
-        return checkString(zipcode, "Zipcode", str => {
-            return str.length === 5 && /^\d+$/.test(str);
-        });
-    }
-
     const checkDescription = (description) => {
         return checkString(description, 'description')
     }
+
+    const checkAddress = (address) => {
+		if (!address) throw `Address does not exist`;
+		const validatedAddress = {
+			address: checkStreet(address.address),
+			city: checkCity(address.city),
+			state: checkState(address.state),
+			zipcode: checkZipcode(address.zipcode),
+		};
+		return validatedAddress;
+	}
 
     let editEventForm = document.getElementById('edit-event-form')
     let name = document.getElementById('name')
@@ -145,6 +162,7 @@
     let editables = Array.from(list).map(elem => elem)
     let currentValues = editables.map((element) => (element.value) ? element.value : element.checked)
     let currentState = state.value
+
 
     let stateAttributes = ["data-value", "onfocus", "onchange"]
     let beforeEditStateAttr = {
@@ -248,63 +266,90 @@
         errorDiv.appendChild(clearButton)
     }
 
-
-
     const resolveError = () => {
         errorDiv.replaceChildren()
         errorDiv.hidden = true
     }
-
-    name.addEventListener('change', (e) => {
-        e.preventDefault()
-        const input = e.target.value
-        try {
-            const checked = checkName(input)
-            if (checked) {
-                submittable.firstName = true
-                resolveError()
-            }
-        } catch (e) {
-            createError(e)
-            submittable.firstName = false
-        }
-    })
-    
-    date.addEventListener('change', (e) => {
-        e.preventDefault()
-        const input = e.target.value
-        try {
-            const checked = checkDate(input)
-            if (checked) {
-                submittable.date = true
-                resolveError()
-            }
-        } catch (e) {
-            createError(e)
-            submittable.date = false;
-        }
-    })
     
     editEventForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        var destination = {
+            address: street.value,
+            city: city.value,
+            state: state.value,
+            zipcode: zipcode.value,
+        }
+
+        var sendInfo = {
+            name: name.value,
+            date: date.value,
+            startTime: time.value,
+            description: description.value,
+            destination: destination
+        }
+        
         try {
-            for (const [key, value] of Object.entries(submittable)) {
-                if (!value) throw `${key.charAt(0).toUpperCase() + key.slice(1)} is invalid. Please edit your profile correctly.`
-            }
-            if (contentEditable) {
-                contentEditable = !contentEditable
-                editables.map((element) => element.readOnly = true)
+            const _checkName = checkName(name.value);
+        } catch(e) {
+            name.value = currentValues[0]
+            alert("invalid name")
+        }
+
+        try {
+            const _checkDate = checkEventDate(date.value);
+        } catch(e) {
+            date.value = currentValues[1]
+            alert("invalid date")
+        }
+
+        try {
+            const _checkTime = checkEventTime(time.value);
+        } catch(e) {
+            time.value = currentValues[2]
+            alert("invalid time")
+        }
+
+        try {
+            const _checkDescription = checkDescription(description.value);
+        } catch(e) {
+            description.value = currentValues[6]
+            alert("invalid description")
+        }
+
+        try {
+            const _checkDestination = checkAddress(destination);
+            street.value = currentValues[3]
+            city.value = currentValues[4]
+            zipcode.value = currentValues[5]
+        } catch(e) {
+            alert("invalid address")
+        }
+
+        $.ajax({
+            url: `/events/updateEvent/${deleteBtn.value}`,
+            type: 'POST',
+            data: sendInfo,
+            success: function (msg) {
+                console.log('success');
                 editBtn.disabled = false
                 saveChangesBtn.disabled = true
                 cancelBtn.disabled = true
+                currentValues = editables.map((element) => (element.value) ? element.value : element.checked)
+            },
+            error: function (error) {
+                console.log(`Error ${error}`);
             }
-            else {
-                throw `Error: edit mode is not enabled, please click the edit button`
-            }
-        } catch (error) {
-            console.log(error)
-            e.preventDefault()
-            createError(error)
+        });
+
+        if (contentEditable) {
+            contentEditable = !contentEditable
+            editables.map((element) => element.readOnly = true)
+            $('.event-heading').text(name.value)
+            editBtn.disabled = false
+            saveChangesBtn.disabled = true
+            cancelBtn.disabled = true
         }
+        
     })
 
     
