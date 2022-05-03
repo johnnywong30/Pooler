@@ -23,6 +23,20 @@ router
     })
 
 router
+    .route('/getUser')
+    .get(async (req, res) => {
+        if (req.session.user) {
+
+            console.log("hello")
+            return res.json(req.session.user.email);
+        }
+        else {
+            return res.redirect('/')
+        }
+    })
+
+
+router
     .route('/view/:id') // specific event page with details
     .get(async (req, res) => {
         if (req.session.user) {
@@ -48,6 +62,7 @@ router
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
                 const templateData = {
                     id: _id,
+                    currentUser: req.session.user,
                     name: name, 
                     date: date,
                     startTime: startTime,
@@ -143,7 +158,6 @@ router
             const _private = checkBool(private);
             const _pass = checkPassword(password);
             const _destination = checkAddress(destination);
-            console.log("checked", _destination)
             const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
             return res.json(event).end();
         } catch (e) {
@@ -164,7 +178,20 @@ router.get('/:id', async (req, res) => {
 })
 
 router
+    .route('/getHost/:id')
+    .get(async (req, res) => {
+        try {
+            const id = checkId(req.params.id)
+            const event = await events.getEvent(req.params.id)
+            return res.status(200).json(event.host);
+        } catch (e) {
+            return res.status(400).json({ error: e });
+        }
+    })
+
+router
     .delete('/:id', async (req, res) => {
+        console.log(req.session.user)
         try {
             const id = checkId(req.params.id)
             const event = await events.getEvent(id)

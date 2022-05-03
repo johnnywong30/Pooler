@@ -14,7 +14,6 @@ module.exports = {
     const host = checkEmail(_host)
     const description = checkString(_description)
     const capacity = checkCapacity(_capacity)
-    console.log("data", _destination)
     const destination = checkAddress(_destination)
     const private = checkPrivate(_private)
     // only need a password if the event is private

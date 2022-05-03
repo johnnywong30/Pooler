@@ -62,6 +62,7 @@
     }
 
     let events = await $.get('/events/list')
+    console.log(events)
     const originalEvents = [...events]
     events.sort(sorts[toggle])
     const createEventItem = (event) => {

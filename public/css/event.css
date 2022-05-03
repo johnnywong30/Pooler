@@ -13,7 +13,12 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  cursor: pointer;
+  cursor: pointer;  
+}
+
+#update-button:disabled, #delete-button:disabled {
+  background-color: rgb(184, 184, 178);
+  cursor: not-allowed;
 }
 
 .button-section {
