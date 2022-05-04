@@ -1,59 +1,58 @@
-
-{{!-- https://mdbootstrap.com/docs/standard/extended/news-feed/#blog --}}
+{{! https://mdbootstrap.com/docs/standard/extended/news-feed/#blog }}
 <a href="/">
-                        <img class="pooler-logo" src="/public/imgs/pooler.png" alt="Pooler">
-                    </a>
+    <img class="pooler-logo" src="/public/imgs/pooler.png" alt="Pooler" />
+</a>
 <div class="card px-3 pt-3" style="max-width: 32rem; margin:auto; transform: translate(0, 25%);">
-  <div>
-    <div class="row mb-3">
-      <div class="col-6">
-        <a href="" class="text-info">
-          <i class="fas fa-car"></i>
-          {{_eventName}}
+    <div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <a href="" class="text-info">
+                    <i class="fas fa-car"></i>
+                    {{_eventName}}
+                </a>
+            </div>
+
+            <div class="col-6 text-end">
+                <u>{{_departureTime}}</u>
+            </div>
+        </div>
+
+        <!-- Article title and description -->
+        <a href="" class="text-dark">
+            <h5>Driver: {{_driver}}</h5>
+            <p>Capacity: {{_numMembers}}/{{_capacity}}</p>
         </a>
-      </div>
 
-      <div class="col-6 text-end">
-        <u>{{_departureTime}}</u>
-      </div>
+        <hr />
+
+        {{#each _memberData}}
+            <div class="row mb-4 border-bottom pb-2">
+                <div class="col-3">
+                    <p>Passenger</p>
+                </div>
+
+                <div class="col-9">
+                    <p class="mb-2"><strong>{{this.firstName}} {{this.lastName}}</strong></p>
+                    <p>{{this.phone}}</p>
+                </div>
+            </div>
+        {{/each}}
+
+        <!-- News -->
+        {{#if _isUserInPool}}
+            <div class="row mb-4 pb-2">
+                <div class="col-12">
+                    <a href="/pool/{{_poolId}}/leave" class="btn align-center text-small btn-2 leavePool">Leave</a>
+                </div>
+            </div>
+        {{else}}
+            <div class="row mb-4 pb-2">
+                <div class="col-12" style="text-align: center">
+                    <a href="/pool/{{_poolId}}/join" class="btn align-center text-small btn-2 joinPool">Join</a>
+                </div>
+            </div>
+        {{/if}}
     </div>
 
-    <!-- Article title and description -->
-    <a href="" class="text-dark">
-      <h5>Driver: {{_driver}}</h5>
-      <p>Capacity: {{_numMembers}}/{{_capacity}}</p>
-    </a>
-
-    <hr />
-
-    {{#each _memberData}}
-    <div class="row mb-4 border-bottom pb-2">
-        <div class="col-3">
-            <p>Passenger</p>
-        </div>
-
-        <div class="col-9">
-            <p class="mb-2"><strong>{{this.firstName}} {{this.lastName}}</strong></p>
-            <p>{{this.phone}}</p>
-        </div>
-    </div>
-    {{/each}}
-
-    <!-- News -->
-    {{#if _isUserInPool}}
-      <div class="row mb-4 pb-2" >
-        <div class="col-12">
-          <a href="/pool/{{_poolId}}/leave" class="btn align-center text-small btn-2 leavePool">Leave</a>
-        </div>
-      </div>
-    {{else}}
-     <div class="row mb-4 pb-2" >
-        <div class="col-12" style="text-align: center">
-          <a href="/pool/{{_poolId}}/join" class="btn align-center text-small btn-2 joinPool">Join</a>
-        </div>
-      </div>
-    {{/if}}
-  </div>
-
-  <!-- News block -->
+    <!-- News block -->
 </div>
