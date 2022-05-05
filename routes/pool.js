@@ -77,4 +77,5 @@ router
         res.redirect(`/pool/${req.params.id}`)
     })
 
+// add post routes for adding comment, deleting comment
 module.exports = router;
