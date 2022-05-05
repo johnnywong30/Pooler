@@ -192,6 +192,13 @@
         editBtn.disabled = false;
     }
 
+    if (currentuser !== host) {
+        deleteBtn.hidden = true
+        editBtn.hidden = true
+        cancelBtn.hidden = true
+        saveChangesBtn.hidden = true
+    }
+
     editBtn.addEventListener('click', (e) => {
         e.preventDefault()
         if (!contentEditable) {
