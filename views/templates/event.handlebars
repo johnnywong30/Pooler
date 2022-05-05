@@ -19,7 +19,7 @@
                             <h2 class="event-details-heading">
                                 Event Details
                             </h2>
-                            <dl class="event-details" id="host" value="{{host}}">
+                            <dl class="event-details" id="host">
                                 <dt class="event-detail-label dt-inline">Host</dt>
                                 <dd class="event-detail-info dd-inline">{{host}}</dd>
                             </dl>
@@ -114,7 +114,8 @@
                     </div>
                     {{/if}}   
                 </div>
-                <div class="event-calendar">
+                {{!-- ??? what is this --}}
+                {{!-- <div class="event-calendar">
                     {{> eventsorts}}
                     <div id="eventList" class="event-list">
 
@@ -206,11 +207,12 @@
                             <span id="event-close-btn" class="modal-close">&times;</span>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
            
         </section>
+        {{> footer}}
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
