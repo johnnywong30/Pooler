@@ -1,125 +1,155 @@
-{
-    "events": [
+[{
+  "_id": "c351bd0b-0bc2-442b-a400-1a1ee368ce4a",
+  "name": "Jordan Wang's Dance Party",
+  "date": "05/10/2022",
+  "startTime": "13:30:00",
+  "host": "jwang203@stevens.edu",
+  "description": "Everyone is invited to dance to WAP and Twice songs with me!",
+  "capacity": 40,
+  "private": false,
+  "password": "",
+  "carpools": [
     {
-        "name": "Jordan Wang's Dance Party",
-        "date": "05/10/2022",
-        "startTime": "13:30:00",
-        "host": "jwang203@stevens.edu",
-        "description": "Everyone is invited to dance to WAP and Twice songs with me!",
-        "capacity": 40,
-        "private": false,
-        "password": "",
-        "carpools": [],
-        "destination": {
-            "address": "422 Monroe St",
-            "city": "Hoboken",
-            "state": "NJ",
-            "zipcode": "07030"
+      "_id": "3e90e42d-bcd2-411e-9057-9b8da947a001",
+      "driver": "9a7b74f0-8c07-479d-b7cb-6d2b64ff75c7",
+      "departureTime": "04/01/2022 13:00:00",
+      "capacity": 4,
+      "members": [
+        "9a7b74f0-8c07-479d-b7cb-6d2b64ff75c7",
+        "349c5a9a-80bf-4021-9e03-368decf05a8a"
+      ],
+      "comments": [
+        {
+          "from": "jwang203@stevens.edu",
+          "details": "Don't be late or you won't get any food",
+          "timestamp": "04/01/2022 09:32:14"
         }
+      ]
     },
     {
-
-        "name": "Sophia Zuo's Track Meet",
-        "date": "05/11/2022",
-        "startTime": "09:30:00",
-        "host": "szuo1@stevens.edu",
-        "description": "Come watch me run fast",
-        "capacity": 69,
-        "private": false,
-        "password": "",
-        "carpools": [],
-        "destination": {
-            "address": "Weehawken Public Playground",
-            "city": "Weehawken",
-            "state": "NJ",
-            "zipcode": "07086"
-        }
-    },
-    {
-
-        "name": "Johnny's Mango Taste Test Party",
-        "date": "05/15/2022",
-        "startTime": "16:00:00",
-        "host": "jwong9@stevens.edu",
-        "description": "Come drink alcohol with me to celebrate my 21st birthday 4 months late",
-        "capacity": 15,
-        "private": true,
-        "password": "password",
-        "carpools": [],
-        "destination": {
-            "address": "603 Adams St",
-            "city": "Hoboken",
-            "state": "NJ",
-            "zipcode": "07030"
-        }
-    },
-    {
-        "name": "Patrick Hill's Dance Recital",
-        "date": "06/01/2022",
-        "startTime": "12:30:00",
-        "host": "phill123@stevens.edu",
-        "description": "Everyone is invited to dance to old rock songs with me!",
-        "capacity": 25,
-        "private": false,
-        "password": "",
-        "carpools": [],
-        "destination": {
-            "address": "1600 Park Ave",
-            "city": "Hoboken",
-            "state": "NJ",
-            "zipcode": "07030"
-        }
-    },
-    {
-        "name": "Nikky's Thrifting Tour",
-        "date": "05/10/2022",
-        "startTime": "11:59:00",
-        "host": "nsoriano@stevens.edu",
-        "description": "We thrift. Bring your credit cards!",
-        "capacity": 4,
-        "private": false,
-        "password": "",
-        "carpools": [],
-        "destination": {
-            "address": "144 12th Street",
-            "city": "New York City",
-            "state": "NY",
-            "zipcode": "10005"
-        }
-    },
-    {
-        "name": "Roland's Birthday",
-        "date": "01/10/2023",
-        "startTime": "00:00:00",
-        "host": "rtumboko@stevens.edu",
-        "description": "We have cake",
-        "capacity": 69,
-        "private": false,
-        "password": "",
-        "carpools": [],
-        "destination": {
-            "address": "123 N Union Ave",
-            "city": "Cranford",
-            "state": "NJ",
-            "zipcode": "07016"
-        }
-    },
-    {
-        "name": "FAST SAT Prep",
-        "date": "11/01/2022",
-        "startTime": "14:30:00",
-        "host": "tester@gmail.com",
-        "description": "Highest score gets to eat first",
-        "capacity": 40,
-        "private": false,
-        "password": "",
-        "carpools": [],
-        "destination": {
-            "address": "220 Washington St",
-            "city": "Hoboken",
-            "state": "NJ",
-            "zipcode": "07030"
-        }
+      "_id": "e55ee618-9a73-4872-a423-39191259f44d",
+      "driver": "349c5a9a-80bf-4021-9e03-368decf05a8a",
+      "departureTime": "04/01/2022 13:00:00",
+      "capacity": 3,
+      "members": [
+        "226ca6c6-fc37-420f-a90e-f04022d0063c"
+      ],
+      "comments": []
     }
-]
-}
+  ],
+  "destination": {
+    "_id": "49f99a65-655d-40ed-9060-ad8cca102681",
+    "address": "422 Monroe St",
+    "city": "Hoboken",
+    "state": "NJ",
+    "zipcode": "07030"
+  }
+},{
+  "_id": "80e9a819-7243-4584-a841-76313dc7f7cf",
+  "name": "Sophia Zuo's Track Meet",
+  "date": "05/11/2022",
+  "startTime": "09:30:00",
+  "host": "szuo1@stevens.edu",
+  "description": "Come watch me run fast",
+  "capacity": 69,
+  "private": false,
+  "password": "",
+  "carpools": [],
+  "destination": {
+    "_id": "abec4531-cda6-4643-a951-d0555cab8fe8",
+    "address": "Weehawken Public Playground",
+    "city": "Weehawken",
+    "state": "NJ",
+    "zipcode": "07086"
+  }
+},{
+  "_id": "daa6007e-647e-43a6-a98e-cb975488811a",
+  "name": "Johnny's Mango Taste Test Party",
+  "date": "05/15/2022",
+  "startTime": "16:00:00",
+  "host": "jwong9@stevens.edu",
+  "description": "Come drink alcohol with me to celebrate my 21st birthday 4 months late",
+  "capacity": 15,
+  "private": true,
+  "password": "$2a$10$UoPdV9ktpjCUVpCLysrX6u8aFDwus0hUPp2wrqpkFkzkn9/k1qDrO",
+  "carpools": [],
+  "destination": {
+    "_id": "693038d9-0f0c-44bc-9c31-07244e22952b",
+    "address": "603 Adams St",
+    "city": "Hoboken",
+    "state": "NJ",
+    "zipcode": "07030"
+  }
+},{
+  "_id": "5f46a60c-7b1a-46bb-a946-6d7c728fb6f8",
+  "name": "Patrick Hill's Dance Recital",
+  "date": "06/01/2022",
+  "startTime": "12:30:00",
+  "host": "phill123@stevens.edu",
+  "description": "Everyone is invited to dance to old rock songs with me!",
+  "capacity": 25,
+  "private": false,
+  "password": "",
+  "carpools": [],
+  "destination": {
+    "_id": "f7cf0a4e-e472-4b1e-8777-ebb289c4aecd",
+    "address": "1600 Park Ave",
+    "city": "Hoboken",
+    "state": "NJ",
+    "zipcode": "07030"
+  }
+},{
+  "_id": "5a221da7-d26e-461b-8214-e4f56a87735f",
+  "name": "Nikky's Thrifting Tour",
+  "date": "05/10/2022",
+  "startTime": "11:59:00",
+  "host": "nsoriano@stevens.edu",
+  "description": "We thrift. Bring your credit cards!",
+  "capacity": 4,
+  "private": false,
+  "password": "",
+  "carpools": [],
+  "destination": {
+    "_id": "aefe77cb-0faa-41ff-9485-34aaa5c192c6",
+    "address": "144 12th Street",
+    "city": "New York City",
+    "state": "NY",
+    "zipcode": "10005"
+  }
+},{
+  "_id": "184c9e03-ba56-4d7d-97e6-24fa79602713",
+  "name": "Roland's Birthday",
+  "date": "01/10/2023",
+  "startTime": "00:00:00",
+  "host": "rtumboko@stevens.edu",
+  "description": "We have cake",
+  "capacity": 69,
+  "private": false,
+  "password": "",
+  "carpools": [],
+  "destination": {
+    "_id": "7569f004-770d-42cc-9aa7-c11ca643686c",
+    "address": "123 N Union Ave",
+    "city": "Cranford",
+    "state": "NJ",
+    "zipcode": "07016"
+  }
+},{
+  "_id": "9e19faec-9e5f-4336-912e-80281626bab6",
+  "name": "FAST SAT Prep",
+  "date": "11/01/2022",
+  "startTime": "14:30:00",
+  "host": "tester@gmail.com",
+  "description": "Highest score gets to eat first",
+  "capacity": 40,
+  "private": false,
+  "password": "",
+  "carpools": [],
+  "destination": {
+    "_id": "973cfba5-ebc3-4669-b528-a5ff8d7b44cc",
+    "address": "220 Washington St",
+    "city": "Hoboken",
+    "state": "NJ",
+    "zipcode": "07030"
+  }
+}]
