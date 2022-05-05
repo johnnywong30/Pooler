@@ -32,7 +32,9 @@
       "departureTime": "04/01/2022 13:00:00",
       "capacity": 3,
       "members": [
-        "226ca6c6-fc37-420f-a90e-f04022d0063c"
+        "349c5a9a-80bf-4021-9e03-368decf05a8a",
+        "226ca6c6-fc37-420f-a90e-f04022d0063c",
+        "454e53cf-bc46-4e28-818c-60281be9a57c"
       ],
       "comments": []
     }

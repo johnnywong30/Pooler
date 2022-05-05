@@ -19,6 +19,7 @@ router
             const _poolId = req.params.id
             const _driver = await users.getUserById(pool.driver)
             const _driverName = `${_driver.firstName} ${_driver.lastName}`
+            const _driverNumber = _driver.phone
             const _departureTime = pool.departureTime
             const _capacity = pool.capacity
             let _memberData = pool.members.slice()
@@ -35,7 +36,7 @@ router
             const _eventName = event.name
             const _isUserInPool = (pool.members.indexOf(user._id) > -1)
             const _eventID = event._id
-            const args = {_poolId, _driverName, _departureTime, _capacity, _memberData, _numMembers, _comments, _eventName, _isUserInPool, _eventID}
+            const args = {_poolId, _driverName, _driverNumber, _departureTime, _capacity, _memberData, _numMembers, _comments, _eventName, _isUserInPool, _eventID}
             return res.render('templates/pool', args);
         } catch (e) {
             const states = Object.keys(US_States)
@@ -55,7 +56,7 @@ router
         try {
             const user = await users.getUser(req.session.user.email)
             const event = await events.getEventByPoolId(req.params.id)
-            const pool = await carpools.getPool(req.params.id)
+            const pool = await carpools.getPool(req.params.id)   
             await carpools.addPooler(event._id, pool._id, user._id)
         } catch (e) {
             console.log(e)
@@ -70,7 +71,9 @@ router
             const user = await users.getUser(req.session.user.email)
             const event = await events.getEventByPoolId(req.params.id)
             const pool = await carpools.getPool(req.params.id)
-            await carpools.deletePooler(event._id, pool._id, user._id)
+            if (!await carpools.deletePooler(event._id, pool._id, user._id)) {
+                return res.redirect(`/events/view/${event._id}`)
+            }
         } catch (e) {
             console.log(e)
         }

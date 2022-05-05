@@ -206,8 +206,21 @@ module.exports = {
 
 		sum = 0
 		for (carpool of event.carpools) {
-			sum += carpool.members.length + 1 //passengers + drivers
+			sum += carpool.members.length
 		}
 		return sum
 	},
+
+	async getAllMembers(_id) {
+		const id = checkId(_id);
+		// Check if event exists
+		const event = await this.getEvent(_id);
+		if (event === null) throw "Event does not exist";
+		
+		let membersList = []
+		for (pool of event.carpools) {
+			membersList = membersList.concat(pool.members)
+		}
+		return membersList
+	}
 };

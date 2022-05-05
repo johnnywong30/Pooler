@@ -90,7 +90,7 @@ router
             if (await events.occupance(req.params.id) < eventData.capacity) {
                 const userData = await users.getUser(req.session.user.email)
                 try {
-                    await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
+                    await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, `${eventData.date} ${eventData.startTime}`, 5)
                 } catch (e) {
                     console.log("Error creating driver: " + e)
                 }
@@ -106,7 +106,7 @@ router.route("/:id/join").post(async (req, res) => {
         const eventData = await events.getEvent(req.params.id)
         if (events.occupance(req.params.id) < eventData.capacity) {
             const userData = await users.getUser(req.session.user.email)
-            await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
+            await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, req.body.date, req.body.capacity) //TEST NUMBERS?
         }
         res.redirect(`/events/view/${req.params.id}`)
     } else {
