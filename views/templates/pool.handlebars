@@ -4,6 +4,9 @@
 </a>
 <div class="card px-3 pt-3" style="max-width: 32rem; margin:auto; transform: translate(0, 25%);">
     <div>
+        <div id="client-error" hidden>
+
+        </div>
         <div class="row mb-3">
             <div class="col-6">
                 <a href="/events/view/{{_eventID}}" class="text-info">
@@ -65,9 +68,9 @@
             </div>
             <div class="spacer"></div>
         {{/each}}
-        <form id="create-comment-form" action="/pool/createComment" method="POST">
-            <label for="create-comment-description">Comment</label>
-            <textarea id="create-comment-description" name="comment-description" required></textarea>
+        <form id="create-comment-form" action="/pool/:id/createComment" method="POST">
+            <label for="createCommentDescription">Comment</label>
+            <textarea id="createCommentDescription" name="createCommentDescription" required></textarea>
             <button class="comment-button" type="submit">Submit</button>
         </form>
     </div>

@@ -1,7 +1,10 @@
 const express = require('express');
-const { events, carpools, users } = require('../data')
-const US_States = require('../const/USStates.json')
+const { events, carpools, users, comments } = require('../data')
+const US_States = require('../const/USStates.json');
+const { create } = require('express-handlebars');
+const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver, checkZipcode, checkString } = require('../misc/validate')
 const router = express.Router();
+const xss = require('xss')
 
 router
     .route('/')
@@ -78,4 +81,43 @@ router
     })
 
 // add post routes for adding comment, deleting comment
+
+router
+    .route('/:id/createComment')
+    .post(async (req, res) => {
+        let { createCommentDescription } = req.body
+        // check if user, event, and pool exist. also check if it's valid comment
+        try {
+            const user = await users.getUser(req.session.user.email)
+            const event = await events.getEventByPoolId(req.params.id)
+            const pool = await carpools.getPool(req.params.id)
+            createCommentDescription = checkString(xss(createCommentDescription))
+        } catch(e) {
+            const templateData = {
+                error: e
+            }
+            return res.status(404).render(`templates/pool/${req.params.id}`, templateData)
+        }
+        // now we know the comment is ready to be made
+        try {
+            await 
+        } catch(e) {
+            const templateData = {
+                error: e
+            }
+            return res.status(404).render(`templates/pool/${req.params.id}`, templateData)
+        }
+        res.redirect(`/pool/${req.params.id}`)
+    })
+
+router
+    .route('/:id/deleteComment')
+    .post(async (req, res) => {
+        try {
+
+        } catch(e) {
+            console.log(e)
+        }
+        res.redirect(`/pool/${req.params.id}`)
+    })
 module.exports = router;
