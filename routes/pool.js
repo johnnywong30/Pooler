@@ -70,4 +70,10 @@ router
         res.redirect(`/pool/${req.params.id}`)
     })
 
-module.exports = router
+router.route("/leave/:id").get(async (req, res) => {
+    console.log(`LEAVE: ${req.params.id}`);
+    //await carpool.remove(getCurrentUser())
+    res.redirect(`/pool/${req.params.id}`);
+});
+
+module.exports = router;

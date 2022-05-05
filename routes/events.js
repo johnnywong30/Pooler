@@ -7,24 +7,23 @@ const xss = require('xss');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 
-
 router
-    .route('/') // event list the user can view
+    .route("/") // event list the user can view
     .get(async (req, res) => {
         if (req.session.user) {
             const templateData = {
                 states: Object.keys(US_States),
                 authenticated: true,
-                layout: 'custom'
-            }
-            return res.render('templates/eventlist', templateData)
+                layout: "custom",
+            };
+            return res.render("templates/eventlist", templateData);
         } else {
-            return res.redirect('/')
+            return res.redirect("/");
         }
-    })
+    });
 
 router
-    .route('/view/:id') // specific event page with details
+    .route("/view/:id") // specific event page with details
     .get(async (req, res) => {
         if (req.session.user) {
             try {
@@ -36,13 +35,13 @@ router
                 // if event has password, see if it is correct
                 if (private) {
                     // use a query instead of a POST for the password so users
-                    // can share the event link with their friends 
+                    // can share the event link with their friends
                     // and not have random strangers get it, unless they somehow get the link
                     // then that was the users' fault 🤷
                     // kinda like Zoom
-                    const pass = checkPassword(xss(req.query.pwd))
-                    const match = await bcrypt.compare(pass, password)
-                    if (!match) return res.redirect('/events')
+                    const pass = checkPassword(xss(req.query.pwd));
+                    const match = await bcrypt.compare(pass, password);
+                    if (!match) return res.redirect("/events");
                 }
                 const { address, city, state, zipcode } = destination
                 const displayAddress = `${address}, ${city}, ${state}, ${zipcode}`
@@ -74,135 +73,122 @@ router
                     authenticated: true
                 }
                 // render the event page
-                return res.render('templates/event', templateData)
+                return res.render("templates/event", templateData);
             } catch (e) {
-                return res.status(400).json({ error: 'Invalid password' })
+                return res.status(400).json({ error: "Invalid password" });
             }
         } else {
-            return res.redirect('/')
-        }
-    })
-
-router
-    .route('/join/:id')
-    .post(async (req, res) => {
-        if (req.session.user) {
-            // can only join if the event has sufficient room left; not at max capacity
-            // error on page if event is at max capacity
-            // redirect to GET /view/:id
-        } else {
-            return res.redirect('/')
-        }
-    })
-
-router
-    .route('/leave/:id')
-    .post(async (req, res) => {
-        if (req.session.user) {
-            // can only join if user is part of the event
-
-            // redirect to GET /view/:id
-        } else {
-            return res.redirect('/')
-        }
-    })
-
-router
-    .route('/list')
-    .get(async (req, res) => {
-        if (req.session.user) {
-            // fetch all events even if they're private
-            const importEvents = await events.getEvents()
-            const renderedEvents = importEvents.map(event => {
-                const dateParts = event.date.split('/') // [MM, DD, YYYY]
-                return {
-                    _id: event._id,
-                    month: months[dateParts[0]],
-                    date: dateParts[1],
-                    title: event.name,
-                    description: event.description,
-                    fullDate: event.date,
-                    private: event.private
-                }
-            })
-            try {
-                return res.json(renderedEvents)
-            } catch (e) {
-                return res.status(500).json({ error: e })
-            }
-        } else {
-            return res.redirect('/')
-        }
-    })
-
-router
-    .route('/createEvent')
-    .post(async (req, res) => {
-        if (req.session.user) {
-            const host = req.session.user.email
-            try {
-                const { name, date, startTime, description, capacity, private, password, destination } = req.body;
-                const _name = checkString(xss(name));
-                const _date = checkDate(xss(date));
-                const _startTime = checkTime(xss(startTime));
-                const _host = checkEmail(host); // should be in session
-                const _description = checkString(xss(description));
-                const _capacity = checkCapacity(capacity); // is a number
-                const _private = checkBool(private); // is a bool
-                const _pass = _private ? checkPassword(xss(password)) : null;
-                const _destination = checkAddress(destination);
-                const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass, );
-                
-                console.log(event)
-                return res.json({ success: true, eventId: event.eventId }).end()
-
-            } catch (e) {
-                console.log(e);
-                res.statusMessage = e;
-                return res.status(404).json({ errorMsg: e }).end();
-            }
-        }
-        else {
-            return res.redirect('/')
+            return res.redirect("/");
         }
     });
 
-router.get('/:id', async (req, res) => {
+router.route("/join/:id").post(async (req, res) => {
+    if (req.session.user) {
+        // can only join if the event has sufficient room left; not at max capacity
+        // error on page if event is at max capacity
+        // redirect to GET /view/:id
+    } else {
+        return res.redirect("/");
+    }
+});
+
+router.route("/leave/:id").post(async (req, res) => {
+    if (req.session.user) {
+        // can only join if user is part of the event
+        // redirect to GET /view/:id
+    } else {
+        return res.redirect("/");
+    }
+});
+
+router.route("/list").get(async (req, res) => {
+    if (req.session.user) {
+        // fetch all events even if they're private
+        const importEvents = await events.getEvents();
+        const renderedEvents = importEvents.map((event) => {
+            const dateParts = event.date.split("/"); // [MM, DD, YYYY]
+            return {
+                _id: event._id,
+                month: months[dateParts[0]],
+                date: dateParts[1],
+                title: event.name,
+                description: event.description,
+                fullDate: event.date,
+                private: event.private,
+            };
+        });
+        try {
+            return res.json(renderedEvents);
+        } catch (e) {
+            return res.status(500).json({ error: e });
+        }
+    } else {
+        return res.redirect("/");
+    }
+});
+
+router.route("/createEvent").post(async (req, res) => {
+    if (req.session.user) {
+        const host = req.session.user.email;
+        try {
+            const { name, date, startTime, description, capacity, private, password, destination } = req.body;
+            const _name = checkString(xss(name));
+            const _date = checkDate(xss(date));
+            const _startTime = checkTime(xss(startTime));
+            const _host = checkEmail(host); // should be in session
+            const _description = checkString(xss(description));
+            const _capacity = checkCapacity(capacity); // is a number
+            const _private = checkBool(private); // is a bool
+            const _pass = _private ? checkPassword(xss(password)) : null;
+            const _destination = checkAddress(destination);
+            const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
+
+            console.log(event);
+            return res.json({ success: true, eventId: event.eventId }).end();
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(404).json({ errorMsg: e }).end();
+        }
+    } else {
+        return res.redirect("/");
+    }
+});
+
+router.get("/:id", async (req, res) => {
     try {
-        const id = checkId(req.params.id)
-        const event = await events.getEvent(req.params.id)
+        const id = checkId(req.params.id);
+        const event = await events.getEvent(req.params.id);
         return res.status(200).json({ event });
     } catch (e) {
         return res.status(400).json({ error: e });
     }
-})
+});
 
-router
-    .delete('/:id', async (req, res) => {
-        try {
-            const id = checkId(req.params.id)
-            const event = await events.getEvent(id)
-            console.log(event)
-            await events.deleteEvent(id)
-            return res.status(200).json({ eventId: id, deleted: true });
-        } catch (e) {
-            return res.status(400).json({ error: e });
-        }
-    })
+router.delete("/:id", async (req, res) => {
+    try {
+        const id = checkId(req.params.id);
+        const event = await events.getEvent(id);
+        console.log(event);
+        await events.deleteEvent(id);
+        return res.status(200).json({ eventId: id, deleted: true });
+    } catch (e) {
+        return res.status(400).json({ error: e });
+    }
+});
 
-router
-    .post('/validateEvent/:id', async (req, res) => {
-        let auth = {}
-        try {
-            const id = checkId(xss(req.params.id));
-            const password = checkPassword(xss(req.body.password))
-            auth = await events.validateEvent(id, password)
-        } catch (e) {
-            return res.status(400).json({ error: e })
-        }
+router.post("/validateEvent/:id", async (req, res) => {
+    let auth = {};
+    try {
+        const id = checkId(xss(req.params.id));
+        const password = checkPassword(xss(req.body.password));
+        auth = await events.validateEvent(id, password);
+    } catch (e) {
+        return res.status(400).json({ error: e });
+    }
 
-        if (auth.authenticated) {
-            return res.status(200).json({ authenticated: true })
-        }
-    })
-module.exports = router
+    if (auth.authenticated) {
+        return res.status(200).json({ authenticated: true });
+    }
+});
+module.exports = router;
