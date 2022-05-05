@@ -1,35 +1,21 @@
 const express = require('express');
 const { checkEmail, checkPassword, checkName, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
 const router = express.Router();
-const fakeHistory = require('../const/seedhistory.json')
 const months = require('../const/months.json')
-module.exports = router;
+const { history, events } = require('../data')
+const xss = require('xss')
 
 router
     .route('/')
     .get(async (req, res) => {
         if (req.session.user) {
-            const importHistory = Object.values(fakeHistory)
-            
-            const renderedHistory = importHistory.map(history => {
-                const dateParts = history.date.split('/') // [MM, DD, YYYY]
-                // would need to get current user's history and pull that data
-                return {
-                    _id: history._id,
-                    month: months[dateParts[0]],
-                    date: dateParts[1],
-                    name: history.name,
-                    carpool: history.carpool,
-                    fullDate: history.date
-                }
-            })
             const templateData = {
                 authenticated: true,
-                history: renderedHistory,
                 layout: 'custom'
             }
             return res.render('templates/historyList', templateData)
-        }  else {
+        }  
+        else {
             return res.redirect('/')
         }
     })
@@ -38,24 +24,28 @@ router
     .route('/list')
     .get(async (req, res) => {
         if (req.session.user) {
-            const importHistory = Object.values(fakeHistory)
-            const renderedHistory = importHistory.map(history => {
-                const dateParts = history.date.split('/') // [MM, DD, YYYY]
-                // would need to get current user's history and pull that data
-                return {
-                    _id: history._id,
-                    month: months[dateParts[0]],
-                    date: dateParts[1],
-                    name: history.name,
-                    carpool: history.carpool,
-                    fullDate: history.date
-                }
-            })
-
+            const { email } = req.session.user
             try {
-                return res.json(renderedHistory)
+                const historyData = await history.getHistory(email) 
+                const detailedData = []
+                for await (const event of historyData.map(event => events.getEvent(event._id))) {
+                    const date = new Date(event.date)
+                    const month = months[date.getMonth() + 1]
+                    const info = {
+                        _id: event._id,
+                        date: `${date.getDate()}`,
+                        month: month,
+                        name: event.name,
+                        description: event.description,
+                        private: event.private
+                    }
+                    detailedData.push(info)
+                    
+                }
+                console.log(detailedData)
+                return res.json(detailedData)
             } catch (e) {
-                return res.status(500).json({ error: e })
+                return res.status(500).json({error: "Database error"})
             }
         } else {
             return res.redirect('/')

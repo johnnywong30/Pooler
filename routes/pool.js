@@ -2,6 +2,7 @@ const express = require('express');
 const { events, carpools, users, history } = require('../data')
 const US_States = require('../const/USStates.json')
 const router = express.Router();
+const xss = require('xss')
 const { checkId, checkEmail } = require('../misc/validate')
 
 router

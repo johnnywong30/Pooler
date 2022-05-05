@@ -25,6 +25,7 @@
     }
 
     let history = await $.get('/history/list')
+    console.log(history)
     const originalHistory = [...history]
     history.sort(sorts[toggle])
     
@@ -36,7 +37,8 @@
         dateContainer.append([date, month])
         const detailContainer = $(DOM.span, {'class': 'history-detail-container'})
         const title = $(DOM.span, {'class': 'history-title'}).text(`${history.name}`)
-        detailContainer.append([title])
+        const description = $(DOM.span, { 'class': 'history-description' }).text(`${history.description}`)
+        detailContainer.append([title, description])
         historyContainer.append([dateContainer, detailContainer])
         // spacer
         const spacer = $(DOM.div, {'class': 'spacer'})
