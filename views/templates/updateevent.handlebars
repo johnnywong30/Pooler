@@ -1,0 +1,29 @@
+<form id="edit-profile-form" action="/profile" method="POST">
+    <div class="section-container profile-container">
+        <div class="text-container account-info">
+            <h2 class="account-heading">
+                Update Event Information
+            </h2>
+            <div class="profile-form-item">
+                <input id="email" name="email" type="email" readonly='readonly' value="{{email}}"
+                    required />
+                <label for="email">Email</label>
+            </div>
+            <div class="profile-form-item">
+                <input class="editable" id="firstName" name="firstName" type="text" readonly='readonly'
+                    value="{{firstName}}" required />
+                <label for="firstName">First Name</label>
+            </div>
+            <div class="profile-form-item">
+                <input class="editable" id="lastName" name="lastName" type="text" readonly='readonly'
+                    value="{{lastName}}" required />
+                <label for="lastName">Last Name</label>
+            </div>
+            <div class="profile-form-item">
+                <input class="editable" id="phone" name="phone" type="tel" readonly='readonly'
+                    value="{{phone}}" required />
+                <label for="phone">Phone Number</label>
+            </div>
+        </div>
+    </div>
+</form>

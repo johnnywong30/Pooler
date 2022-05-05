@@ -28,7 +28,6 @@ router
                 history: renderedHistory,
                 layout: 'custom'
             }
-            console.log(renderedHistory)
             return res.render('templates/historyList', templateData)
         }  else {
             return res.redirect('/')
@@ -40,7 +39,6 @@ router
     .get(async (req, res) => {
         if (req.session.user) {
             const importHistory = Object.values(fakeHistory)
-                
             const renderedHistory = importHistory.map(history => {
                 const dateParts = history.date.split('/') // [MM, DD, YYYY]
                 // would need to get current user's history and pull that data
