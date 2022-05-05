@@ -52,7 +52,24 @@
                 </div>
             </div>
         {{/if}}
+    </div>
+    <div class="comments">
+        <h1>Comment Section</h1>
         {{!-- add an each here to deal with _comments --}}
+        {{#each _comments}}
+            <div class="comment-container">
+                <span class="comment-detail-container">
+                    <span class="comment-user">{{this.from}}</span>
+                    <span class="description">{{this.details}}</span>
+                </span>
+            </div>
+            <div class="spacer"></div>
+        {{/each}}
+        <form id="create-comment-form" action="/pool/createComment" method="POST">
+            <label for="create-comment-description">Comment</label>
+            <textarea id="create-comment-description" name="comment-description" required></textarea>
+            <button class="comment-button" type="submit">Submit</button>
+        </form>
     </div>
 
     <!-- News block -->
