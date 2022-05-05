@@ -1,5 +1,5 @@
 const express = require('express');
-const { events, users } = require('../data')
+const { events, users, carpools } = require('../data')
 const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const months = require('../const/months.json')
@@ -46,10 +46,11 @@ router
                 const { address, city, state, zipcode } = destination
                 const displayAddress = `${address}, ${city}, ${state}, ${zipcode}`
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
-                let isUserDriver = (userData._id === eventData.driver)
-                let occupied = 0;
+                //console.log(`${userData._id} in ${await events.getDrivers(req.params.id)}`)
+                const drivers = await events.getDrivers(req.params.id)
+                let isUserDriver = drivers.includes(userData._id)
+                let occupied = await events.occupance(req.params.id);
                 for (carpool of carpools) {
-                    occupied += carpool.members.length
                     let driver = await users.getUserById(carpool.driver)
                     carpool.driver = `${driver.firstName} ${driver.lastName}`
                     carpool.occupance = carpool.members.length
@@ -75,6 +76,7 @@ router
                 // render the event page
                 return res.render("templates/event", templateData);
             } catch (e) {
+                console.log(e)
                 return res.status(400).json({ error: "Invalid password" });
             }
         } else {
@@ -82,20 +84,39 @@ router
         }
     });
 
-router.route("/join/:id").post(async (req, res) => {
+    router.route("/:id/join").get(async (req, res) => { //This should be a POST method. Need to change to a form + button
+        if (req.session.user) {
+            const eventData = await events.getEvent(req.params.id)
+            if (await events.occupance(req.params.id) < eventData.capacity) {
+                const userData = await users.getUser(req.session.user.email)
+                try {
+                    await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
+                } catch (e) {
+                    console.log("Error creating driver: " + e)
+                }
+            }
+            res.redirect(`/events/view/${req.params.id}`)
+        } else {
+            return res.redirect("/");
+        }
+    });
+
+router.route("/:id/join").post(async (req, res) => {
     if (req.session.user) {
-        // can only join if the event has sufficient room left; not at max capacity
-        // error on page if event is at max capacity
-        // redirect to GET /view/:id
+        const eventData = await events.getEvent(req.params.id)
+        if (events.occupance(req.params.id) < eventData.capacity) {
+            const userData = await users.getUser(req.session.user.email)
+            await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
+        }
+        res.redirect(`/events/view/${req.params.id}`)
     } else {
         return res.redirect("/");
     }
 });
 
-router.route("/leave/:id").post(async (req, res) => {
+router.route("/:id/leave").post(async (req, res) => {
     if (req.session.user) {
-        // can only join if user is part of the event
-        // redirect to GET /view/:id
+        // No deletePool function made?
     } else {
         return res.redirect("/");
     }
@@ -143,7 +164,6 @@ router.route("/createEvent").post(async (req, res) => {
             const _destination = checkAddress(destination);
             const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
 
-            console.log(event);
             return res.json({ success: true, eventId: event.eventId }).end();
         } catch (e) {
             console.log(e);

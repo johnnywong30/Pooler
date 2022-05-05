@@ -69,6 +69,14 @@ module.exports = {
 		if (!event) throw `No event with Pool ID of ${_poolId}`;
 		return event;
 	},
+	async getDrivers(_id) {
+		// Initial Checks
+		const id = checkId(_id);
+		const collection = await events();
+		const event = await collection.findOne({ _id: id });
+		if (!event) throw `No event with Pool ID of ${_poolId}`;
+		return event.carpools.map(pool => pool.driver)
+	},
 	async getEvents() {
 		const collection = await events();
 		const eventList = await collection.find({}).toArray();
@@ -187,5 +195,19 @@ module.exports = {
 		const deletionInfo = await collection.deleteOne({ _id: id });
 		if (deletionInfo.deleteCount === 0) throw `Could not delete event of id ${_id}`;
 		return true;
+	},
+
+	async occupance(_id) {
+		const id = checkId(_id);
+		// Check if event exists
+		const collection = await events();
+		const event = await collection.findOne({ _id: id });
+		if (event === null) throw "Event does not exist";
+
+		sum = 0
+		for (carpool of event.carpools) {
+			sum += carpool.members.length + 1 //passengers + drivers
+		}
+		return sum
 	},
 };

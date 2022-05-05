@@ -29,10 +29,10 @@ module.exports = {
 		// Create carpool
 		const newCarpool = {
 			_id: uuidv4(),
-			driver: _driver,
+			driver: _driverId,
 			departureTime: _departureTime,
 			capacity: _capacity,
-			members: [_driverId],
+			members: [],
 			comments: [],
 		};
 		const updateEvents = await collection.updateOne({ _id: _eventId }, { $push: { carpools: newCarpool } });

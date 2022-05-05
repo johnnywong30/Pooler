@@ -11,7 +11,7 @@ const constructorMethod = (app) => {
     app.use('/pool', poolRouter) //change this to make more sense like '/events/pool'?
     app.use('/history', historyRouter)
     app.use('*', (req, res) => {
-        return res.status(404).json({ error: 'Route not found' });
+        return res.status(404).json({ error: `${req.method}: Route ${req.originalUrl} not found` });
     });
 };
 
