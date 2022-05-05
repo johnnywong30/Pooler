@@ -1,10 +1,10 @@
-const express = require("express");
-const { events } = require("../data");
-const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require("../misc/validate");
-const US_States = require("../const/USStates.json");
-const months = require("../const/months.json");
-const xss = require("xss");
-const bcrypt = require("bcryptjs");
+const express = require('express');
+const { events, users, carpools } = require('../data')
+const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkBool, checkVenmo, checkAddress, checkIsDriver, checkId, checkString, checkDate, checkTime, checkCapacity } = require('../misc/validate')
+const US_States = require('../const/USStates.json')
+const months = require('../const/months.json')
+const xss = require('xss');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 
 router
@@ -27,10 +27,11 @@ router
     .get(async (req, res) => {
         if (req.session.user) {
             try {
-                const id = checkId(xss(req.params.id));
-                const eventData = await events.getEvent(id);
-                const { name, date, startTime, host, description } = eventData;
-                const { capacity, carpools, destination, private, password } = eventData;
+                const id = checkId(xss(req.params.id))
+                const userData = await users.getUser(req.session.user.email)
+                const eventData = await events.getEvent(id)
+                const { name, date, startTime, host, description } = eventData
+                const { capacity, carpools, destination, private, password } = eventData
                 // if event has password, see if it is correct
                 if (private) {
                     // use a query instead of a POST for the password so users
@@ -42,9 +43,19 @@ router
                     const match = await bcrypt.compare(pass, password);
                     if (!match) return res.redirect("/events");
                 }
-                const { address, city, state, zipcode } = destination;
-                const displayAddress = `${address}, ${city}, ${state}, ${zipcode}`;
-                const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, "+");
+                const { address, city, state, zipcode } = destination
+                const displayAddress = `${address}, ${city}, ${state}, ${zipcode}`
+                const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
+                //console.log(`${userData._id} in ${await events.getDrivers(req.params.id)}`)
+                const drivers = await events.getDrivers(req.params.id)
+                let isUserDriver = drivers.includes(userData._id)
+                let occupied = await events.occupance(req.params.id);
+                for (carpool of carpools) {
+                    let driver = await users.getUserById(carpool.driver)
+                    carpool.driver = `${driver.firstName} ${driver.lastName}`
+                    carpool.occupance = carpool.members.length
+                }
+                
                 const templateData = {
                     name: name,
                     date: date,
@@ -52,17 +63,20 @@ router
                     host: host,
                     description: description,
                     capacity: capacity,
-                    occupied: 0, // TODO compute this valued
+                    occupied: occupied,
                     carpools: carpools,
                     destination: destination,
                     googleMapsUrl: googleMapsUrl,
                     displayAddress: displayAddress,
-                    layout: "custom",
-                    authenticated: true,
-                };
+                    layout: 'custom',
+                    isUserDriver: isUserDriver,
+                    eventID: req.params.id,
+                    authenticated: true
+                }
                 // render the event page
                 return res.render("templates/event", templateData);
             } catch (e) {
+                console.log(e)
                 return res.status(400).json({ error: "Invalid password" });
             }
         } else {
@@ -70,20 +84,39 @@ router
         }
     });
 
-router.route("/join/:id").post(async (req, res) => {
+    router.route("/:id/join").get(async (req, res) => { //This should be a POST method. Need to change to a form + button
+        if (req.session.user) {
+            const eventData = await events.getEvent(req.params.id)
+            if (await events.occupance(req.params.id) < eventData.capacity) {
+                const userData = await users.getUser(req.session.user.email)
+                try {
+                    await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
+                } catch (e) {
+                    console.log("Error creating driver: " + e)
+                }
+            }
+            res.redirect(`/events/view/${req.params.id}`)
+        } else {
+            return res.redirect("/");
+        }
+    });
+
+router.route("/:id/join").post(async (req, res) => {
     if (req.session.user) {
-        // can only join if the event has sufficient room left; not at max capacity
-        // error on page if event is at max capacity
-        // redirect to GET /view/:id
+        const eventData = await events.getEvent(req.params.id)
+        if (events.occupance(req.params.id) < eventData.capacity) {
+            const userData = await users.getUser(req.session.user.email)
+            await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
+        }
+        res.redirect(`/events/view/${req.params.id}`)
     } else {
         return res.redirect("/");
     }
 });
 
-router.route("/leave/:id").post(async (req, res) => {
+router.route("/:id/leave").post(async (req, res) => {
     if (req.session.user) {
-        // can only join if user is part of the event
-        // redirect to GET /view/:id
+        // No deletePool function made?
     } else {
         return res.redirect("/");
     }
@@ -131,7 +164,6 @@ router.route("/createEvent").post(async (req, res) => {
             const _destination = checkAddress(destination);
             const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
 
-            console.log(event);
             return res.json({ success: true, eventId: event.eventId }).end();
         } catch (e) {
             console.log(e);

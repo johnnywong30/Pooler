@@ -51,8 +51,8 @@ module.exports = {
 		if (!fullName) throw `full name must be supplied`;
 		let data = fullName.split(" ");
 		if (data.length !== 2) throw `invalid fullName`;
-		module.exportsCheckFirstName(fullName[0]);
-		module.exportsChckLastName(fullName[1]);
+		module.exports.checkFirstName(fullName[0]);
+		module.exports.checkLastName(fullName[1]);
 		return fullName;
 	},
 	checkPhone(phoneNum) {
