@@ -35,14 +35,14 @@ router
                         _id: event._id,
                         date: `${date.getDate()}`,
                         month: month,
+                        fullDate: event.date,
                         name: event.name,
                         description: event.description,
-                        private: event.private
+                        private: event.private,
+                        password: event.password
                     }
-                    detailedData.push(info)
-                    
+                    detailedData.push(info)   
                 }
-                console.log(detailedData)
                 return res.json(detailedData)
             } catch (e) {
                 return res.status(500).json({error: "Database error"})

@@ -2,7 +2,8 @@
 
     const DOM = {
         div: '<div></div>',
-        span: '<span></span>'
+        span: '<span></span>',
+        a: '<a></a>'
     }
 
     let historyList = $('#historyList'),
@@ -28,22 +29,29 @@
     console.log(history)
     const originalHistory = [...history]
     history.sort(sorts[toggle])
-    
+
     const createHistoryItem = (history) => {
-        const historyContainer = $(DOM.div, {'class': 'history-container'})
-        const dateContainer = $(DOM.span, {'class': 'history-date-container'})
-        const date = $(DOM.span, {'class': 'date'}).text(`${history.date}`)
-        const month = $(DOM.span, {'class': 'month'}).text(`${history.month}`)
+        const { private } = history
+        let eventLink;
+        eventLink = $(DOM.a)
+        const password = private ? `?pwd=${history.password}` : ''
+        const link = `/events/view/${history._id}${password}`
+        eventLink.attr('href', link)
+        const historyContainer = $(DOM.div, { 'class': 'history-container' })
+        const dateContainer = $(DOM.span, { 'class': 'history-date-container' })
+        const date = $(DOM.span, { 'class': 'date' }).text(`${history.date}`)
+        const month = $(DOM.span, { 'class': 'month' }).text(`${history.month}`)
         dateContainer.append([date, month])
-        const detailContainer = $(DOM.span, {'class': 'history-detail-container'})
-        const title = $(DOM.span, {'class': 'history-title'}).text(`${history.name}`)
+        const detailContainer = $(DOM.span, { 'class': 'history-detail-container' })
+        const title = $(DOM.span, { 'class': 'history-title' }).text(`${history.name}`)
         const description = $(DOM.span, { 'class': 'history-description' }).text(`${history.description}`)
         detailContainer.append([title, description])
         historyContainer.append([dateContainer, detailContainer])
+        eventLink.append(historyContainer)
         // spacer
-        const spacer = $(DOM.div, {'class': 'spacer'})
+        const spacer = $(DOM.div, { 'class': 'spacer' })
         return {
-            item: historyContainer,
+            item: eventLink,
             spacer: spacer
         }
     }
@@ -60,12 +68,12 @@
     pastButton.on('click', (e) => {
         e.preventDefault()
         var d = new Date();
-        var strDate = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+        var strDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
         history = [...originalHistory].filter(history => {
             const historyDate = history.fullDate
             return new Date(strDate) > new Date(historyDate)
         })
-        
+
         toggle = 1
         history.sort(sorts[toggle])
         populateList(history)
@@ -73,9 +81,9 @@
 
     upcomingButton.on('click', (e) => {
         e.preventDefault()
-        
+
         var d = new Date();
-        var strDate = (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+        var strDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
         history = [...originalHistory].filter(history => {
             const historyDate = history.fullDate
             return new Date(strDate) < new Date(historyDate)
