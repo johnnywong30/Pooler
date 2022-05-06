@@ -53,13 +53,14 @@
                     const reqBody = {
                         commentId: commentId
                     }
-                    const response = await $.post(`/pool${_poolId}/deleteComment`, reqBody)
+                    const response = await $.post(`/pool/${_poolId}/deleteComment`, reqBody)
+                    console.log(`response: ${response}`)
                     if (response.success) {
                         comments = await $.get(`/pool/${_poolId}/comments`)
                         populateComments(comments)
                     }
                 } catch (error) {
-                    createError(commentError, "Unable to make remove button")
+                    createError(commentError, "Unable to remove")
                 }
             })
             commentContainer.append(removeButton)

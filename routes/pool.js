@@ -121,13 +121,19 @@ router
     .route('/:id/deleteComment')
     .post(async (req, res) => {
         let { commentId } = req.body
+        console.log('i am groot')
         try {
-
+            commentId = checkId(xss(commentId))
+            const _poolId = checkId(xss(req.params.id))
+            const event = await events.getEventByPoolId(_poolId)
+            console.log("ASHDIasdKAS")
+            const comment = await comments.deleteComment(event._id, _poolId, commentId)
+            console.log("ASHDIKAS")
+            return res.json({ success: true, commentDeleted: comment})
         } catch(e) {
             console.log(e)
             res.statusMessage = e;
             return res.status(404).json({ errorMsg: e}).end()
         }
-        res.redirect(`/pool/${req.params.id}`)
     })
 module.exports = router;

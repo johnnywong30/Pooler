@@ -69,13 +69,15 @@ module.exports = {
         if (!carpool) throw `Error: getComment carpool ${_poolId} does not exist`
         const comment = carpool.comments.find(comment => comment._id === _commentId)
         if (!comment) throw `Error: getComment comment ${commentId} does not exist`
+        const newComments = carpool.comments.filter((x) => x._id !== _commentId)
         const updateCarpool = await eventCollection.updateOne(
-            { _id: _eventId, "carpools._id": _poolId },
-            { $pull: {"carpools.$.comments._id": _commentId} }
+            {_id: _eventId, "carpools._id": _poolId},
+            { $set: {"carpools.$.comments": newComments} }
         )
-        if (updateCarpool.modifiedCount === 0) throw `Error: could not createComment successfully`
+        if (updateCarpool.modifiedCount === 0) throw `Error: could not deleteComment successfully`
         return { commentDeleted: true }
     },
+    //we don't need to code this, but here if we do
     async updateComment(eventId, poolId, commentId, details) {
         let _eventId = checkId(eventId)
         let _poolId = checkId(poolId)
