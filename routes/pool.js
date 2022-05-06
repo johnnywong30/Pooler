@@ -1,10 +1,32 @@
 const express = require("express");
 const { events, carpools, users } = require("../data");
 const US_States = require("../const/USStates.json");
+const { checkId, checkFullName, checkDateTime, checkCapacity, checkName } = require("../misc/validate");
 const router = express.Router();
 
 router.route("/").get(async (req, res) => {
 	return res.redirect("/events");
+});
+
+router.route("/create/pool").post(async (req, res) => {
+	if (req.session.user) {
+		try {
+			const { eventId, driver, driverId, capacity, departureTime } = req.body;
+			const _eventId = checkId(eventId);
+			const _driver = checkFullName(driver);
+			const _driverId = checkId(driverId);
+			const _capacity = checkCapacity(capacity); // is a number
+			const _departureTime = checkDateTime(departureTime);
+			const pool = await carpools.createPool(_eventId, _driverId, _driver, _departureTime, _capacity);
+			return res.json({ success: true, poolId: pool._id }).end();
+		} catch (e) {
+			console.log(e);
+			res.statusMessage = e;
+			return res.status(404).json({ errorMsg: e }).end();
+		}
+	} else {
+		return res.redirect("/");
+	}
 });
 
 router.route("/:id").get(async (req, res) => {
@@ -49,7 +71,6 @@ router.route("/list/:id").get(async (req, res) => {
 			const pool = await carpools.getPools(req.params.id);
 			const _poolId = req.params.id;
 			const importCarpools = await carpools.getPools(_poolId);
-			console.log(importCarpools);
 			return res.json(importCarpools);
 		} catch (e) {
 			console.log(e);
@@ -60,25 +81,24 @@ router.route("/list/:id").get(async (req, res) => {
 	}
 });
 
-// router.route("/data/:id").get(async (req, res) => {
-// 	if (req.session.user) {
-// 		try {
-// 			const user = await users.getUserById(req.params.id);
-// 			return res.json(user);
-// 		} catch (e) {
-// 			console.log(e);
-// 			return res.status(500).json({ error: e });
-// 		}
-// 	} else {
-// 		res.redirect("/");
-// 	}
-// });
-
-router.route("/data").get(async (req, res) => {
+router.route("/currentUser/data").get(async (req, res) => {
 	if (req.session.user) {
 		try {
-			console.log(req.session.user.email);
 			const user = await users.getUser(req.session.user.email);
+			return res.json(user);
+		} catch (e) {
+			console.log(e);
+			return res.status(500).json({ error: e });
+		}
+	} else {
+		res.redirect("/");
+	}
+});
+
+router.route("/user/:id").get(async (req, res) => {
+	if (req.session.user) {
+		try {
+			const user = await users.getUserById(req.params.id);
 			return res.json(user);
 		} catch (e) {
 			console.log(e);

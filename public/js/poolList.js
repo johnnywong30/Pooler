@@ -8,32 +8,49 @@
 		return trimmed;
 	};
 
-	checkId = id => {
-		if (!id) throw `id does not exist`;
-		if (typeof id !== "string") throw `id is not a string`;
-		if (id.includes(" ")) throw `id cannot contain spaces`;
-		if (id.length < 1) throw `id cannot be empty`;
-		const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
-		if (!regexExp.test(id)) throw `id is invalid`;
-		return id;
-	};
-
 	checkFullName = fullName => {
 		if (!fullName) throw `full name must be supplied`;
 		let data = fullName.split(" ");
 		if (data.length !== 2) throw `invalid fullName`;
-		module.exportsCheckFirstName(fullName[0]);
-		module.exportsChckLastName(fullName[1]);
+		checkString(fullName[0]);
+		checkString(fullName[1]);
 		return fullName;
 	};
 
+	checkDate = date => {
+		if (!date) throw `date ${date} must be supplied`;
+		//check if date is in acceptable format
+		let data = date.split("-");
+		if (data.length !== 3) throw `invalid date ${date}`;
+		date = [data[1], data[2], data[0]].join("/");
+		date = new Date(date);
+		// https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
+		if (date instanceof Date && isNaN(date.getTime())) {
+			throw `invalid date ${date}`;
+		}
+		let year = date.getFullYear();
+		let month = (1 + date.getMonth()).toString().padStart(2, "0");
+		let day = date.getDate().toString().padStart(2, "0");
+		return month + "/" + day + "/" + year;
+	};
+
+	// checks if the time is in military format
+	checkTime = time => {
+		if (!time) throw `time must be supplied`;
+		//modified from https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s06.html
+		const regex = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$";
+		const _time = time.trim();
+		let matches = _time.match(regex);
+		if (!matches) throw `${_time} is not in a valid military time format`;
+		return _time;
+	};
 	checkDateTime = dateTime => {
 		if (!dateTime) throw `date and time must be supplied`;
-		let data = dateTime.split(" ");
-		if (data.length !== 2) throw `invalid date and time`;
-		module.exports.checkDate(data[0]);
-		module.exports.checkTime(data[1]);
-		return dateTime;
+		let data = dateTime.split("T");
+		if (data.length !== 2) throw `invalid date and time ${dateTime}`;
+		data[0] = checkDate(data[0]);
+		data[1] = checkTime(`${data[1]}:00`);
+		return data.join(" ");
 	};
 
 	checkCapacity = capacity => {
@@ -92,7 +109,6 @@
 	});
 
 	// let pools = await $.get(`/pool/list/${hostPoolEventId}`); // route that gets all possible pools for a given event
-
 	let pools = await $.get(`/pool/list/c351bd0b-0bc2-442b-a400-1a1ee368ce4a`); // route that gets all possible pools for a given event
 	// console.log(pools);
 
@@ -101,14 +117,14 @@
 		poolLink.attr("href", `/pool/${pool._id}`); // route to view an individual pool
 
 		// pool container
-		// const driverData = await $.get(`/pool/data/${pool.driver}`);
-		// const driverName = [driverData.firstName, driverData.lastName].join(" ");
+		const driverData = await $.get(`/pool/user/${pool.driver}`);
+		const driverName = [driverData.firstName, driverData.lastName].join(" ");
 		const poolContainer = $(DOM.div, { class: "pool-container" });
 		const departureTimeContainer = $(DOM.span, { class: "pool-departureTime-container" });
 		const departureTime = $(DOM.span, { class: "departureTime" }).text(`${pool.departureTime}`);
 		departureTimeContainer.append([departureTime]);
 		const detailContainer = $(DOM.span, { class: "pool-detail-container" });
-		const driver = $(DOM.span, { class: "pool-driver" }).text(`${pool.driver}`);
+		const driver = $(DOM.span, { class: "pool-driver" }).text(`${driverName}`);
 		const capacity = $(DOM.span, { class: "pool-capacity" }).text(`${pool.capacity}`);
 		detailContainer.append([driver, capacity]);
 		poolContainer.append([departureTimeContainer, detailContainer]);
@@ -149,37 +165,37 @@
 	// Host pool Functionality
 	hostPoolForm.on("submit", async e => {
 		e.preventDefault();
-		try {
-			const eventId = checkId(xss(hostPoolEventId[0].value));
-			const driver = checkFullName(hostPoolDriver[0].value);
-			const driverId = checkId(xss(hostPoolDriverId[0].value));
-			const departureTime = checkDateTime(hostPoolDepartureTime[0].value);
-			const capacity = checkCapacity(hostPoolCapacity[0].value);
+		// try {
+		let eventId = $("#eventId").val();
+		const driverData = await $.get(`/pool/currentUser/data`);
+		let driver = checkFullName([driverData.firstName, driverData.lastName].join(" "));
+		let driverId = driverData._id;
+		let departureTime = checkDateTime(hostPoolDepartureTime[0].value);
+		let capacity = checkCapacity(hostPoolCapacity[0].value);
 
-			const reqBody = {
-				eventId: eventId,
-				driver: driver,
-				driverId: driverId,
-				departureTime: departureTime,
-				capacity: capacity,
-			};
+		let reqBody = {
+			eventId: eventId,
+			driverId: driverId,
+			driver: driver,
+			departureTime: departureTime,
+			capacity: capacity,
+		};
 
-			const response = await $.post("/pool/createPool", reqBody); // make route to create pools
-			if (response.success) {
-				hostPoolForm[0].reset();
-				pools = await $.get(`/pool/list/${hostPoolEventId}`);
-				populateList(pools);
-				hostPoolModal.css({
-					opacity: 0,
-					visibility: "hidden",
-				});
-				// go to pool's page
-				let page = `/pool/${response.poolId}`;
-				window.location.href = page;
-			}
-		} catch (error) {
-			createError(hostErrorDiv, `Error: ${error}`);
+		const response = await $.post("/pool/create/pool", reqBody); // make route to create pools
+		if (response.success) {
+			hostPoolForm[0].reset();
+			pools = await $.get(`/pool/list/${eventId}`);
+			populateList(pools);
+			hostPoolModal.css({
+				opacity: 0,
+				visibility: "hidden",
+			});
+			let page = `/pool/${response.poolId}`;
+			window.location.href = page;
 		}
+		// } catch (error) {
+		// 	createError(hostErrorDiv, `Error: ${error}`);
+		// }
 	});
 
 	// Initial populate event list

@@ -38,7 +38,8 @@ module.exports = {
 		const updateEvents = await collection.updateOne({ _id: _eventId }, { $push: { carpools: newCarpool } });
 		if (updateEvents.modifiedCount === 0) throw "Could not add carpool successfully";
 		// On success
-		return { carpoolRegistered: true };
+		const carpool = await this.getPool(newCarpool._id);
+		return carpool;
 	},
 	async addPooler(eventId, poolId, userId) {
 		// Inital Checks
