@@ -1,16 +1,16 @@
-	/**********************
+/**********************
   History Page CSS
   ***********************/
 
 .history-calendar {
-    margin-top: 15px;
-    font-size: 14px;
-    overflow: hidden;
-    white-space: nowrap;
+  margin-top: 15px;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 #history {
-    padding-top: 55px;
+  padding-top: 55px;
 }
 
 .history-list {
@@ -30,7 +30,7 @@
   border-left: 3px solid;
   padding-top: 10px;
   padding-bottom: 15px;
-  
+
 }
 
 .history-container:hover {
@@ -62,11 +62,23 @@
   text-transform: uppercase;
 }
 
+.history-detail-container {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 3px;
+}
+
 .history-detail-container>.history-title {
   text-transform: uppercase;
   font-family: var(--montserrat);
   font-weight: 400;
   font-size: 1.5em;
+}
+
+.history-detail-container>.history-description {
+  display: block;
+  font-family: var(--montserrat);
+  font-size: 0.9em;
 }
 
 .history-button-sort-section {
@@ -76,7 +88,7 @@
 }
 
 .history-sort-button {
-  padding: 5px 10px 5px 10px;  
+  padding: 5px 10px 5px 10px;
   margin: 0;
   transition: all 0.2s ease;
 }

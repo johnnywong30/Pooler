@@ -1,7 +1,9 @@
 const express = require('express');
-const { events, carpools, users } = require('../data')
+const { events, carpools, users, history } = require('../data')
 const US_States = require('../const/USStates.json')
 const router = express.Router();
+const xss = require('xss')
+const { checkId, checkEmail } = require('../misc/validate')
 
 router
     .route('/')
@@ -13,10 +15,11 @@ router
     .route('/:id')
     .get(async (req, res) => {
         try {
-            const user = await users.getUser(req.session.user.email)
-            const event = await events.getEventByPoolId(req.params.id)
-            const pool = await carpools.getPool(req.params.id)
-            const _poolId = req.params.id
+            const email = checkEmail(xss(req.session.user.email))
+            const _poolId = checkId(xss(req.params.id))
+            const user = await users.getUser(email)
+            const event = await events.getEventByPoolId(_poolId)
+            const pool = await carpools.getPool(_poolId)
             const _driver = await users.getUserById(pool.driver)
             const _driverName = `${_driver.firstName} ${_driver.lastName}`
             const _departureTime = pool.departureTime
@@ -35,7 +38,7 @@ router
             const _eventName = event.name
             const _isUserInPool = (pool.members.indexOf(user._id) > -1)
             const _eventID = event._id
-            const args = {_poolId, _driverName, _departureTime, _capacity, _memberData, _numMembers, _comments, _eventName, _isUserInPool, _eventID}
+            const args = { _poolId, _driverName, _departureTime, _capacity, _memberData, _numMembers, _comments, _eventName, _isUserInPool, _eventID }
             return res.render('templates/pool', args);
         } catch (e) {
             const states = Object.keys(US_States)
@@ -45,18 +48,22 @@ router
             }
             return res.status(400).render('templates/error', templateData)
         }
-        
+
     })
 
-    
+
 router
     .route('/:id/join')
     .get(async (req, res) => {
         try {
-            const user = await users.getUser(req.session.user.email)
-            const event = await events.getEventByPoolId(req.params.id)
-            const pool = await carpools.getPool(req.params.id)
+            const email = checkEmail(xss(req.session.user.email))
+            const _poolId = checkId(xss(req.params.id))
+            const user = await users.getUser(email)
+            const event = await events.getEventByPoolId(_poolId)
+            const pool = await carpools.getPool(_poolId)
             await carpools.addPooler(event._id, pool._id, user._id)
+            // add event to history
+            await history.addToHistory(user._id, event._id, pool._id)
         } catch (e) {
             console.log(e)
         }
@@ -67,10 +74,13 @@ router
     .route('/:id/leave')
     .get(async (req, res) => {
         try {
-            const user = await users.getUser(req.session.user.email)
-            const event = await events.getEventByPoolId(req.params.id)
-            const pool = await carpools.getPool(req.params.id)
+            const email = checkEmail(xss(req.session.user.email))
+            const _poolId = checkId(xss(req.params.id))
+            const user = await users.getUser(email)
+            const event = await events.getEventByPoolId(_poolId)
+            const pool = await carpools.getPool(_poolId)
             await carpools.deletePooler(event._id, pool._id, user._id)
+            await history.removeFromHistory(user._id, event._id, pool._id)
         } catch (e) {
             console.log(e)
         }
