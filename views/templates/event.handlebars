@@ -6,80 +6,25 @@
                     {{name}}
                 </h1>
             </div>
-
-            <div class="button-section">
-                {{> updateeventbutton}}
-                {{> deleteeventbutton}}
-            </div>
-
             <div class="section-container">
-                <form id="edit-event-form" action="/event" method="POST">
-                    <div class="section-container event-update-container">
-                        <div class="text-container account-info">
-                            <h2 class="event-details-heading">
-                                Event Details
-                            </h2>
-                            <dl class="event-details" id="host">
-                                <dt class="event-detail-label dt-inline">Host</dt>
-                                <dd class="event-detail-info dd-inline">{{host}}</dd>
-                            </dl>
-                            <div class="event-form-item">
-                                <input class="editable" id="name" name="name" type="text" readonly='readonly'
-                                    value="{{name}}" required />
-                                <label for="name">Name</label>
-                            </div>
-                            <div class="event-form-item">
-                                <input class="editable" id="date" name="date" type="text" readonly='readonly'
-                                    value="{{date}}" required />
-                                <label for="date">Date</label>
-                            </div>
-                            <div class="event-form-item">
-                                <input class="editable" id="time" name="time" type="text" readonly='readonly'
-                                    value="{{startTime}}" required />
-                                <label for="time">Time</label>
-                            </div>
-                            <div class="event-form-item">
-                            <input class="editable" id="street" name="street" type="text" readonly='readonly'
-                                value="{{street}}" required />
-                            <label for="street">Street</label>
-                            </div>
-                            <div class="address-form-container">
-                                <div class="city-input-container">
-                                    <input class="editable address-input city-input" id="city" name="city" type="text"
-                                        readonly='readonly' value="{{city}}" required />
-                                    <label class="address-label city-label" for="city">City</label>
-                                </div>
-                                <div class="zip-input-container">
-                                    <input class="editable address-input zip-input" id="zipcode" name="zipcode"
-                                        type="number" readonly='readonly' value="{{zipcode}}" required />
-                                    <label class="address-label zip-label" for="zipcode">Zip</label>
-                                </div>
-                                <div class="state-input-container">
-                                    <select class="address-input state-select" id="state" name="state" aria-label="state"
-                                        data-value="{{State}}"
-                                        
-                                        onfocus="this.setAttribute('data-value', this.value);"
-                                        onchange="this.value = this.getAttribute('data-value');" required>
-                                        <option class="state-option" label="State"></option>
-                                        {{#each states}}
-                                            <option class="state-option" value={{this}} {{#ifEq this ../state }}selected="selected"{{/ifEq}}>{{this}}</option>
-                                        {{/each}}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="event-form-item">
-                                <input class="editable" id="description" name="description" type="text" readonly='readonly'
-                                    value="{{description}}" required />
-                                <label for="description">Description</label>
-                            </div>
-                            <div class="bottom-profile-button-container">
-                                <button class="profile-button" id="cancelBtn" disabled="disabled">Cancel</button>
-                                <button class="profile-button" type="submit" id="saveChangesBtn" disabled="disabled">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                <div class="text-container event-details-container">
+                    <h2 class="event-details-heading">
+                        Details
+                    </h2>
+                    <dl class="event-details">
+                        <dt class="event-detail-label dt-inline">Host</dt>
+                        <dd class="event-detail-info dd-inline">{{host}}</dd>
 
+                        <dt class="event-detail-label dt-inline">Time</dt>
+                        <dd class="event-detail-info dd-inline">{{date}} {{startTime}}</dd>
+
+                        <dt class="event-detail-label dt-inline">Address</dt>
+                        <dd class="event-detail-info dd-inline">{{displayAddress}}</dd>
+
+                        <dt class="event-detail-label">Description</dt>
+                        <dd class="event-detail-info">{{description}}</dd>
+                    </dl>
+                </div>
                 <div class="text-container event-carpool-container">
                     <h2 class="event-details-heading">
                         Carpools
@@ -87,134 +32,55 @@
                     <dl class="event-details">
                         <dt class="event-detail-label dt-inline">Capacity</dt>
                         <dd id="capacity" class="event-detail-info dd-inline">{{occupied}}/{{capacity}}</dd>
+
+                        {{! TODO Client side js to render carpools here }}
+                        {{! TODO To join an event, you must join a carpool with open seats }}
                     </dl>
-                    {{#each carpools}}
-                    <div>
-                        <div class="col-6" style="float:left;">
-                            <p>{{this.driver}}</p>
-                            <p class="mb-2">{{this.occupance}}/{{this.capacity}}</p>
-                        </div>
-
-                        <div class="col-6" style="float: right; transform: translateY(50%);     margin-left: 10px;">
-                            <a href="/pool/{{this._id}}" class="btn align-center text-small btn-2">Join Pool</a>
-                        </div>
-                    </div>
-                    {{/each}}
-                    {{#if isUserDriver}}
-                    <div class="row mb-4 pb-2" >
-                        <div class="col-12">
-                        {{!-- <a href="/events/{{eventID}}/leave" method="POST" class="btn align-center text-small btn-2">Leave Drivers</a> --}}
-                        </div>
-                    </div>
-                    {{else}}
-                    <div class="row mb-4 pb-2" >
-                        <div class="col-12" style="text-align: center">
-                        <a href="/events/{{eventID}}/join" method="POST" class="btn align-center text-small btn-2">Become a Driver</a>
-                        </div>
-                    </div>
-                    {{/if}}   
                 </div>
-                {{!-- ??? what is this --}}
-                {{!-- <div class="event-calendar">
-                    {{> eventsorts}}
-                    <div id="eventList" class="event-list">
-
-                    </div>
-                    <div id="password-modal" class="modal-box">
-                        <div class="modal-content">
-                            <h1 class="modal-title">Private Event</h1>
-                            <form id="private-event-form" action="/" method="POST" autocomplete="off">
-                                <div id="client-error" class="modal-error" hidden>
+                <div class="container">
+                    <div id="pools" class="section-container">
+                        <section class = "section">
+                            <div class = "pool-calendar">
+                                {{> poolhost}}
+                                <div id="poolList" class="pool-list">
 
                                 </div>
-                                <div class="profile-form-item">
-                                    <input id="private-event-password" name="password" type="password" required />
-                                    <label for="private-event-password">Password</label>
-                                </div>
-                                <div class="modal-footer">
-                                    <button id="private-event-submit" class="submit-btn" type="submit"
-                                        value="submit">Submit</button>
-                                </div>
-                            </form>
-                            <span id="modal-close-btn" class="modal-close">&times;</span>
-                        </div>
-                    </div>
+                                <div id="host-modal" class="modal-box">
+                                    <div class="modal-content">
+                                        <h1 class="modal-title">Host a Pool</h1>
+                                        <form id="host-pool-form" method="POST" autocomplete="off">
+                                            <div id="host-pool-error" class="modal-error" hidden>
+                                            </div>
 
-                    <div id="host-modal" class="modal-box">
-                        <div class="modal-content">
-                            <h1 class="modal-title">Host an Event</h1>
-                            <form id="host-event-form" method="POST" autocomplete="off">
-                                <div id="host-event-error" class="modal-error" hidden>
+                                            <div class="profile-form-item host-event-4">
+                                                <input id="host-pool-departureTime" class="event-col-3" name="time" type="datetime-local"
+                                                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required />
+                                                <label class="col-3-label" for="host-pool-departureTime">Time</label>
 
-                                </div>
-                                
-                                <div class="profile-form-item">
-                                    <input id="host-event-name" name="name" type="text" required />
-                                    <label for="host-event-name">Event Name</label>
-                                </div>
-                                <div class="profile-form-item host-event-4">
-                                    <input id="host-event-time" class="event-col-3" name="time" type="datetime-local"
-                                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required />
-                                    <label class="col-3-label" for="host-event-time">Time</label>
-                                    <input id="host-event-capacity" class="event-col-1" name="capacity" type="number"
-                                        min="1" required />
-                                    <label class="col-1-label" for="host-event-capacity">Capacity</label>
-                                </div>
-                                <div class="profile-form-item">
-                                    <textarea id="host-event-description" name="description" required></textarea>
-                                    <label for="host-event-description">Description</label>
-                                </div>
-
-                                <div class="profile-form-item">
-                                    <input id="host-event-street" name="street" type="text" required />
-                                    <label for="host-event-street">Street Address</label>
-                                </div>
-
-                                <div class="address-form-container host-event-address-container">
-                                    <div class="city-input-container">
-                                        <input class="address-input city-input" id="host-event-city" name="city" type="text"
-                                            required />
-                                        <label class="address-label city-label host-city-label" for="host-event-city">City</label>
-                                    </div>
-                                    <div class="zip-input-container">
-                                        <input class="address-input zip-input" id="host-event-zip" name="zipcode"
-                                            type="number" required />
-                                        <label class="address-label zip-label host-zip-label" for="host-event-zipcode">Zip</label>
-                                    </div>
-                                    <div class="state-input-container">
-                                        <select class="address-input state-select" id="host-event-state" name="state"
-                                            aria-label="state" required>
-                                            <option class="state-option" label="State"></option>
-                                            {{#each states}}
-                                            <option class="state-option" value={{this}}>{{this}}</option>
-                                            {{/each}}
-                                        </select>
+                                                <input id="host-pool-capacity" class="event-col-1" name="capacity" type="number"
+                                                    min="1" required />
+                                                <label class="col-1-label" for="host-pool-capacity">Capacity</label>
+                                            </div>
+                                            <input type="hidden" id="eventId" value={{id}}>
+                                            
+                                            <div id="host-footer" class="modal-footer">
+                                                <button id="host-pool-submit" class="submit-btn" type="submit"
+                                                    value="submit">Create</button>
+                                            </div>
+                                            <span id="pool-close-btn" class="modal-close">&times;</span>
+                                        </form>
                                     </div>
                                 </div>
-
-                                <div class="profile-form-item private-event-checkbox">
-                                    <input id="host-event-private" name="private" type="checkbox" value="private" />
-                                    <label for="host-event-private">Private Event</label>
-                                </div>
-
-
-
-                                <div id="host-footer" class="modal-footer">
-                                    <button id="private-event-submit" class="submit-btn" type="submit"
-                                        value="submit">Create</button>
-                                </div>
-                            </form>
-                            <span id="event-close-btn" class="modal-close">&times;</span>
-                        </div>
+                            </div>
+                        </div>    
+                        </section>
                     </div>
-                </div> --}}
 
-            </div>
-           
+                    {{> footer}}
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+                    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+                    <script src="/public/js/poolList.js"></script>
+                </div>
         </section>
-        {{> footer}}
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="/public/js/validateEvent.js"></script>

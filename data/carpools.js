@@ -41,7 +41,8 @@ module.exports = {
 		if (updateEvents.modifiedCount === 0) throw "Could not add carpool successfully";
 		if (! response.addedToHistory) throw 'Could not add event to history'
 		// On success
-		return { carpoolRegistered: true };
+		const carpool = await this.getPool(newCarpool._id);
+		return carpool;
 	},
 	async addPooler(eventId, poolId, userId) {
 		// Inital Checks
@@ -102,6 +103,23 @@ module.exports = {
 		if (!event) throw `No carpool with ID of ${_poolId}`;
 		const carpool = event.carpools.find(carpool => carpool._id === _poolId);
 		return carpool;
+	},
+	async getEvent(poolId) {
+		// Initial Checks
+		let _poolId = checkId(poolId);
+		// Check if carpool exists
+		const eventsCollection = await events();
+		const event = await eventsCollection.findOne({ carpools: { $elemMatch: { _id: _poolId } } });
+		return event;
+	},
+	async getPools(eventId) {
+		// Initial Checks
+		let _eventId = checkId(eventId);
+		// Check if event exists
+		const collection = await events();
+		const event = await collection.findOne({ _id: _eventId });
+		if (event === null) throw `No event with ID of ${_eventId}`;
+		return event.carpools;
 	},
 	async updateDepartureTime(_id, _departureTime) {
 		const id = checkId(_id);

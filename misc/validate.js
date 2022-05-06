@@ -95,19 +95,19 @@ module.exports = {
 	},
 	checkIsDriver(isDriver) {
 		if (isDriver === undefined) throw `isDriver does not exist`;
-		if (typeof isDriver !== 'boolean') throw `isDriver is not a boolean`;
+		if (typeof isDriver !== "boolean") throw `isDriver is not a boolean`;
 		return isDriver;
 	},
 	checkPrivate(isPrivate) {
 		if (isPrivate === undefined) throw `isPrivate does not exist`;
-		if (typeof isPrivate !== 'boolean') throw `isPrivate is not a boolean`;
+		if (typeof isPrivate !== "boolean") throw `isPrivate is not a boolean`;
 		return isPrivate;
 	},
 	//separate functions to check strings with both date and time
 	//string is "04/01/2022 09:32:14"
 	checkDateTime(dateTime) {
 		if (!dateTime) throw `date and time must be supplied`;
-		let data = dateTime.split(" ");
+		let data = dateTime.toString().split(" ");
 		if (data.length !== 2) throw `invalid date and time`;
 		module.exports.checkDate(data[0]);
 		module.exports.checkTime(data[1]);
@@ -151,38 +151,36 @@ module.exports = {
 	},
 	// checks if capacity is a valid positive whole number
 	checkCapacity(capacity) {
-		if (!capacity) throw `capacity must be supplied`
-		const _capacity = Number(capacity)
-		if (typeof _capacity !== 'number' || isNaN(_capacity)) throw `${_capacity} must be a number`
-		if (_capacity < 1) throw `cannot have capacity ${_capacity} < 1`
-		return _capacity
-	  },
+		if (!capacity) throw `capacity must be supplied`;
+		const _capacity = Number(capacity);
+		if (typeof _capacity !== "number" || isNaN(_capacity)) throw `${_capacity} must be a number`;
+		if (_capacity < 1) throw `cannot have capacity ${_capacity} < 1`;
+		return _capacity;
+	},
 
 	checkBool(bool) {
-		if (typeof bool !== "boolean") throw 'variable is not a boolean'
+		if (typeof bool !== "boolean") throw "variable is not a boolean";
 		return bool;
-	}, 
-	
+	},
 
 	/**********************
   Carpool Parameter Check
   ***********************/
 
-  
 	/**********************
   History Parameter Check
   ***********************/
 
-  checkName(name) {
-    let _name = module.exports.checkString(name)
-    const nameArray = _name.split(' ')
-    if (nameArray.length < 2) throw 'name must contain a first and last name'
-    try {
-      module.exports.checkFirstName(nameArray[0])
-      module.exports.checkLastName(nameArray[1])
-    } catch (e) {
-      throw 'first or last name is invalid'
-    }
-    return _name;
-  },
+	checkName(name) {
+		let _name = module.exports.checkString(name);
+		const nameArray = _name.split(" ");
+		if (nameArray.length < 2) throw "name must contain a first and last name";
+		try {
+			module.exports.checkFirstName(nameArray[0]);
+			module.exports.checkLastName(nameArray[1]);
+		} catch (e) {
+			throw "first or last name is invalid";
+		}
+		return _name;
+	},
 };
