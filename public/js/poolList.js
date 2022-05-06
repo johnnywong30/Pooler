@@ -19,7 +19,6 @@
 
 	checkDate = date => {
 		if (!date) throw `date ${date} must be supplied`;
-		//check if date is in acceptable format
 		let data = date.split("-");
 		if (data.length !== 3) throw `invalid date ${date}`;
 		date = [data[1], data[2], data[0]].join("/");
@@ -45,6 +44,7 @@
 		return _time;
 	};
 	checkDateTime = dateTime => {
+		// might need to do some conversion
 		if (!dateTime) throw `date and time must be supplied`;
 		let data = dateTime.split("T");
 		if (data.length !== 2) throw `invalid date and time ${dateTime}`;
@@ -61,19 +61,6 @@
 		return _capacity;
 	};
 
-	checkName = name => {
-		let _name = checkString(name);
-		const nameArray = _name.split(" ");
-		if (nameArray.length < 2) throw "name must contain a first and last name";
-		try {
-			module.exports.checkFirstName(nameArray[0]);
-			module.exports.checkLastName(nameArray[1]);
-		} catch (e) {
-			throw "first or last name is invalid";
-		}
-		return _name;
-	};
-
 	const DOM = {
 		div: "<div></div>",
 		span: "<span></span>",
@@ -83,16 +70,21 @@
 	};
 
 	let poolList = $("#poolList"),
+		modalCloseBtn = $("#modal-close-btn"),
 		hostPoolModal = $("#host-modal"),
 		hostPoolBtn = $("#create-button"),
 		hostPoolCloseBtn = $("#pool-close-btn"),
 		hostPoolForm = $("#host-pool-form"),
-		hostPoolEventId = $("#host-pool-event-id"),
-		hostPoolDriverId = $("host-pool-driver-id"),
-		hostPoolDriver = $("#host-pool-driver"),
 		hostPoolDepartureTime = $("#host-pool-departureTime"),
 		hostPoolCapacity = $("#host-pool-capacity"),
 		hostErrorDiv = document.getElementById("host-pool-error");
+
+	modalCloseBtn.on("click", () => {
+		passwordModal.css({
+			opacity: 0,
+			visibility: "hidden",
+		});
+	});
 
 	hostPoolCloseBtn.on("click", () => {
 		hostPoolModal.css({
@@ -108,9 +100,7 @@
 		});
 	});
 
-	// let pools = await $.get(`/pool/list/${hostPoolEventId}`); // route that gets all possible pools for a given event
-	let pools = await $.get(`/pool/list/c351bd0b-0bc2-442b-a400-1a1ee368ce4a`); // route that gets all possible pools for a given event
-	// console.log(pools);
+	let pools = await $.get(`/pool/list/${$("#eventId").val()}`); // route that gets all possible pools for a given event
 
 	const createPoolItem = async pool => {
 		let poolLink = $(DOM.a);
@@ -165,37 +155,37 @@
 	// Host pool Functionality
 	hostPoolForm.on("submit", async e => {
 		e.preventDefault();
-		// try {
-		let eventId = $("#eventId").val();
-		const driverData = await $.get(`/pool/currentUser/data`);
-		let driver = checkFullName([driverData.firstName, driverData.lastName].join(" "));
-		let driverId = driverData._id;
-		let departureTime = checkDateTime(hostPoolDepartureTime[0].value);
-		let capacity = checkCapacity(hostPoolCapacity[0].value);
+		try {
+			let eventId = $("#eventId").val();
+			const driverData = await $.get(`/pool/currentUser/data`);
+			let driver = checkFullName([driverData.firstName, driverData.lastName].join(" "));
+			let driverId = driverData._id;
+			let departureTime = checkDateTime(hostPoolDepartureTime[0].value);
+			let capacity = checkCapacity(hostPoolCapacity[0].value);
 
-		let reqBody = {
-			eventId: eventId,
-			driverId: driverId,
-			driver: driver,
-			departureTime: departureTime,
-			capacity: capacity,
-		};
+			let reqBody = {
+				eventId: eventId,
+				driverId: driverId,
+				driver: driver,
+				departureTime: departureTime,
+				capacity: capacity,
+			};
 
-		const response = await $.post("/pool/create/pool", reqBody); // make route to create pools
-		if (response.success) {
-			hostPoolForm[0].reset();
-			pools = await $.get(`/pool/list/${eventId}`);
-			populateList(pools);
-			hostPoolModal.css({
-				opacity: 0,
-				visibility: "hidden",
-			});
-			let page = `/pool/${response.poolId}`;
-			window.location.href = page;
+			const response = await $.post("/pool/create/pool", reqBody); // make route to create pools
+			if (response.success) {
+				hostPoolForm[0].reset();
+				pools = await $.get(`/pool/list/${eventId}`);
+				populateList(pools);
+				hostPoolModal.css({
+					opacity: 0,
+					visibility: "hidden",
+				});
+				let page = `/pool/${response.poolId}`;
+				window.location.href = page;
+			}
+		} catch (error) {
+			createError(hostErrorDiv, `Error: ${error}`);
 		}
-		// } catch (error) {
-		// 	createError(hostErrorDiv, `Error: ${error}`);
-		// }
 	});
 
 	// Initial populate event list

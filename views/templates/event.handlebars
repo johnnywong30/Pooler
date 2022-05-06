@@ -62,14 +62,17 @@
                                                 <label class="col-1-label" for="host-pool-capacity">Capacity</label>
                                             </div>
                                             <input type="hidden" id="eventId" value={{id}}>
-                                            {{!-- <input type="hidden" id="currentUser" value={{currentUser}}> --}}
+                                            
+                                            <div id="host-footer" class="modal-footer">
+                                                <button id="host-pool-submit" class="submit-btn" type="submit"
+                                                    value="submit">Create</button>
+                                            </div>
+                                            <span id="pool-close-btn" class="modal-close">&times;</span>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>    
-                        <span id="event-close-btn" class="modal-close">&times;</span>
-
                         </section>
                     </div>
 

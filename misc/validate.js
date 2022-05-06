@@ -115,7 +115,6 @@ module.exports = {
 	},
 
 	checkId(id) {
-		console.log(id);
 		if (!id) throw `id must be supplied`;
 		if (!validate(id)) throw `${id} is not a valid id`;
 		return id;
