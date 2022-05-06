@@ -50,7 +50,14 @@
                 try {
                     // insert remove button shit here
                     const commentId = comment._id
-
+                    const reqBody = {
+                        commentId: commentId
+                    }
+                    const response = await $.post(`/pool${_poolId}/deleteComment`, reqBody)
+                    if (response.success) {
+                        comments = await $.get(`/pool/${_poolId}/comments`)
+                        populateComments(comments)
+                    }
                 } catch (error) {
                     createError(commentError, "Unable to make remove button")
                 }

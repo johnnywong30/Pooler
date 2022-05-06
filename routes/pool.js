@@ -114,17 +114,19 @@ router
             console.log(e)
             res.statusMessage = e;
             return res.status(404).json({ errorMsg: e}).end()
-            // return res.status(404).render(`templates/error`, templateData)
         }
     })
 
 router
     .route('/:id/deleteComment')
     .post(async (req, res) => {
+        let { commentId } = req.body
         try {
 
         } catch(e) {
             console.log(e)
+            res.statusMessage = e;
+            return res.status(404).json({ errorMsg: e}).end()
         }
         res.redirect(`/pool/${req.params.id}`)
     })
