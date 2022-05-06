@@ -56,24 +56,18 @@
             </div>
         {{/if}}
     </div>
-    <div class="comments">
-        <h1>Comment Section</h1>
-        {{!-- add an each here to deal with _comments --}}
-        {{#each _comments}}
-            <div class="comment-container">
-                <span class="comment-detail-container">
-                    <span class="comment-user">{{this.from}}</span>
-                    <span class="description">{{this.details}}</span>
-                </span>
-            </div>
-            <div class="spacer"></div>
-        {{/each}}
-        <form id="create-comment-form" action="/pool/:id/createComment" method="POST">
-            <label for="createCommentDescription">Comment</label>
-            <textarea id="createCommentDescription" name="createCommentDescription" required></textarea>
-            <button class="comment-button" type="submit">Submit</button>
-        </form>
-    </div>
+    <div class="comments-list" id="comments-list">
 
+    </div>
+    <form id="create-comment-form" action="/pool/{{_poolId}}/createComment" method="POST">
+        <label for="createCommentDescription">Comment</label>
+        <textarea id="createCommentDescription" name="createCommentDescription" required></textarea>
+        <button class="comment-button" type="submit">Submit</button>
+        <input type="hidden" id="poolId" value={{_poolId}}>
+        <input type="hidden" id="userEmail" value={{email}}>
+    </form>
     <!-- News block -->
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src='/public/js/pool.js'></script>

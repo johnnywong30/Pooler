@@ -2,7 +2,7 @@ const express = require('express');
 const { events, carpools, users, comments } = require('../data')
 const US_States = require('../const/USStates.json');
 const { create } = require('express-handlebars');
-const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver, checkZipcode, checkString } = require('../misc/validate')
+const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver, checkZipcode, checkString, checkId } = require('../misc/validate')
 const router = express.Router();
 const xss = require('xss')
 
@@ -16,7 +16,8 @@ router
     .route('/:id')
     .get(async (req, res) => {
         try {
-            const user = await users.getUser(req.session.user.email)
+            const email = checkEmail(xss(req.session.user.email))
+            const user = await users.getUser(email)
             const event = await events.getEventByPoolId(req.params.id)
             const pool = await carpools.getPool(req.params.id)
             const _poolId = req.params.id
@@ -38,7 +39,7 @@ router
             const _eventName = event.name
             const _isUserInPool = (pool.members.indexOf(user._id) > -1)
             const _eventID = event._id
-            const args = {_poolId, _driverName, _departureTime, _capacity, _memberData, _numMembers, _comments, _eventName, _isUserInPool, _eventID}
+            const args = {email, _poolId, _driverName, _departureTime, _capacity, _memberData, _numMembers, _comments, _eventName, _isUserInPool, _eventID}
             return res.render('templates/pool', args);
         } catch (e) {
             const states = Object.keys(US_States)
@@ -80,32 +81,42 @@ router
         res.redirect(`/pool/${req.params.id}`)
     })
 
-// add post routes for adding comment, deleting comment
+router.route('/:id/comments').get(async (req, res) => {
+    if (req.session.user) {
+        // fetch all comments
+        try {
+            const _poolId = checkId(xss(req.params.id))
+            console.log(_poolId)
+            const event = await events.getEventByPoolId(_poolId)
+            const commentList = await comments.getAllComments(event._id, _poolId)
+            // console.log(commentList)
+            return res.json(commentList)
+        } catch (e) {
+            return res.status(500).json({ error: e });
+        }
+    }
+})
 
+// add post routes for adding comment, deleting comment
 router
     .route('/:id/createComment')
     .post(async (req, res) => {
-        let { createCommentDescription } = req.body
-        // check if user, event, and pool exist. also check if it's valid comment
+        let { description } = req.body
+        // check if user, event, and pool exist. also check if it's valid comment. then create it
         try {
-            const user = await users.getUser(req.session.user.email)
-            const event = await events.getEventByPoolId(req.params.id)
-            const pool = await carpools.getPool(req.params.id)
-            createCommentDescription = checkString(xss(createCommentDescription))
+            const email = checkEmail(xss(req.session.user.email))
+            const _poolId = checkId(xss(req.params.id))
+            const user = await users.getUser(email)
+            const event = await events.getEventByPoolId(_poolId)
+            const pool = await carpools.getPool(_poolId)
+            description = checkString(xss(description))
+            const comment = await comments.createComment(event._id, _poolId, email, description)
         } catch(e) {
             const templateData = {
                 error: e
             }
-            return res.status(404).render(`templates/pool/${req.params.id}`, templateData)
-        }
-        // now we know the comment is ready to be made
-        try {
-            await 
-        } catch(e) {
-            const templateData = {
-                error: e
-            }
-            return res.status(404).render(`templates/pool/${req.params.id}`, templateData)
+            console.log(templateData)
+            // return res.status(404).render(`templates/error`, templateData)
         }
         res.redirect(`/pool/${req.params.id}`)
     })
