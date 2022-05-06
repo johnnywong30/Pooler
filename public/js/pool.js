@@ -20,22 +20,22 @@
     let commentList = $('#comments-list')
     let createCommentForm = $('#create-comment-form')
     let createCommentDescription = $('#createCommentDescription')
-    let commentError = $('#comment-error')
+    let commentError = document.getElementById('comment-error')
 
     const createError = (div, error) => {
         // in case error had another error in it already; clear all children
-        div.empty()
+        div.replaceChildren()
         div.hidden = false
         const clearButton = document.createElement('span')
         clearButton.className = 'fa-solid fa-xmark'
         clearButton.id = 'close-error'
         const clearError = () => {
-            div.empty()
+            div.replaceChildren()
             div.hidden = true
         }
         clearButton.addEventListener('click', clearError)
         div.innerHTML = `${error}`
-        div.append(clearButton)
+        div.appendChild(clearButton)
     }
 
     const createComments = (comment) => {
