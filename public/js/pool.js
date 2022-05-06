@@ -18,6 +18,26 @@
     let user = $('#userEmail').val()
     let comments = await $.get(`/pool/${_poolId}/comments`)
     let commentList = $('#comments-list')
+    let createCommentForm = $('#create-comment-form')
+    let createCommentDescription = $('#createCommentDescription')
+    let commentError = $('#comment-error')
+
+    const createError = (div, error) => {
+        // in case error had another error in it already; clear all children
+        div.empty()
+        div.hidden = false
+        const clearButton = document.createElement('span')
+        clearButton.className = 'fa-solid fa-xmark'
+        clearButton.id = 'close-error'
+        const clearError = () => {
+            div.empty()
+            div.hidden = true
+        }
+        clearButton.addEventListener('click', clearError)
+        div.innerHTML = `${error}`
+        div.append(clearButton)
+    }
+
     const createComments = (comment) => {
         const commentContainer = $(DOM.div, { 'class': 'comment-container' })
         const detailContainer = $(DOM.span, { 'class': 'comment-detail-container' })
@@ -32,7 +52,7 @@
                     const commentId = comment._id
 
                 } catch (error) {
-                    console.log(error)
+                    createError(commentError, "Unable to make remove button")
                 }
             })
             commentContainer.append(removeButton)
@@ -49,15 +69,21 @@
         }
     }
 
-    let createCommentForm = $('#create-comment-form')
-    let createCommentDescription = $('createCommentDescription')
     createCommentForm.on('submit', async (e) => {
         e.preventDefault()
         try {
-            let description = checkString(createCommentDescription.value)
-            
+            let description = checkString(createCommentDescription.val())
+            const reqBody = {
+                description: description
+            }
+            const response = await $.post(`/pool/${_poolId}/createComment`, reqBody)
+            if (response.success) {
+                createCommentDescription.val('')
+                comments = await $.get(`/pool/${_poolId}/comments`)
+                populateComments(comments)
+            }
         } catch (error) {
-            console.log(error)
+            createError(commentError, `Error: ${error}`)
         }
     })
     // populate comments

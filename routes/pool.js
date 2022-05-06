@@ -86,10 +86,8 @@ router.route('/:id/comments').get(async (req, res) => {
         // fetch all comments
         try {
             const _poolId = checkId(xss(req.params.id))
-            console.log(_poolId)
             const event = await events.getEventByPoolId(_poolId)
             const commentList = await comments.getAllComments(event._id, _poolId)
-            // console.log(commentList)
             return res.json(commentList)
         } catch (e) {
             return res.status(500).json({ error: e });
@@ -111,14 +109,13 @@ router
             const pool = await carpools.getPool(_poolId)
             description = checkString(xss(description))
             const comment = await comments.createComment(event._id, _poolId, email, description)
+            return res.json({ success: true, commentId: comment._id})
         } catch(e) {
-            const templateData = {
-                error: e
-            }
-            console.log(templateData)
+            console.log(e)
+            res.statusMessage = e;
+            return res.status(404).json({ errorMsg: e}).end()
             // return res.status(404).render(`templates/error`, templateData)
         }
-        res.redirect(`/pool/${req.params.id}`)
     })
 
 router

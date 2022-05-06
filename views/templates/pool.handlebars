@@ -10,7 +10,6 @@
         <div class="row mb-3">
             <div class="col-6">
                 <a href="/events/view/{{_eventID}}" class="text-info">
-                    <i class="fas fa-car"></i>
                     {{_eventName}}
                 </a>
             </div>
@@ -21,10 +20,8 @@
         </div>
 
         <!-- Article title and description -->
-        <a href="" class="text-dark">
-            <h5>Driver: {{_driverName}}</h5>
-            <p>Capacity: {{_numMembers}}/{{_capacity}}</p>
-        </a>
+        <h5>Driver: {{_driverName}}</h5>
+        <p>Capacity: {{_numMembers}}/{{_capacity}}</p>
 
         <hr />
 
@@ -56,10 +53,14 @@
             </div>
         {{/if}}
     </div>
+    <h5>Comments</h5>
     <div class="comments-list" id="comments-list">
 
     </div>
-    <form id="create-comment-form" action="/pool/{{_poolId}}/createComment" method="POST">
+    <div id="comment-error" hidden>
+
+    </div>
+    <form id="create-comment-form" method="POST">
         <label for="createCommentDescription">Comment</label>
         <textarea id="createCommentDescription" name="createCommentDescription" required></textarea>
         <button class="comment-button" type="submit">Submit</button>
