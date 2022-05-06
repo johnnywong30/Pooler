@@ -26,9 +26,11 @@ module.exports = {
 		const hasCarpool = event.carpools.find(carpool => carpool.members.includes(_driverId));
 		if (hasCarpool) throw `${driver} has already registered for a carpool`;
 
+		const _poolId = uuidv4()
+
 		// Create carpool
 		const newCarpool = {
-			_id: uuidv4(),
+			_id: _poolId,
 			driver: _driverId,
 			departureTime: _departureTime,
 			capacity: _capacity,
@@ -37,6 +39,7 @@ module.exports = {
 		};
 		const updateEvents = await collection.updateOne({ _id: _eventId }, { $push: { carpools: newCarpool } });
 		if (updateEvents.modifiedCount === 0) throw "Could not add carpool successfully";
+		if (! response.addedToHistory) throw 'Could not add event to history'
 		// On success
 		const carpool = await this.getPool(newCarpool._id);
 		return carpool;
@@ -62,6 +65,7 @@ module.exports = {
 		// Add user to carpool
 		const updateCarpool = await eventCollection.updateOne({ _id: _eventId, "carpools._id": _poolId }, { $push: { "carpools.$.members": _userId } });
 		if (updateCarpool.modifiedCount === 0) throw "Could not add pooler successfully";
+
 		// On success
 		return { poolerRegistered: true };
 	},
@@ -87,6 +91,7 @@ module.exports = {
 		const updateInfo = await eventCollection.updateOne({ _id: _eventId, "carpools._id": _poolId }, { $pull: { "carpools.$.members": _userId } });
 
 		if (updateInfo.modifiedCount === 0) throw `Could not remove ${_userId} from pool ${_poolId}`;
+
 		return true;
 	},
 	async getPool(poolId) {
