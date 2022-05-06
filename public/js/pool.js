@@ -44,7 +44,7 @@
         const commentUser = $(DOM.span, { 'class': 'comment-user' }).text(comment.from)
         const commentDescription = $(DOM.span, { 'class': 'comment-description' }).text(comment.details)
         if (comment.from === user) {
-            const removeButton = $(DOM.span, { 'class': 'fa-solid fa-xmark'})
+            const removeButton = $(DOM.span, { 'class': 'deleteComment fa-solid fa-xmark'})
             removeButton.on('click', async (e) => {
                 e.preventDefault()
                 try {
@@ -63,7 +63,7 @@
                     createError(commentError, "Unable to remove")
                 }
             })
-            commentContainer.append(removeButton)
+            commentContainer.prepend(removeButton)
         }
         detailContainer.append([commentUser, commentDescription])
         commentContainer.prepend(detailContainer)

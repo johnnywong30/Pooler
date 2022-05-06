@@ -1,0 +1,23 @@
+.comment-container {
+    color: var(--secondary);
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.comment-detail-container {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 3px;
+}
+
+.comment-detail-container>.comment-user {
+    text-transform: uppercase;
+    font-family: var(--montserrat);
+    font-weight: 400;
+    font-size: 1.5em;
+}
+.comment-detail-container>.comment-description {
+    display: block;
+    font-family: var(--montserrat);
+    font-size: 0.9em;
+}

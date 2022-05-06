@@ -50,21 +50,22 @@
             </div>
         {{/if}}
     </div>
-    <h5>Comments</h5>
-    <div class="comments-list" id="comments-list">
+    {{#if _isUserInPool}}
+        <h5>Comments</h5>
+        <div class="comments-list" id="comments-list">
 
-    </div>
-    <div id="comment-error" class='modal-error' hidden>
+        </div>
+        <div id="comment-error" class='modal-error' hidden>
 
-    </div>
-    <form id="create-comment-form" method="POST">
-        <label for="createCommentDescription">Comment</label>
-        <textarea id="createCommentDescription" name="createCommentDescription" required></textarea>
-        <button class="comment-button" type="submit">Submit</button>
-        <input type="hidden" id="poolId" value={{_poolId}}>
-        <input type="hidden" id="userEmail" value={{email}}>
-    </form>
-    <!-- News block -->
+        </div>
+        <form id="create-comment-form" method="POST">
+            <label for="createCommentDescription">Comment</label>
+            <textarea id="createCommentDescription" name="createCommentDescription" required></textarea>
+            <button class="comment-button" type="submit">Submit</button>
+            <input type="hidden" id="poolId" value={{_poolId}}>
+            <input type="hidden" id="userEmail" value={{email}}>
+        </form>
+    {{/if}}
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
