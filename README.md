@@ -17,8 +17,9 @@ Currently, most clubs use Google Sheets or Excel documents to handle carpooling,
 1. Clone the repo
 2. Run `npm install` to install relevant packages
 3. Run `npm run seed` to seed the database
-4. Go to localhost:3000
-5. Create an account and explore the pre-seeded events on our Pooler website!
+4. Run `npm start` to start the server
+5. Go to `http://localhost:3000`
+6. Create an account and explore the pre-seeded events on our Pooler website!
 
 ## Core Features
 1. **Landing Page**: This explains the purpose and functionality of the Pooler website
