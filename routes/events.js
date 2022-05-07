@@ -23,14 +23,26 @@ router
     });
 
 router
-    .route("/view/:id") // specific event page with details
+    .route('/getUser')
+    .get(async (req, res) => {
+        if (req.session.user) {
+            return res.json(req.session.user.email);
+        }
+        else {
+            return res.redirect('/')
+        }
+    })
+
+
+router
+    .route('/view/:id') // specific event page with details
     .get(async (req, res) => {
         if (req.session.user) {
             try {
                 const id = checkId(xss(req.params.id))
                 const userData = await users.getUser(req.session.user.email)
                 const eventData = await events.getEvent(id)
-                const { name, date, startTime, host, description } = eventData
+                const { _id, name, date, startTime, host, description } = eventData
                 const { capacity, carpools, destination, private, password } = eventData
                 // if event has password, see if it is correct
                 if (private) {
@@ -45,6 +57,7 @@ router
                 }
                 const { address, city, state, zipcode } = destination
                 const displayAddress = `${address}, ${city}, ${state}, ${zipcode}`
+                const states = Object.keys(US_States)
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
                 //console.log(`${userData._id} in ${await events.getDrivers(req.params.id)}`)
                 const drivers = await events.getDrivers(req.params.id)
@@ -55,8 +68,10 @@ router
                     carpool.driver = `${driver.firstName} ${driver.lastName}`
                     carpool.occupance = carpool.members.length
                 }
-                
+
                 const templateData = {
+                    id: _id,
+                    currentUser: req.session.user,
                     name: name,
                     date: date,
                     startTime: startTime,
@@ -67,6 +82,11 @@ router
                     carpools: carpools,
                     destination: destination,
                     googleMapsUrl: googleMapsUrl,
+                    street: address,
+                    city: city,
+                    state: state,
+                    states: states,
+                    zipcode: zipcode,
                     displayAddress: displayAddress,
                     layout: 'custom',
                     isUserDriver: isUserDriver,
@@ -84,22 +104,23 @@ router
         }
     });
 
-    router.route("/:id/join").get(async (req, res) => { //This should be a POST method. Need to change to a form + button
-        if (req.session.user) {
-            const eventData = await events.getEvent(req.params.id)
-            if (await events.occupance(req.params.id) < eventData.capacity) {
-                const userData = await users.getUser(req.session.user.email)
-                try {
-                    await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, `${eventData.date} ${eventData.startTime}`, 5)
-                } catch (e) {
-                    console.log("Error creating driver: " + e)
-                }
+router.route("/:id/join").get(async (req, res) => { //This should be a POST method. Need to change to a form + button
+    if (req.session.user) {
+        const eventData = await events.getEvent(req.params.id)
+        if (await events.occupance(req.params.id) < eventData.capacity) {
+            const userData = await users.getUser(req.session.user.email)
+            try {
+                await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, `${eventData.date} ${eventData.startTime}`, 5)
+            } catch (e) {
+                console.log("Error creating driver: " + e)
             }
-            res.redirect(`/events/view/${req.params.id}`)
-        } else {
-            return res.redirect("/");
         }
-    });
+        res.redirect(`/events/view/${req.params.id}`)
+    }
+    else {
+        return res.redirect("/");
+    }
+});
 
 router.route("/:id/join").post(async (req, res) => {
     if (req.session.user) {
@@ -148,32 +169,33 @@ router.route("/list").get(async (req, res) => {
     }
 });
 
-router.route("/createEvent").post(async (req, res) => {
-    if (req.session.user) {
-        const host = req.session.user.email;
-        try {
-            const { name, date, startTime, description, capacity, private, password, destination } = req.body;
-            const _name = checkString(xss(name));
-            const _date = checkDate(xss(date));
-            const _startTime = checkTime(xss(startTime));
-            const _host = checkEmail(host); // should be in session
-            const _description = checkString(xss(description));
-            const _capacity = checkCapacity(capacity); // is a number
-            const _private = checkBool(private); // is a bool
-            const _pass = _private ? checkPassword(xss(password)) : null;
-            const _destination = checkAddress(destination);
-            const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
-
-            return res.json({ success: true, eventId: event.eventId }).end();
-        } catch (e) {
-            console.log(e);
-            res.statusMessage = e;
-            return res.status(404).json({ errorMsg: e }).end();
+router
+    .route("/createEvent")
+    .post(async (req, res) => {
+        if (req.session.user) {
+            const host = req.session.user.email;
+            try {
+                const { name, date, startTime, description, capacity, private, password, destination } = req.body;
+                const _name = checkString(xss(name));
+                const _date = checkDate(xss(date));
+                const _startTime = checkTime(xss(startTime));
+                const _host = checkEmail(host); // should be in session
+                const _description = checkString(xss(description));
+                const _capacity = checkCapacity(capacity); // is a number
+                const _private = checkBool(private); // is a bool
+                const _pass = _private ? checkPassword(xss(password)) : null;
+                const _destination = checkAddress(destination);
+                const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
+                return res.json({ success: true, eventId: event.eventId }).end();
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+        } else {
+            return res.redirect("/");
         }
-    } else {
-        return res.redirect("/");
-    }
-});
+    });
 
 router.get("/:id", async (req, res) => {
     try {
@@ -185,17 +207,31 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
-    try {
-        const id = checkId(req.params.id);
-        const event = await events.getEvent(id);
-        console.log(event);
-        await events.deleteEvent(id);
-        return res.status(200).json({ eventId: id, deleted: true });
-    } catch (e) {
-        return res.status(400).json({ error: e });
-    }
-});
+router
+    .route('/getHost/:id')
+    .get(async (req, res) => {
+        try {
+            const id = checkId(req.params.id)
+            const event = await events.getEvent(req.params.id)
+            return res.status(200).json(event.host);
+        } catch (e) {
+            return res.status(400).json({ error: e });
+        }
+    })
+
+router
+    .delete('/:id', async (req, res) => {
+        // console.log(req.session.user)
+        try {
+            const id = checkId(req.params.id)
+            // const event = await events.getEvent(id)
+            // console.log(event)
+            await events.deleteEvent(id)
+            return res.status(200).json({ eventId: id, deleted: true });
+        } catch (e) {
+            return res.status(400).json({ error: e });
+        }
+    })
 
 router.post("/validateEvent/:id", async (req, res) => {
     let auth = {};
@@ -208,7 +244,51 @@ router.post("/validateEvent/:id", async (req, res) => {
     }
 
     if (auth.authenticated) {
-        return res.status(200).json({ authenticated: true });
+        return res.status(200).json({ authenticated: true })
     }
-});
+})
+router
+    .post('/updateEvent/:id', async (req, res) => {
+        const { name, date, startTime, description, destination } = req.body;
+        try {
+            const id = checkId(req.params.id)
+            let _name = checkString(name, "event name")
+            let _date = checkDate(date)
+            let _startTime = checkTime(startTime)
+            let _description = checkString(description)
+            let _destination = checkAddress(destination)
+
+            const currentEvent = await events.getEvent(id);
+
+            if (currentEvent.name !== _name) {
+                const updateName = await events.updateName(id, _name)
+            }
+
+
+            if (currentEvent.date != _date) {
+                const updateDate = await events.updateDate(id, _date)
+            }
+
+            if (currentEvent.startTime !== _startTime) {
+                const updateTime = await events.updateStartTime(id, _startTime)
+            }
+
+            if (currentEvent.description !== _description) {
+                const updateDescription = await events.updateDescription(id, _description)
+            }
+
+            if (currentEvent.destination !== _destination) {
+                const updateDestination = await events.updateDestination(id, _destination)
+            }
+
+
+            const updatedEvent = await events.getEvent(id);
+
+            return res.status(200).json({ event: updatedEvent, updated: true })
+        } catch (e) {
+            return res.status(400).json({ error: e })
+        }
+
+    })
+
 module.exports = router;

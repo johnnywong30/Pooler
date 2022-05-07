@@ -6,25 +6,80 @@
                     {{name}}
                 </h1>
             </div>
+
+            <div class="button-section">
+                {{> updateeventbutton}}
+                {{> deleteeventbutton}}
+            </div>
+
             <div class="section-container">
-                <div class="text-container event-details-container">
-                    <h2 class="event-details-heading">
-                        Details
-                    </h2>
-                    <dl class="event-details">
-                        <dt class="event-detail-label dt-inline">Host</dt>
-                        <dd class="event-detail-info dd-inline">{{host}}</dd>
+                <form id="edit-event-form" action="/event" method="POST">
+                    <div class="section-container event-update-container">
+                        <div class="text-container account-info">
+                            <h2 class="event-details-heading">
+                                Event Details
+                            </h2>
+                            <dl class="event-details" id="host">
+                                <dt class="event-detail-label dt-inline">Host</dt>
+                                <dd class="event-detail-info dd-inline">{{host}}</dd>
+                            </dl>
+                            <div class="event-form-item">
+                                <input class="editable" id="name" name="name" type="text" readonly='readonly'
+                                    value="{{name}}" required />
+                                <label for="name">Name</label>
+                            </div>
+                            <div class="event-form-item">
+                                <input class="editable" id="date" name="date" type="text" readonly='readonly'
+                                    value="{{date}}" required />
+                                <label for="date">Date</label>
+                            </div>
+                            <div class="event-form-item">
+                                <input class="editable" id="time" name="time" type="text" readonly='readonly'
+                                    value="{{startTime}}" required />
+                                <label for="time">Time</label>
+                            </div>
+                            <div class="event-form-item">
+                            <input class="editable" id="street" name="street" type="text" readonly='readonly'
+                                value="{{street}}" required />
+                            <label for="street">Street</label>
+                            </div>
+                            <div class="address-form-container">
+                                <div class="city-input-container">
+                                    <input class="editable address-input city-input" id="city" name="city" type="text"
+                                        readonly='readonly' value="{{city}}" required />
+                                    <label class="address-label city-label" for="city">City</label>
+                                </div>
+                                <div class="zip-input-container">
+                                    <input class="editable address-input zip-input" id="zipcode" name="zipcode"
+                                        type="number" readonly='readonly' value="{{zipcode}}" required />
+                                    <label class="address-label zip-label" for="zipcode">Zip</label>
+                                </div>
+                                <div class="state-input-container">
+                                    <select class="address-input state-select" id="state" name="state" aria-label="state"
+                                        data-value="{{State}}"
+                                        
+                                        onfocus="this.setAttribute('data-value', this.value);"
+                                        onchange="this.value = this.getAttribute('data-value');" required>
+                                        <option class="state-option" label="State"></option>
+                                        {{#each states}}
+                                            <option class="state-option" value={{this}} {{#ifEq this ../state }}selected="selected"{{/ifEq}}>{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="event-form-item">
+                                <input class="editable" id="description" name="description" type="text" readonly='readonly'
+                                    value="{{description}}" required />
+                                <label for="description">Description</label>
+                            </div>
+                            <div class="bottom-profile-button-container">
+                                <button class="profile-button" id="cancelBtn" disabled="disabled">Cancel</button>
+                                <button class="profile-button" type="submit" id="saveChangesBtn" disabled="disabled">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
 
-                        <dt class="event-detail-label dt-inline">Time</dt>
-                        <dd class="event-detail-info dd-inline">{{date}} {{startTime}}</dd>
-
-                        <dt class="event-detail-label dt-inline">Address</dt>
-                        <dd class="event-detail-info dd-inline">{{displayAddress}}</dd>
-
-                        <dt class="event-detail-label">Description</dt>
-                        <dd class="event-detail-info">{{description}}</dd>
-                    </dl>
-                </div>
                 <div class="text-container event-carpool-container">
                     <h2 class="event-details-heading">
                         Carpools
@@ -59,7 +114,8 @@
                     </div>
                     {{/if}}   
                 </div>
-                <div class="event-calendar">
+                {{!-- ??? what is this --}}
+                {{!-- <div class="event-calendar">
                     {{> eventsorts}}
                     <div id="eventList" class="event-list">
 
@@ -151,8 +207,14 @@
                             <span id="event-close-btn" class="modal-close">&times;</span>
                         </div>
                     </div>
-                </div>
+                </div> --}}
+
             </div>
+           
         </section>
+        {{> footer}}
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="/public/js/validateEvent.js"></script>
