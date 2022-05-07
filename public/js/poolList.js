@@ -109,17 +109,23 @@
 		// pool container
 		const driverData = await $.get(`/pool/user/${pool.driver}`);
 		const driverName = [driverData.firstName, driverData.lastName].join(" ");
+
+		const dateTime = pool.departureTime.split(/\s+/)
+		const date = dateTime[0]
+		const time = dateTime[1] 
+
 		const poolContainer = $(DOM.div, { class: "pool-container" });
-		const departureTimeContainer = $(DOM.span, { class: "pool-departureTime-container" });
-		const departureTime = $(DOM.span, { class: "departureTime" }).text(`${pool.departureTime}`);
-		departureTimeContainer.append([departureTime]);
+		const departureTimeContainer = $(DOM.span, { class: "pool-time-container" });
+		const dateSpan = $(DOM.span, { class: "date" }).text(`${date}`);
+		const departureTime = $(DOM.span, { class: "time" }).text(`${time}`);
+		departureTimeContainer.append([dateSpan, departureTime]);
 		const detailContainer = $(DOM.span, { class: "pool-detail-container" });
-		const driver = $(DOM.span, { class: "pool-driver" }).text(`${driverName}`);
-		const capacity = $(DOM.span, { class: "pool-capacity" }).text(`${pool.capacity}`);
+		const driver = $(DOM.span, { class: "driver" }).text(`${driverName}`);
+		const capacity = $(DOM.span, { class: "capacity" }).text(`${pool.capacity} Seats`);
 		detailContainer.append([driver, capacity]);
 		poolContainer.append([departureTimeContainer, detailContainer]);
 		poolLink.append(poolContainer);
-		// spacer
+
 		const spacer = $(DOM.div, { class: "spacer" });
 		return {
 			item: poolLink,

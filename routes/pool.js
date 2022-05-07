@@ -3,7 +3,7 @@ const { events, carpools, users, history } = require("../data");
 const US_States = require("../const/USStates.json");
 const router = express.Router();
 const xss = require("xss");
-const { checkId, checkEmail } = require("../misc/validate");
+const { checkId, checkEmail, checkCapacity, checkDateTime } = require("../misc/validate");
 
 router.route("/").get(async (req, res) => {
 	return res.redirect("/events");
@@ -12,13 +12,12 @@ router.route("/").get(async (req, res) => {
 router.route("/create/pool").post(async (req, res) => {
 	if (req.session.user) {
 		try {
-			const { eventId, driver, driverId, capacity, departureTime } = req.body;
-			const _eventId = checkId(eventId);
-			const _driver = checkFullName(driver);
-			const _driverId = checkId(driverId);
+			const { eventId, driverId, capacity, departureTime } = req.body;
+			const _eventId = checkId(xss(eventId));
+			const _driverId = checkId(xss(driverId));
 			const _capacity = checkCapacity(capacity); // is a number
-			const _departureTime = checkDateTime(departureTime);
-			const pool = await carpools.createPool(_eventId, _driverId, _driver, _departureTime, _capacity);
+			const _departureTime = checkDateTime(xss(departureTime));
+			const pool = await carpools.createPool(_eventId, _driverId, _departureTime, _capacity);
 			return res.json({ success: true, poolId: pool._id }).end();
 		} catch (e) {
 			console.log(e);

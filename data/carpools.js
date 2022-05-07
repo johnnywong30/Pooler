@@ -3,11 +3,10 @@ const { events, users } = require("../config/mongoCollections");
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
-	async createPool(eventId, driverId, driver, departureTime, capacity) {
+	async createPool(eventId, driverId, departureTime, capacity) {
 		// Initial Checks
 		const _eventId = checkId(eventId);
 		const _driverId = checkId(driverId);
-		const _driver = checkFullName(driver);
 		const _departureTime = checkDateTime(departureTime);
 		const _capacity = checkCapacity(capacity);
 		// Check if event exists
@@ -40,7 +39,7 @@ module.exports = {
 		const updateEvents = await collection.updateOne({ _id: _eventId }, { $push: { carpools: newCarpool } });
 		if (updateEvents.modifiedCount === 0) throw "Could not add carpool successfully";
 		// On success
-		return { carpoolRegistered: true };
+		return await this.getPool(_poolId)
 	},
 	async addPooler(eventId, poolId, userId) {
 		// Inital Checks
