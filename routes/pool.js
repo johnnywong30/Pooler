@@ -69,30 +69,28 @@ router
         } catch (e) {
             console.log(e)
         }
-        res.redirect(`/pool/${req.params.id}`)
+        return res.redirect(`/pool/${req.params.id}`)
     })
 
 router
     .route('/:id/leave')
     .get(async (req, res) => {
         try {
-            // const user = await users.getUser(req.session.user.email)
-            // const event = await events.getEventByPoolId(req.params.id)
-            // const pool = await carpools.getPool(req.params.id)
-            // if (!await carpools.deletePooler(event._id, pool._id, user._id)) {
-            //     return res.redirect(`/events/view/${event._id}`)
-            // }
             const email = checkEmail(xss(req.session.user.email))
             const _poolId = checkId(xss(req.params.id))
             const user = await users.getUser(email)
             const event = await events.getEventByPoolId(_poolId)
             const pool = await carpools.getPool(_poolId)
-            await carpools.deletePooler(event._id, pool._id, user._id)
             await history.removeFromHistory(user._id, event._id, pool._id)
+            // await carpools.deletePooler(event._id, pool._id, user._id)
+            if (! await carpools.deletePooler(event._id, pool._id, user._id)) {
+                
+                return res.redirect(`/events/view/${event._id}`)
+            }
         } catch (e) {
             console.log(e)
         }
-        res.redirect(`/pool/${req.params.id}`)
+        return res.redirect(`/pool/${req.params.id}`)
     })
 
 module.exports = router;

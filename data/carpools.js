@@ -40,7 +40,6 @@ module.exports = {
 		};
 		const updateEvents = await collection.updateOne({ _id: _eventId }, { $push: { carpools: newCarpool } });
 		if (updateEvents.modifiedCount === 0) throw "Could not add carpool successfully";
-		if (! response.addedToHistory) throw 'Could not add event to history'
 		// On success
 		return { carpoolRegistered: true };
 	},
