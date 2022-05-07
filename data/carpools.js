@@ -3,11 +3,10 @@ const { events, users } = require("../config/mongoCollections");
 const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
-	async createPool(eventId, driverId, driver, departureTime, capacity) {
+	async createPool(eventId, driverId, departureTime, capacity) {
 		// Initial Checks
 		const _eventId = checkId(eventId);
 		const _driverId = checkId(driverId);
-		const _driver = checkFullName(driver);
 		const _departureTime = checkDateTime(departureTime);
 		const _capacity = checkCapacity(capacity);
 		// Check if event exists
@@ -26,7 +25,7 @@ module.exports = {
 		const hasCarpool = event.carpools.find(carpool => carpool.members.includes(_driverId));
 		if (hasCarpool) throw `${driver} has already registered for a carpool`;
 
-		const _poolId = uuidv4()
+		const _poolId = uuidv4();
 
 		// Create carpool
 		const newCarpool = {
@@ -39,9 +38,8 @@ module.exports = {
 		};
 		const updateEvents = await collection.updateOne({ _id: _eventId }, { $push: { carpools: newCarpool } });
 		if (updateEvents.modifiedCount === 0) throw "Could not add carpool successfully";
-		if (! response.addedToHistory) throw 'Could not add event to history'
 		// On success
-		return { carpoolRegistered: true };
+		return await this.getPool(_poolId)
 	},
 	async addPooler(eventId, poolId, userId) {
 		// Inital Checks
@@ -102,6 +100,23 @@ module.exports = {
 		if (!event) throw `No carpool with ID of ${_poolId}`;
 		const carpool = event.carpools.find(carpool => carpool._id === _poolId);
 		return carpool;
+	},
+	async getEvent(poolId) {
+		// Initial Checks
+		let _poolId = checkId(poolId);
+		// Check if carpool exists
+		const eventsCollection = await events();
+		const event = await eventsCollection.findOne({ carpools: { $elemMatch: { _id: _poolId } } });
+		return event;
+	},
+	async getPools(eventId) {
+		// Initial Checks
+		let _eventId = checkId(eventId);
+		// Check if event exists
+		const collection = await events();
+		const event = await collection.findOne({ _id: _eventId });
+		if (event === null) throw `No event with ID of ${_eventId}`;
+		return event.carpools;
 	},
 	async updateDepartureTime(_id, _departureTime) {
 		const id = checkId(_id);
