@@ -145,3 +145,7 @@
   cursor: not-allowed;
 
 }
+
+#host-modal {
+  z-index: 99;
+}
