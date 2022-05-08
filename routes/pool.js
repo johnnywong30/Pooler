@@ -107,7 +107,7 @@ router
 
 router.route('/:id/comments').get(async (req, res) => {
     if (req.session.user) {
-        //validate
+        //validate id
         try {
             req.params.id = checkId(xss(req.params.id))
         } catch (e) {
