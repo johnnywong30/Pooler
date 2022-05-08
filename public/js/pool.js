@@ -9,48 +9,48 @@
     }
 
     const checkDate = date => {
-		if (!date) throw `date ${date} must be supplied`;
-		let data = date.split("-");
-		if (data.length !== 3) throw `invalid date ${date}`;
-		date = [data[1], data[2], data[0]].join("/");
-		date = new Date(date);
-		// https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
-		if (date instanceof Date && isNaN(date.getTime())) {
-			throw `invalid date ${date}`;
-		}
-		let year = date.getFullYear();
-		let month = (1 + date.getMonth()).toString().padStart(2, "0");
-		let day = date.getDate().toString().padStart(2, "0");
-		return month + "/" + day + "/" + year;
-	};
+        if (!date) throw `date ${date} must be supplied`;
+        let data = date.split("-");
+        if (data.length !== 3) throw `invalid date ${date}`;
+        date = [data[1], data[2], data[0]].join("/");
+        date = new Date(date);
+        // https://stackoverflow.com/questions/1353684/detecting-an-invalid-date-date-instance-in-javascript
+        if (date instanceof Date && isNaN(date.getTime())) {
+            throw `invalid date ${date}`;
+        }
+        let year = date.getFullYear();
+        let month = (1 + date.getMonth()).toString().padStart(2, "0");
+        let day = date.getDate().toString().padStart(2, "0");
+        return month + "/" + day + "/" + year;
+    };
 
-	// checks if the time is in military format
-	const checkTime = time => {
-		if (!time) throw `time must be supplied`;
-		//modified from https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s06.html
-		const regex = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$";
-		const _time = time.trim();
-		let matches = _time.match(regex);
-		if (!matches) throw `${_time} is not in a valid military time format`;
-		return _time;
-	};
-	const checkDateTime = dateTime => {
-		// might need to do some conversion
-		if (!dateTime) throw `date and time must be supplied`;
-		let data = dateTime.split("T");
-		if (data.length !== 2) throw `invalid date and time ${dateTime}`;
-		data[0] = checkDate(data[0]);
-		data[1] = checkTime(`${data[1]}:00`);
-		return data.join(" ");
-	};
+    // checks if the time is in military format
+    const checkTime = time => {
+        if (!time) throw `time must be supplied`;
+        //modified from https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s06.html
+        const regex = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$";
+        const _time = time.trim();
+        let matches = _time.match(regex);
+        if (!matches) throw `${_time} is not in a valid military time format`;
+        return _time;
+    };
+    const checkDateTime = dateTime => {
+        // might need to do some conversion
+        if (!dateTime) throw `date and time must be supplied`;
+        let data = dateTime.split("T");
+        if (data.length !== 2) throw `invalid date and time ${dateTime}`;
+        data[0] = checkDate(data[0]);
+        data[1] = checkTime(`${data[1]}:00`);
+        return data.join(" ");
+    };
 
-	const checkCapacity = capacity => {
-		if (!capacity) throw `capacity must be supplied`;
-		const _capacity = Number(capacity);
-		if (typeof _capacity !== "number" || isNaN(_capacity)) throw `${_capacity} must be a number`;
-		if (_capacity < 1) throw `cannot have capacity ${_capacity} < 1`;
-		return _capacity;
-	};
+    const checkCapacity = capacity => {
+        if (!capacity) throw `capacity must be supplied`;
+        const _capacity = Number(capacity);
+        if (typeof _capacity !== "number" || isNaN(_capacity)) throw `${_capacity} must be a number`;
+        if (_capacity < 1) throw `cannot have capacity ${_capacity} < 1`;
+        return _capacity;
+    };
 
     const DOM = {
         div: '<div></div>',
@@ -60,6 +60,7 @@
         label: '<label></label>',
     }
     let _poolId = $('#poolId').val()
+    let _eventId = $('#eventId').val()
     let user = $('#userEmail').val()
     let comments = await $.get(`/pool/${_poolId}/comments`)
     let commentList = $('#comments-list')
@@ -68,14 +69,20 @@
 
     let leaveBtn = $('#leave-btn'),
         joinBtn = $('#join-btn')
-    
+
     if (leaveBtn) {
         leaveBtn.on('click', async (e) => {
             e.preventDefault()
             try {
                 const response = await $.post(`${_poolId}/leave`)
                 if (response.success) {
-                    location.reload()
+                    if (response.poolDeleted) {
+                        const eventPage = `/events/view/${_eventId}`
+                        window.location.href = eventPage
+                    }
+                    else {
+                        location.reload()
+                    }
                 }
             } catch (err) {
                 const { responseJSON } = err
@@ -113,7 +120,7 @@
     const createTimeInput = () => {
         updateInputDiv.empty()
         const input = $(DOM.input, { id: 'edit-time', name: 'departureTime', required: true, type: "datetime-local" })
-        const label = $(DOM.label, { for: 'edit-time'}).text('Departure Time')
+        const label = $(DOM.label, { for: 'edit-time' }).text('Departure Time')
         updateInputDiv.append([input, label])
         isTime = 1
     }
@@ -121,7 +128,7 @@
     const createCapacityInput = () => {
         updateInputDiv.empty()
         const input = $(DOM.input, { id: 'edit-capacity', name: 'capacity', required: true, type: "number" })
-        const label = $(DOM.label, { for: 'edit-capacity'}).text('Capacity')
+        const label = $(DOM.label, { for: 'edit-capacity' }).text('Capacity')
         updateInputDiv.append([input, label])
         isCapacity = 1
     }
@@ -159,8 +166,8 @@
         createCapacityInput()
     })
 
-    
-        
+
+
     let commentError = document.getElementById('comment-error')
     let updateError = document.getElementById('edit-pool-error')
 
@@ -183,12 +190,12 @@
     const createComments = (comment) => {
         const commentContainer = $(DOM.div, { 'class': 'comment-container' })
         const detailContainer = $(DOM.span, { 'class': 'comment-detail-container' })
-        const userIcon = $(DOM.span, { 'class': 'fa fa-user'})
+        const userIcon = $(DOM.span, { 'class': 'fa fa-user' })
         // <i class="fa fa-user" aria-hidden="true"></i>
         const commentUser = $(DOM.span, { 'class': 'comment-user' }).text(comment.from)
         const commentDescription = $(DOM.span, { 'class': 'comment-description' }).text(comment.details)
         if (comment.from === user) {
-            const removeButton = $(DOM.span, { 'class': 'deleteComment fa-solid fa-xmark'})
+            const removeButton = $(DOM.span, { 'class': 'deleteComment fa-solid fa-xmark' })
             removeButton.on('click', async (e) => {
                 e.preventDefault()
                 try {
@@ -211,7 +218,7 @@
         }
         detailContainer.append([userIcon, commentUser, commentDescription])
         commentContainer.append(detailContainer)
-        
+
         return commentContainer
     }
     const populateComments = (comments) => {
@@ -263,14 +270,14 @@
             }
         } catch (err) {
             const { responseJSON } = err
-			const { errorMsg } = responseJSON
-			createError(updateError, `Error: ${errorMsg}`);
+            const { errorMsg } = responseJSON
+            createError(updateError, `Error: ${errorMsg}`);
         }
     })
 
     // populate comments
     populateComments(comments)
 
-    
+
 
 })(window.jQuery);

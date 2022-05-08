@@ -48,67 +48,70 @@ router.route("/create/pool").post(async (req, res) => {
     }
 });
 
-router.route("/:id").get(async (req, res) => {
-    if (req.session.user) {
-        // validate
-        try {
-            req.session.user.email = checkEmail(xss(req.session.user.email))
-            req.params.id = checkId(xss(req.params.id))
-        } catch (e) {
-            console.log(e);
-            res.statusMessage = e;
-            return res.status(400).json({ errorMsg: e }).end();
-        }
-        try {
-            const email = req.session.user.email
-            const _poolId = req.params.id
-            const user = await users.getUser(email);
-            const event = await events.getEventByPoolId(_poolId);
-            const pool = await carpools.getPool(_poolId);
-            const _driver = await users.getUserById(pool.driver);
-            const _driverName = `${_driver.firstName} ${_driver.lastName}`;
-            const _departureTime = pool.departureTime;
-            const _capacity = pool.capacity;
-            let _memberData = pool.members.slice();
-            for (let i = 0; i < _memberData.length; i++) {
-                try {
-                    _memberData[i] = await users.getUserById(_memberData[i]);
-                } catch (e) {
-                    throw (`No such member with ID ${_memberData[i]}`);
-                }
+router
+    .route("/:id")
+    .get(async (req, res) => {
+        if (req.session.user) {
+            // validate
+            try {
+                req.session.user.email = checkEmail(xss(req.session.user.email))
+                req.params.id = checkId(xss(req.params.id))
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(400).json({ errorMsg: e }).end();
             }
-            const _numMembers = _memberData.length;
-            const _comments = pool.comments;
-            const _eventName = event.name;
-            const _isUserInPool = pool.members.indexOf(user._id) > -1;
-            const _eventID = event._id;
-            const args = {
-                _poolId,
-                _driverName,
-                _departureTime,
-                _capacity,
-                _memberData,
-                _numMembers,
-                _comments,
-                _eventName,
-                _isUserInPool,
-                _eventID,
-                authenticated: true,
-                email: user.email,
-            };
-            return res.status(200).render("templates/pool", args);
-        } catch (e) {
-            const states = Object.keys(US_States);
-            const templateData = {
-                error: e,
-                states: states,
-            };
-            return res.status(404).render("templates/error", templateData);
+            try {
+                const email = req.session.user.email
+                const _poolId = req.params.id
+                const user = await users.getUser(email);
+                const event = await events.getEventByPoolId(_poolId);
+                const pool = await carpools.getPool(_poolId);
+                const _driver = await users.getUserById(pool.driver);
+                const _driverName = `${_driver.firstName} ${_driver.lastName}`;
+                const _departureTime = pool.departureTime;
+                const _capacity = pool.capacity;
+                let _memberData = pool.members.slice();
+                for (let i = 0; i < _memberData.length; i++) {
+                    try {
+                        _memberData[i] = await users.getUserById(_memberData[i]);
+                    } catch (e) {
+                        throw (`No such member with ID ${_memberData[i]}`);
+                    }
+                }
+                const _numMembers = _memberData.length;
+                const _comments = pool.comments;
+                const _eventName = event.name;
+                const _isUserInPool = pool.members.indexOf(user._id) > -1;
+                const _eventID = event._id;
+                const args = {
+                    _poolId,
+                    _driverName,
+                    _departureTime,
+                    _capacity,
+                    _memberData,
+                    _numMembers,
+                    _comments,
+                    _eventName,
+                    _isUserInPool,
+                    _eventID,
+                    authenticated: true,
+                    email: user.email,
+                };
+                console.log(args)
+                return res.status(200).render("templates/pool", args);
+            } catch (e) {
+                const states = Object.keys(US_States);
+                const templateData = {
+                    error: e,
+                    states: states,
+                };
+                return res.status(404).render("templates/error", templateData);
+            }
+        } else {
+            return res.redirect('/')
         }
-    } else {
-        return res.redirect('/')
-    }
-});
+    })
 
 router.route("/list/:id").get(async (req, res) => {
     if (req.session.user) {
@@ -245,10 +248,26 @@ router.route("/:id/leave").post(async (req, res) => {
         }
         // update
         try {
+            // if driver is the one that left, the pool gets deleted,
+            // removing everyone in the pool
+            let poolDeleted = false
             await carpools.deletePooler(event._id, pool._id, user._id);
             await history.removeFromHistory(user._id, event._id, pool._id);
-            return res.status(200).json({ success: true })
+            if (user._id === pool.driver) {
+                console.log('in this driver condition')
+                // all members that aren't the driver
+                const passengers = pool.members.filter(id => id !== user._id)
+                // ugly :(
+                for await (const passenger of passengers.map(async passenger => {
+                    const deleted = await carpools.deletePooler(event._id, pool._id, passenger)
+                    const historyRemoved = await history.removeFromHistory(passenger, event._id, pool._id)
+                    return passenger
+                })) console.log(`${passenger} was removed`)
+                poolDeleted = (await carpools.deletePool(event._id, pool._id)).poolDeleted
+            }
+            return res.status(200).json({ success: true, poolDeleted: poolDeleted })
         } catch (e) {
+            console.log(e)
             return res.status(400).json({ errorMsg: e })
         }
     } else {
@@ -289,7 +308,7 @@ router
             try {
                 if (pool.driver !== user._id) throw 'Only the driver can edit capacity'
                 await carpools.updateCapacity(_poolId, cap)
-                return res.json({success: true})
+                return res.json({ success: true })
             } catch (e) {
                 console.log(e)
                 return res.status(400).json({ errorMsg: e })
@@ -331,7 +350,7 @@ router
             try {
                 if (pool.driver !== user._id) throw 'Only the driver can edit departure time'
                 await carpools.updateDepartureTime(_poolId, _departureTime)
-                return res.json({success: true})
+                return res.json({ success: true })
             } catch (e) {
                 console.log(e)
                 return res.status(400).json({ errorMsg: e })
@@ -396,7 +415,7 @@ router
                 console.log(e)
                 res.statusMessage = e;
                 return res.status(404).json({ errorMsg: e }).end()
-            }   
+            }
         }
         else {
             return res.redirect('/')
