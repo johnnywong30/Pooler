@@ -1,5 +1,5 @@
 (async function ($) {
-	checkString = (str, fieldName = "input", additionalCheck = str => true) => {
+	const checkString = (str, fieldName = "input", additionalCheck = str => true) => {
 		if (!str) throw `${fieldName} does not exist`;
 		if (typeof str !== "string") throw `${fieldName} is not a string`;
 		const trimmed = str.trim();
@@ -8,7 +8,7 @@
 		return trimmed;
 	};
 
-	checkFullName = fullName => {
+	const checkFullName = fullName => {
 		if (!fullName) throw `full name must be supplied`;
 		let data = fullName.split(" ");
 		if (data.length !== 2) throw `invalid fullName`;
@@ -17,7 +17,7 @@
 		return fullName;
 	};
 
-	checkDate = date => {
+	const checkDate = date => {
 		if (!date) throw `date ${date} must be supplied`;
 		let data = date.split("-");
 		if (data.length !== 3) throw `invalid date ${date}`;
@@ -34,7 +34,7 @@
 	};
 
 	// checks if the time is in military format
-	checkTime = time => {
+	const checkTime = time => {
 		if (!time) throw `time must be supplied`;
 		//modified from https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s06.html
 		const regex = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$";
@@ -43,7 +43,7 @@
 		if (!matches) throw `${_time} is not in a valid military time format`;
 		return _time;
 	};
-	checkDateTime = dateTime => {
+	const checkDateTime = dateTime => {
 		// might need to do some conversion
 		if (!dateTime) throw `date and time must be supplied`;
 		let data = dateTime.split("T");
@@ -53,7 +53,7 @@
 		return data.join(" ");
 	};
 
-	checkCapacity = capacity => {
+	const checkCapacity = capacity => {
 		if (!capacity) throw `capacity must be supplied`;
 		const _capacity = Number(capacity);
 		if (typeof _capacity !== "number" || isNaN(_capacity)) throw `${_capacity} must be a number`;
@@ -70,7 +70,6 @@
 	};
 
 	let poolList = $("#poolList"),
-		modalCloseBtn = $("#modal-close-btn"),
 		hostPoolModal = $("#host-modal"),
 		hostPoolBtn = $("#create-button"),
 		hostPoolCloseBtn = $("#pool-close-btn"),
@@ -78,13 +77,6 @@
 		hostPoolDepartureTime = $("#host-pool-departureTime"),
 		hostPoolCapacity = $("#host-pool-capacity"),
 		hostErrorDiv = document.getElementById("host-pool-error");
-
-	modalCloseBtn.on("click", () => {
-		passwordModal.css({
-			opacity: 0,
-			visibility: "hidden",
-		});
-	});
 
 	hostPoolCloseBtn.on("click", () => {
 		hostPoolModal.css({

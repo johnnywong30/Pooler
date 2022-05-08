@@ -8,7 +8,7 @@
         return trimmed
     }
 
-    checkDate = date => {
+    const checkDate = date => {
 		if (!date) throw `date ${date} must be supplied`;
 		let data = date.split("-");
 		if (data.length !== 3) throw `invalid date ${date}`;
@@ -25,7 +25,7 @@
 	};
 
 	// checks if the time is in military format
-	checkTime = time => {
+	const checkTime = time => {
 		if (!time) throw `time must be supplied`;
 		//modified from https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s06.html
 		const regex = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$";
@@ -34,7 +34,7 @@
 		if (!matches) throw `${_time} is not in a valid military time format`;
 		return _time;
 	};
-	checkDateTime = dateTime => {
+	const checkDateTime = dateTime => {
 		// might need to do some conversion
 		if (!dateTime) throw `date and time must be supplied`;
 		let data = dateTime.split("T");
@@ -44,7 +44,7 @@
 		return data.join(" ");
 	};
 
-	checkCapacity = capacity => {
+	const checkCapacity = capacity => {
 		if (!capacity) throw `capacity must be supplied`;
 		const _capacity = Number(capacity);
 		if (typeof _capacity !== "number" || isNaN(_capacity)) throw `${_capacity} must be a number`;
@@ -79,8 +79,8 @@
                 }
             } catch (err) {
                 const { responseJSON } = err
-                const { error } = responseJSON
-                alert(error)
+                const { errorMsg } = responseJSON
+                alert(errorMsg)
             }
         })
     }
@@ -263,8 +263,8 @@
             }
         } catch (err) {
             const { responseJSON } = err
-			const { error } = responseJSON
-			createError(updateError, `Error: ${error}`);
+			const { errorMsg } = responseJSON
+			createError(updateError, `Error: ${errorMsg}`);
         }
     })
 

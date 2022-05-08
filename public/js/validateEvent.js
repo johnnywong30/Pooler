@@ -255,28 +255,6 @@
             console.log("cancelled");
         }
     })
-
-    //taken from validateRegister
-    const createError = (error) => {
-        // in case error had another error in it already; clear all children
-        errorDiv.replaceChildren()
-        errorDiv.hidden = false
-        const clearButton = document.createElement('span')
-        clearButton.className = 'fa-solid fa-xmark'
-        clearButton.id = 'close-error'
-        const clearError = () => {
-            errorDiv.replaceChildren()
-            errorDiv.hidden = true
-        }
-        clearButton.addEventListener('click', clearError)
-        errorDiv.innerHTML = `Error: ${error}`
-        errorDiv.appendChild(clearButton)
-    }
-
-    const resolveError = () => {
-        errorDiv.replaceChildren()
-        errorDiv.hidden = true
-    }
     
     editEventForm.addEventListener('submit', (e) => {
         e.preventDefault();

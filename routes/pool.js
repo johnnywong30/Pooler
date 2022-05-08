@@ -27,7 +27,7 @@ router.route("/create/pool").post(async (req, res) => {
         }
         // check if event exists
         try {
-            await events.get(_eventId)
+            await events.getEvent(_eventId)
         } catch (e) {
             console.log(e);
             res.statusMessage = e;
@@ -127,7 +127,7 @@ router.route("/list/:id").get(async (req, res) => {
             return res.status(200).json(importCarpools);
         } catch (e) {
             console.log(e);
-            return res.status(404).json({ error: e });
+            return res.status(404).json({ errorMsg: e });
         }
     } else {
         res.redirect("/");
@@ -150,7 +150,7 @@ router.route("/currentUser/data").get(async (req, res) => {
             return res.status(200).json(user);
         } catch (e) {
             console.log(e);
-            return res.status(404).json({ error: e });
+            return res.status(404).json({ errorMsg: e });
         }
     } else {
         res.redirect("/");
@@ -173,7 +173,7 @@ router.route("/user/:id").get(async (req, res) => {
             return res.status(200).json(user);
         } catch (e) {
             console.log(e);
-            return res.status(404).json({ error: e });
+            return res.status(404).json({ errorMsg: e });
         }
     } else {
         res.redirect("/");
@@ -211,7 +211,7 @@ router.route("/:id/join").post(async (req, res) => {
             await history.addToHistory(user._id, event._id, pool._id);
             return res.status(200).json({ success: true })
         } catch (e) {
-            return res.status(400).json({ error: e })
+            return res.status(400).json({ errorMsg: e })
         }
     } else {
         return res.redirect('/')
@@ -249,7 +249,7 @@ router.route("/:id/leave").post(async (req, res) => {
             await history.removeFromHistory(user._id, event._id, pool._id);
             return res.status(200).json({ success: true })
         } catch (e) {
-            return res.status(400).json({ error: e })
+            return res.status(400).json({ errorMsg: e })
         }
     } else {
         return res.redirect('/')
@@ -292,7 +292,7 @@ router
                 return res.json({success: true})
             } catch (e) {
                 console.log(e)
-                return res.status(400).json({ error: e })
+                return res.status(400).json({ errorMsg: e })
             }
         }
         else {
@@ -300,7 +300,7 @@ router
         }
     })
 
-    router
+router
     .route('/:id/updateDepartureTime')
     .post(async (req, res) => {
         if (req.session.user) {
@@ -334,7 +334,7 @@ router
                 return res.json({success: true})
             } catch (e) {
                 console.log(e)
-                return res.status(400).json({ error: e })
+                return res.status(400).json({ errorMsg: e })
             }
         }
         else {
@@ -348,7 +348,7 @@ router.route('/:id/comments').get(async (req, res) => {
         try {
             req.params.id = checkId(xss(req.params.id))
         } catch (e) {
-            return res.status(400).json({ error: e })
+            return res.status(400).json({ errorMsg: e })
         }
         // fetch all comments
         try {
@@ -357,7 +357,7 @@ router.route('/:id/comments').get(async (req, res) => {
             const commentList = await comments.getAllComments(event._id, _poolId)
             return res.status(200).json(commentList)
         } catch (e) {
-            return res.status(404).json({ error: e });
+            return res.status(404).json({ errorMsg: e });
         }
     }
 })
@@ -365,71 +365,81 @@ router.route('/:id/comments').get(async (req, res) => {
 router
     .route('/:id/createComment')
     .post(async (req, res) => {
-        let { description } = req.body
-        // validate
-        try {
-            req.session.user.email = checkEmail(xss(req.session.user.email))
-            req.params.id = checkId(xss(req.params.id))
-            description = checkString(xss(description))
-        } catch (e) {
-            return res.status(400).json({ error: e })
+        if (req.session.user) {
+            let { description } = req.body
+            // validate
+            try {
+                req.session.user.email = checkEmail(xss(req.session.user.email))
+                req.params.id = checkId(xss(req.params.id))
+                description = checkString(xss(description))
+            } catch (e) {
+                return res.status(400).json({ errorMsg: e })
+            }
+            // check if user, event, and pool exist.
+            const email = req.session.user.email
+            const _poolId = req.params.id
+            let event
+            try {
+                await users.getUser(email)
+                event = await events.getEventByPoolId(_poolId)
+                await carpools.getPool(_poolId)
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+            // check if it's valid comment. then create it
+            try {
+                const comment = await comments.createComment(event._id, _poolId, email, description)
+                return res.status(200).json({ success: true, commentId: comment._id })
+            } catch (e) {
+                console.log(e)
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end()
+            }   
         }
-        // check if user, event, and pool exist.
-        const email = req.session.user.email
-        const _poolId = req.params.id
-        let event
-        try {
-            await users.getUser(email)
-            event = await events.getEventByPoolId(_poolId)
-            await carpools.getPool(_poolId)
-        } catch (e) {
-            console.log(e);
-            res.statusMessage = e;
-            return res.status(404).json({ errorMsg: e }).end();
-        }
-        // check if it's valid comment. then create it
-        try {
-            const comment = await comments.createComment(event._id, _poolId, email, description)
-            return res.status(200).json({ success: true, commentId: comment._id })
-        } catch (e) {
-            console.log(e)
-            res.statusMessage = e;
-            return res.status(404).json({ errorMsg: e }).end()
+        else {
+            return res.redirect('/')
         }
     })
 
 router
     .route('/:id/deleteComment')
     .post(async (req, res) => {
-        let { commentId } = req.body
-        // validate
-        try {
-            commentId = checkId(xss(commentId))
-            req.params.id = checkId(xss(req.params.id))
-        } catch (e) {
-            return res.status(400).json({ error: e })
+        if (req.session.user) {
+            let { commentId } = req.body
+            // validate
+            try {
+                commentId = checkId(xss(commentId))
+                req.params.id = checkId(xss(req.params.id))
+            } catch (e) {
+                return res.status(400).json({ errorMsg: e })
+            }
+            // check if user, event, and pool exist.
+            const email = req.session.user.email
+            const _poolId = req.params.id
+            let event
+            try {
+                await users.getUser(email)
+                event = await events.getEventByPoolId(_poolId)
+                await carpools.getPool(_poolId)
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+            // delete the comment
+            try {
+                const comment = await comments.deleteComment(event._id, _poolId, commentId)
+                return res.status(200).json({ success: true, commentDeleted: comment })
+            } catch (e) {
+                console.log(e)
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end()
+            }
         }
-        // check if user, event, and pool exist.
-        const email = req.session.user.email
-        const _poolId = req.params.id
-        let event
-        try {
-            await users.getUser(email)
-            event = await events.getEventByPoolId(_poolId)
-            await carpools.getPool(_poolId)
-        } catch (e) {
-            console.log(e);
-            res.statusMessage = e;
-            return res.status(404).json({ errorMsg: e }).end();
-        }
-        // delete the comment
-        try {
-            const comment = await comments.deleteComment(event._id, _poolId, commentId)
-            return res.status(200).json({ success: true, commentDeleted: comment })
-        } catch (e) {
-            console.log(e)
-            res.statusMessage = e;
-            return res.status(404).json({ errorMsg: e }).end()
+        else {
+            return res.redirect('/')
         }
     })
 module.exports = router;
