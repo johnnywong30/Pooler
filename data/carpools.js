@@ -42,6 +42,27 @@ module.exports = {
 		await this.addPooler(eventId, _poolId, _driverId)
 		return await this.getPool(_poolId)
 	},
+	async deletePool(eventId, poolId) {
+		// Inital Checks
+		let _eventId = checkId(eventId);
+		let _poolId = checkId(poolId);
+		// Check if event exists
+		const eventCollection = await events();
+		const event = await eventCollection.findOne({ _id: _eventId });
+		if (!event) throw `No event with ID of ${_eventId}`;
+		// Check if carpool exists
+		const carpool = event.carpools.find(carpool => carpool._id === _poolId);
+		if (!carpool) throw `No carpool with ID of ${_poolId}`;
+
+		const updateInfo = await eventCollection.updateOne(
+			{ _id: _eventId },
+			{ $pull: { carpools: { _id: _poolId } } }
+		);
+		if (updateInfo.modifiedCount === 0) throw `Could not delete pool ${_poolId}`;
+		// On success
+		return { poolDeleted: true };
+
+	},
 	async addPooler(eventId, poolId, userId) {
 		// Inital Checks
 		let _eventId = checkId(eventId);
