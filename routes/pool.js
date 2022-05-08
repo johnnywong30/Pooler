@@ -17,7 +17,7 @@ router.route("/create/pool").post(async (req, res) => {
         try {
             _eventId = checkId(xss(eventId));
             _driverId = checkId(xss(driverId));
-            cap = typeof capacity === 'number' ? capacity : xss(capacity)
+            const cap = typeof capacity === 'number' ? capacity : xss(capacity)
             _capacity = checkCapacity(cap); // is a number
             _departureTime = checkDateTime(xss(departureTime));
         } catch (e) {
@@ -42,9 +42,16 @@ router.route("/create/pool").post(async (req, res) => {
 
 router.route("/:id").get(async (req, res) => {
     if (req.session.user) {
+        // validate
         try {
-            const email = checkEmail(xss(req.session.user.email))
-            const _poolId = checkId(xss(req.params.id))
+            req.session.user.email = checkEmail(xss(req.session.user.email))
+            req.params.id = checkId(xss(req.params.id))
+        } catch (e) {
+            return res.status(400).json({ error: e})
+        }
+        try {
+            const email = req.session.user.email
+            const _poolId = req.params.id
             const user = await users.getUser(email);
             const event = await events.getEventByPoolId(_poolId);
             const pool = await carpools.getPool(_poolId);
