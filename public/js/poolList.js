@@ -190,7 +190,9 @@
 				window.location.href = page;
 			}
 		} catch (error) {
-			createError(hostErrorDiv, `Error: ${error}`);
+			const { responseJSON } = error
+			const { errorMsg } = responseJSON
+			createError(hostErrorDiv, `Error: ${errorMsg}`);
 		}
 	});
 
