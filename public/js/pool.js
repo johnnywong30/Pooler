@@ -94,8 +94,8 @@
                 }
             } catch (err) {
                 const { responseJSON } = err
-                const { error } = responseJSON
-                alert(error)
+                const { errorMsg } = responseJSON
+                alert(errorMsg)
             }
         })
     }
