@@ -69,7 +69,6 @@ router.route("/:id").get(async (req, res) => {
                 authenticated: true,
                 email: user.email,
             };
-            console.log(args)
             return res.render("templates/pool", args);
         } catch (e) {
             const states = Object.keys(US_States);
@@ -180,6 +179,7 @@ router
                 await carpools.updateCapacity(_poolId, cap)
                 return res.json({success: true})
             } catch (e) {
+                console.log(e)
                 return res.status(400).json({ error: e })
             }
         }
@@ -203,6 +203,7 @@ router
                 await carpools.updateDepartureTime(_poolId, _departureTime)
                 return res.json({success: true})
             } catch (e) {
+                console.log(e)
                 return res.status(400).json({ error: e })
             }
         }

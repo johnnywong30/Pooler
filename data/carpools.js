@@ -123,10 +123,10 @@ module.exports = {
 		const departureTime = checkDateTime(_departureTime);
 		// Check if carpool exists
 		const eventsCollection = await events();
-		const event = await eventsCollection.findOne({ carpools: { $elemMatch: { _id: _poolId } } });
-		if (!event) throw `No carpool with ID of ${_poolId}`;
+		const event = await eventsCollection.findOne({ carpools: { $elemMatch: { _id: id } } });
+		if (!event) throw `No carpool with ID of ${id}`;
 		const updatedInfo = await eventsCollection.updateOne(
-			{ _id: _eventId, "carpools._id": _poolId },
+			{ _id: event._id, "carpools._id": id },
 			{ $set: { "carpools.$.departureTime": departureTime } }
 		);
 		if (updatedInfo.modifiedCount === 0) throw "Could not update departure time";
@@ -137,10 +137,10 @@ module.exports = {
 		const capacity = checkCapacity(_capacity)
 		// Check if carpool exists
 		const eventsCollection = await events();
-		const event = await eventsCollection.findOne({ carpools: { $elemMatch: { _id: _poolId } } });
-		if (!event) throw `No carpool with ID of ${_poolId}`;
+		const event = await eventsCollection.findOne({ carpools: { $elemMatch: { _id: id } } });
+		if (!event) throw `No carpool with ID of ${id}`;
 		const updatedInfo = await eventsCollection.updateOne(
-			{ _id: _eventId, "carpools._id": _poolId },
+			{ _id: event._id, "carpools._id": id },
 			{ $set: { "carpools.$.capacity": capacity } }
 		);
 		if (updatedInfo.modifiedCount === 0) throw "Could not update capacity";

@@ -34,7 +34,7 @@
     font-family: var(--montserrat);
     font-weight: 400;
     font-size: 1em;
-    color: rgb(99, 136, 211);
+    color: #4375c9;
     padding-left: 15px;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .member-container>.phone-num {
-    color: rgb(99, 211, 198);
+    color: #00857a;
 }
 
 .carpool-btn {
@@ -126,4 +126,9 @@
 #departure-label,
 #capacity-label {
     cursor: pointer;
+    color: #4375c9;
+}
+
+.edit-input-container {
+    padding: 10px auto;
 }
