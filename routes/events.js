@@ -40,7 +40,7 @@ router
         if (req.session.user) {
             try {
                 const id = checkId(xss(req.params.id))
-                const userData = await users.getUser(req.session.user.email)
+                const userData = await users.getUser(xss(req.session.user.email))
                 const eventData = await events.getEvent(id)
                 const { _id, name, date, startTime, host, description } = eventData
                 const { capacity, carpools, destination, private, password } = eventData
@@ -60,9 +60,9 @@ router
                 const states = Object.keys(US_States)
                 const googleMapsUrl = `https://www.google.com/maps/place/${displayAddress}`.replace(/\s/g, '+')
                 //console.log(`${userData._id} in ${await events.getDrivers(req.params.id)}`)
-                const drivers = await events.getDrivers(req.params.id)
+                const drivers = await events.getDrivers(id)
                 let isUserDriver = drivers.includes(userData._id)
-                let occupied = await events.occupance(req.params.id);
+                let occupied = await events.occupance(id);
                 for (carpool of carpools) {
                     let driver = await users.getUserById(carpool.driver)
                     carpool.driver = `${driver.firstName} ${driver.lastName}`
@@ -104,61 +104,25 @@ router
         }
     });
 
-router.route("/:id/join").get(async (req, res) => { //This should be a POST method. Need to change to a form + button
-    if (req.session.user) {
-        const eventData = await events.getEvent(req.params.id)
-        if (await events.occupance(req.params.id) < eventData.capacity) {
-            const userData = await users.getUser(req.session.user.email)
-            try {
-                await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
-            } catch (e) {
-                console.log("Error creating driver: " + e)
-            }
-        }
-        res.redirect(`/events/view/${req.params.id}`)
-    } else {
-        return res.redirect("/");
-    }
-});
-
-router.route("/:id/join").post(async (req, res) => {
-    if (req.session.user) {
-        const eventData = await events.getEvent(req.params.id)
-        if (events.occupance(req.params.id) < eventData.capacity) {
-            const userData = await users.getUser(req.session.user.email)
-            await carpools.createPool(req.params.id, userData._id, `${userData.firstName} ${userData.lastName}`, "04/01/2022 09:32:14", 20) //TEST NUMBERS
-        }
-        res.redirect(`/events/view/${req.params.id}`)
-    } else {
-        return res.redirect("/");
-    }
-});
-
-router.route("/:id/leave").post(async (req, res) => {
-    if (req.session.user) {
-        // No deletePool function made?
-    } else {
-        return res.redirect("/");
-    }
-});
 
 router.route("/list").get(async (req, res) => {
     if (req.session.user) {
         // fetch all events even if they're private
-        const importEvents = await events.getEvents();
-        const renderedEvents = importEvents.map((event) => {
-            const dateParts = event.date.split("/"); // [MM, DD, YYYY]
-            return {
-                _id: event._id,
-                month: months[dateParts[0]],
-                date: dateParts[1],
-                title: event.name,
-                description: event.description,
-                fullDate: event.date,
-                private: event.private,
-            };
-        });
+        // bad api for security oops
         try {
+            const importEvents = await events.getEvents();
+            const renderedEvents = importEvents.map((event) => {
+                const dateParts = event.date.split("/"); // [MM, DD, YYYY]
+                return {
+                    _id: event._id,
+                    month: months[dateParts[0]],
+                    date: dateParts[1],
+                    title: event.name,
+                    description: event.description,
+                    fullDate: event.date,
+                    private: event.private,
+                };
+            });
             return res.json(renderedEvents);
         } catch (e) {
             return res.status(500).json({ error: e });
@@ -172,7 +136,7 @@ router
     .route("/createEvent")
     .post(async (req, res) => {
         if (req.session.user) {
-            const host = req.session.user.email;
+            const host = xss(req.session.user.email);
             try {
                 const { name, date, startTime, description, capacity, private, password, destination } = req.body;
                 const _name = checkString(xss(name));
@@ -180,8 +144,10 @@ router
                 const _startTime = checkTime(xss(startTime));
                 const _host = checkEmail(host); // should be in session
                 const _description = checkString(xss(description));
-                const _capacity = checkCapacity(capacity); // is a number
-                const _private = checkBool(private); // is a bool
+                const cap = typeof capacity === 'number' ? capacity : xss(capacity)
+                const _capacity = checkCapacity(cap); // is a number
+                const boolVal = typeof private === 'boolean' ? private : xss(private)
+                const _private = checkBool(boolVal); // is a bool
                 const _pass = _private ? checkPassword(xss(password)) : null;
                 const _destination = checkAddress(destination);
                 const event = await events.createEvent(_name, _date, _startTime, _host, _description, _capacity, _destination, _private, _pass);
@@ -197,64 +163,78 @@ router
     });
 
 router.get("/:id", async (req, res) => {
-    try {
-        const id = checkId(req.params.id);
-        const event = await events.getEvent(req.params.id);
-        return res.status(200).json({ event });
-    } catch (e) {
-        return res.status(400).json({ error: e });
+    if (req.session.user) {
+        try {
+            const id = checkId(xss(req.params.id));
+            const event = await events.getEvent(id);
+            return res.status(200).json({ event });
+        } catch (e) {
+            return res.status(400).json({ error: e });
+        }
+    } else {
+        return res.redirect('/')
     }
 });
 
 router
     .route('/getHost/:id')
     .get(async (req, res) => {
-        try {
-            const id = checkId(req.params.id)
-            const event = await events.getEvent(req.params.id)
-            return res.status(200).json(event.host);
-        } catch (e) {
-            return res.status(400).json({ error: e });
+        if (req.session.user) {
+            try {
+                const id = checkId(xss(req.params.id))
+                const event = await events.getEvent(id)
+                return res.status(200).json(event.host);
+            } catch (e) {
+                return res.status(400).json({ error: e });
+            }
+        } else {
+            return res.redirect('/')
         }
     })
 
 router
     .delete('/:id', async (req, res) => {
-        // console.log(req.session.user)
-        try {
-            const id = checkId(req.params.id)
-            // const event = await events.getEvent(id)
-            // console.log(event)
-            await events.deleteEvent(id)
-            return res.status(200).json({ eventId: id, deleted: true });
-        } catch (e) {
-            return res.status(400).json({ error: e });
+        if (req.session.user) {
+            try {
+                const id = checkId(xss(req.params.id))
+                await events.deleteEvent(id)
+                return res.status(200).json({ eventId: id, deleted: true });
+            } catch (e) {
+                return res.status(400).json({ error: e });
+            }
+        } else {
+            return res.redirect('/')
         }
     })
 
 router.post("/validateEvent/:id", async (req, res) => {
-    let auth = {};
-    try {
-        const id = checkId(xss(req.params.id));
-        const password = checkPassword(xss(req.body.password));
-        auth = await events.validateEvent(id, password);
-    } catch (e) {
-        return res.status(400).json({ error: e });
-    }
+    if (req.session.user) {
+        let auth = {};
+        try {
+            const id = checkId(xss(req.params.id));
+            const password = checkPassword(xss(req.body.password));
+            auth = await events.validateEvent(id, password);
+        } catch (e) {
+            return res.status(400).json({ error: e });
+        }
 
-    if (auth.authenticated) {
-        return res.status(200).json({ authenticated: true })
+        if (auth.authenticated) {
+            return res.status(200).json({ authenticated: true })
+        }
+    } else {
+        return res.redirect('/')
     }
 })
 router
     .post('/updateEvent/:id', async (req, res) => {
         const { name, date, startTime, description, destination } = req.body;
         try {
-            const id = checkId(req.params.id)
-            let _name = checkString(name, "event name")
-            let _date = checkDate(date)
-            let _startTime = checkTime(startTime)
-            let _description = checkString(description)
+            const id = checkId(xss(req.params.id))
+            let _name = checkString(xss(name), "event name")
+            let _date = checkDate(xss(date))
+            let _startTime = checkTime(xss(startTime))
+            let _description = checkString(xss(description))
+            // all addresses should be cleaned by middleware
             let _destination = checkAddress(destination)
 
             const currentEvent = await events.getEvent(id);
@@ -276,10 +256,7 @@ router
                 const updateDescription = await events.updateDescription(id, _description)
             }
 
-            if (currentEvent.destination !== _destination) {
-                const updateDestination = await events.updateDestination(id, _destination)
-            }
-
+            const updateDestination = await events.updateDestination(id, _destination)
 
             const updatedEvent = await events.getEvent(id);
 

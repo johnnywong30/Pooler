@@ -75,15 +75,6 @@ const checkEmail = (email) => {
         return /^\S+@\S+\.\S+$/.test(email)
     })
 }
-const checkPassword = (password) => {
-    return checkString(password, 'Password', (password) => {
-        // regex source: https://stackoverflow.com/a/16334856
-        const regex = /^\S*$/
-        if (!regex.test(password)) throw 'password cannot contain spaces'
-        if (password.length < 6) throw 'password must be at least 6 characters long'
-        return true
-    })
-}
 
 const checkFirstName = (firstName) => {
     return checkString(firstName, 'First Name')

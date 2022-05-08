@@ -255,28 +255,6 @@
             console.log("cancelled");
         }
     })
-
-    //taken from validateRegister
-    const createError = (error) => {
-        // in case error had another error in it already; clear all children
-        errorDiv.replaceChildren()
-        errorDiv.hidden = false
-        const clearButton = document.createElement('span')
-        clearButton.className = 'fa-solid fa-xmark'
-        clearButton.id = 'close-error'
-        const clearError = () => {
-            errorDiv.replaceChildren()
-            errorDiv.hidden = true
-        }
-        clearButton.addEventListener('click', clearError)
-        errorDiv.innerHTML = `Error: ${error}`
-        errorDiv.appendChild(clearButton)
-    }
-
-    const resolveError = () => {
-        errorDiv.replaceChildren()
-        errorDiv.hidden = true
-    }
     
     editEventForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -332,6 +310,7 @@
             alert("invalid address")
         }
 
+        // this hurts to look at
         $.ajax({
             url: `/events/updateEvent/${deleteBtn.value}`,
             type: 'POST',
@@ -342,9 +321,10 @@
                 saveChangesBtn.disabled = true
                 cancelBtn.disabled = true
                 currentValues = editables.map((element) => (element.value) ? element.value : element.checked)
+                location.reload()
             },
             error: function (error) {
-                console.log(`Error ${error}`);
+                alert(`Error ${error}`);
             }
         });
 

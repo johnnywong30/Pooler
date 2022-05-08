@@ -3,6 +3,7 @@ const { v4: uuidv4, validate } = require("uuid");
 const { phone } = require("phone");
 const { ObjectId } = require("mongodb");
 const US_States = require("../const/USStates.json");
+const xss = require('xss')
 
 module.exports = {
 	checkString(str, fieldName = "input", additionalCheck = str => true) {

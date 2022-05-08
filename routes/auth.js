@@ -3,6 +3,7 @@ const { users } = require('../data')
 const { checkEmail, checkPassword, checkFirstName, checkLastName, checkPhone, checkVenmo, checkAddress, checkIsDriver } = require('../misc/validate')
 const US_States = require('../const/USStates.json')
 const router = express.Router();
+const xss = require("xss");
 
 
 router
@@ -21,14 +22,15 @@ router
         const { email, password, firstName, lastName, phone, venmo, address, isDriver } = req.body
         let register = {}
         try {
-            const _email = checkEmail(email)
-            const _pass = checkPassword(password)
-            const _firstName = checkFirstName(firstName)
-            const _lastName = checkLastName(lastName)
-            const _phone = checkPhone(phone)
-            const _venmo = checkVenmo(venmo)
+            const _email = checkEmail(xss(email))
+            const _pass = checkPassword(xss(password))
+            const _firstName = checkFirstName(xss(firstName))
+            const _lastName = checkLastName(xss(lastName))
+            const _phone = checkPhone(xss(phone))
+            const _venmo = checkVenmo(xss(venmo))
             const _address = checkAddress(address)
-            const _isDriver = checkIsDriver(isDriver)
+            const boolVal = typeof isDriver === 'boolean' ? isDriver : xss(isDriver)
+            const _isDriver = checkIsDriver(boolVal)
             const args = [_email, _pass, _firstName, _lastName, _phone, _venmo, _address, _isDriver]
             register = await users.createUser(...args)
         } catch (e) {
@@ -59,8 +61,8 @@ router
         let auth = {}
         let userEmail = ''
         try {
-            userEmail = checkEmail(email)
-            const pass = checkPassword(password)
+            userEmail = checkEmail(xss(email))
+            const pass = checkPassword(xss(password))
             auth = await users.checkUser(userEmail, pass)
         } catch (e) {
             const templateData = {

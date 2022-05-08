@@ -9,7 +9,7 @@ router
     .route('/')
     .get(async (req, res) => {
         if (req.session.user) {
-            const user = await users.getUser(req.session.user.email)
+            const user = await users.getUser(checkEmail(xss(req.session.user.email)))
             let { firstName, lastName, email, phone, venmo, driver, address } = user
             try {
                 email = checkEmail(email)
@@ -52,9 +52,8 @@ router
         if (req.session.user) {   
             //check if the user exists
             let user = {}
-            console.log('here a')
             try {
-                user = await users.getUser(req.session.user.email)
+                user = await users.getUser(checkEmail(xss(req.session.user.email)))
             } catch (e) {
                 const templateData = {
                     error: e,

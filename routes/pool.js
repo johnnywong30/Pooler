@@ -11,19 +11,37 @@ router.route("/").get(async (req, res) => {
 
 router.route("/create/pool").post(async (req, res) => {
     if (req.session.user) {
+        // validate params
+        const { eventId, driverId, capacity, departureTime } = req.body;
+        let _eventId, _driverId, _capacity, _departureTime
         try {
-            const { eventId, driverId, capacity, departureTime } = req.body;
-            const _eventId = checkId(xss(eventId));
-            const _driverId = checkId(xss(driverId));
-            const _capacity = checkCapacity(capacity); // is a number
-            const _departureTime = checkDateTime(xss(departureTime));
-            const pool = await carpools.createPool(_eventId, _driverId, _departureTime, _capacity);
-            await history.addToHistory(_driverId, _eventId, pool._id);
-            return res.json({ success: true, poolId: pool._id }).end();
+            _eventId = checkId(xss(eventId));
+            _driverId = checkId(xss(driverId));
+            const cap = typeof capacity === 'number' ? capacity : xss(capacity)
+            _capacity = checkCapacity(cap); // is a number
+            _departureTime = checkDateTime(xss(departureTime));
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        // check if event exists
+        try {
+            await events.getEvent(_eventId)
         } catch (e) {
             console.log(e);
             res.statusMessage = e;
             return res.status(404).json({ errorMsg: e }).end();
+        }
+        //create the pool
+        try {
+            const pool = await carpools.createPool(_eventId, _driverId, _departureTime, _capacity);
+            await history.addToHistory(_driverId, _eventId, pool._id);
+            return res.status(200).json({ success: true, poolId: pool._id }).end();
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
         }
     } else {
         return res.redirect("/");
@@ -32,13 +50,21 @@ router.route("/create/pool").post(async (req, res) => {
 
 router.route("/:id").get(async (req, res) => {
     if (req.session.user) {
-
-
+        // validate
         try {
-            const user = await users.getUser(req.session.user.email);
-            const event = await events.getEventByPoolId(req.params.id);
-            const pool = await carpools.getPool(req.params.id);
-            const _poolId = req.params.id;
+            req.session.user.email = checkEmail(xss(req.session.user.email))
+            req.params.id = checkId(xss(req.params.id))
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        try {
+            const email = req.session.user.email
+            const _poolId = req.params.id
+            const user = await users.getUser(email);
+            const event = await events.getEventByPoolId(_poolId);
+            const pool = await carpools.getPool(_poolId);
             const _driver = await users.getUserById(pool.driver);
             const _driverName = `${_driver.firstName} ${_driver.lastName}`;
             const _departureTime = pool.departureTime;
@@ -48,7 +74,7 @@ router.route("/:id").get(async (req, res) => {
                 try {
                     _memberData[i] = await users.getUserById(_memberData[i]);
                 } catch (e) {
-                    console.log("No such member with ID " + _memberData[i]);
+                    throw (`No such member with ID ${_memberData[i]}`);
                 }
             }
             const _numMembers = _memberData.length;
@@ -70,14 +96,14 @@ router.route("/:id").get(async (req, res) => {
                 authenticated: true,
                 email: user.email,
             };
-            return res.render("templates/pool", args);
+            return res.status(200).render("templates/pool", args);
         } catch (e) {
             const states = Object.keys(US_States);
             const templateData = {
                 error: e,
                 states: states,
             };
-            return res.status(400).render("templates/error", templateData);
+            return res.status(404).render("templates/error", templateData);
         }
     } else {
         return res.redirect('/')
@@ -86,14 +112,22 @@ router.route("/:id").get(async (req, res) => {
 
 router.route("/list/:id").get(async (req, res) => {
     if (req.session.user) {
+        // validate
         try {
-            const pool = await carpools.getPools(req.params.id);
-            const _poolId = req.params.id;
-            const importCarpools = await carpools.getPools(_poolId);
-            return res.json(importCarpools);
+            req.params.id = checkId(xss(req.params.id))
         } catch (e) {
             console.log(e);
-            return res.status(500).json({ error: e });
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        // get the data
+        try {
+            const _poolId = req.params.id;
+            const importCarpools = await carpools.getPools(_poolId);
+            return res.status(200).json(importCarpools);
+        } catch (e) {
+            console.log(e);
+            return res.status(404).json({ errorMsg: e });
         }
     } else {
         res.redirect("/");
@@ -102,12 +136,21 @@ router.route("/list/:id").get(async (req, res) => {
 
 router.route("/currentUser/data").get(async (req, res) => {
     if (req.session.user) {
+        // validate
         try {
-            const user = await users.getUser(req.session.user.email);
-            return res.json(user);
+            req.session.user.email = checkEmail(xss(req.session.user.email))
         } catch (e) {
             console.log(e);
-            return res.status(500).json({ error: e });
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        try {
+            const email = req.session.user.email
+            const user = await users.getUser(email);
+            return res.status(200).json(user);
+        } catch (e) {
+            console.log(e);
+            return res.status(404).json({ errorMsg: e });
         }
     } else {
         res.redirect("/");
@@ -116,12 +159,21 @@ router.route("/currentUser/data").get(async (req, res) => {
 
 router.route("/user/:id").get(async (req, res) => {
     if (req.session.user) {
+        // validate
         try {
-            const user = await users.getUserById(req.params.id);
-            return res.json(user);
+            req.params.id = checkId(xss(req.params.id))
         } catch (e) {
             console.log(e);
-            return res.status(500).json({ error: e });
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        try {
+            const id = req.params.id
+            const user = await users.getUserById(id);
+            return res.status(200).json(user);
+        } catch (e) {
+            console.log(e);
+            return res.status(404).json({ errorMsg: e });
         }
     } else {
         res.redirect("/");
@@ -130,18 +182,36 @@ router.route("/user/:id").get(async (req, res) => {
 
 router.route("/:id/join").post(async (req, res) => {
     if (req.session.user) {
+        // validate
         try {
-            const email = checkEmail(xss(req.session.user.email));
-            const _poolId = checkId(xss(req.params.id));
-            const user = await users.getUser(email);
-            const event = await events.getEventByPoolId(_poolId);
-            const pool = await carpools.getPool(_poolId);
+            req.session.user.email = checkEmail(xss(req.session.user.email))
+            req.params.id = checkId(xss(req.params.id))
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        // check if things exist
+        const email = req.session.user.email;
+        const _poolId = req.params.id;
+        let user, event, pool
+        try {
+            user = await users.getUser(email);
+            event = await events.getEventByPoolId(_poolId);
+            pool = await carpools.getPool(_poolId);
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(404).json({ errorMsg: e }).end();
+        }
+        // update
+        try {
             await carpools.addPooler(event._id, pool._id, user._id);
             // add event to history
             await history.addToHistory(user._id, event._id, pool._id);
-            return res.json({ success: true })
+            return res.status(200).json({ success: true })
         } catch (e) {
-            return res.status(400).json({ error: e })
+            return res.status(400).json({ errorMsg: e })
         }
     } else {
         return res.redirect('/')
@@ -150,17 +220,39 @@ router.route("/:id/join").post(async (req, res) => {
 });
 
 router.route("/:id/leave").post(async (req, res) => {
-    try {
-        const email = checkEmail(xss(req.session.user.email));
-        const _poolId = checkId(xss(req.params.id));
-        const user = await users.getUser(email);
-        const event = await events.getEventByPoolId(_poolId);
-        const pool = await carpools.getPool(_poolId);
-        await carpools.deletePooler(event._id, pool._id, user._id);
-        await history.removeFromHistory(user._id, event._id, pool._id);
-        return res.json({ success: true })
-    } catch (e) {
-        return res.status(400).json({ error: e })
+    if (req.session.user) {
+        // validate
+        try {
+            req.session.user.email = checkEmail(xss(req.session.user.email))
+            req.params.id = checkId(xss(req.params.id))
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        // check if things exist
+        const email = req.session.user.email;
+        const _poolId = req.params.id;
+        let user, event, pool
+        try {
+            user = await users.getUser(email);
+            event = await events.getEventByPoolId(_poolId);
+            pool = await carpools.getPool(_poolId);
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(404).json({ errorMsg: e }).end();
+        }
+        // update
+        try {
+            await carpools.deletePooler(event._id, pool._id, user._id);
+            await history.removeFromHistory(user._id, event._id, pool._id);
+            return res.status(200).json({ success: true })
+        } catch (e) {
+            return res.status(400).json({ errorMsg: e })
+        }
+    } else {
+        return res.redirect('/')
     }
 });
 
@@ -169,19 +261,38 @@ router
     .post(async (req, res) => {
         if (req.session.user) {
             const { capacity } = req.body
+            let cap
+            // validate
             try {
-                const email = checkEmail(xss(req.session.user.email))
-                const _poolId = checkId(xss(req.params.id))
-                const user = await users.getUser(email)
+                req.session.user.email = checkEmail(xss(req.session.user.email))
+                req.params.id = checkId(xss(req.params.id))
                 const val = typeof capacity === 'number' ? capacity : xss(capacity)
-                const cap = checkCapacity(val)
-                const pool = await carpools.getPool(_poolId)
+                cap = checkCapacity(val)
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(400).json({ errorMsg: e }).end();
+            }
+            // check if things exist
+            const email = req.session.user.email
+            const _poolId = req.params.id
+            let user, pool
+            try {
+                user = await users.getUser(email);
+                pool = await carpools.getPool(_poolId);
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+            // update
+            try {
                 if (pool.driver !== user._id) throw 'Only the driver can edit capacity'
                 await carpools.updateCapacity(_poolId, cap)
                 return res.json({success: true})
             } catch (e) {
                 console.log(e)
-                return res.status(400).json({ error: e })
+                return res.status(400).json({ errorMsg: e })
             }
         }
         else {
@@ -189,23 +300,41 @@ router
         }
     })
 
-    router
+router
     .route('/:id/updateDepartureTime')
     .post(async (req, res) => {
         if (req.session.user) {
             const { departureTime } = req.body
+            let _departureTime
+            // validate
             try {
-                const email = checkEmail(xss(req.session.user.email))
-                const _poolId = checkId(xss(req.params.id))
-                const user = await users.getUser(email)
-                const _departureTime = checkDateTime(xss(departureTime));
-                const pool = await carpools.getPool(_poolId)
+                req.session.user.email = checkEmail(xss(req.session.user.email))
+                req.params.id = checkId(xss(req.params.id))
+                _departureTime = checkDateTime(xss(departureTime))
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(400).json({ errorMsg: e }).end();
+            }
+            // check if things exist
+            const email = req.session.user.email
+            const _poolId = req.params.id
+            let user, pool
+            try {
+                user = await users.getUser(email);
+                pool = await carpools.getPool(_poolId);
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+            try {
                 if (pool.driver !== user._id) throw 'Only the driver can edit departure time'
                 await carpools.updateDepartureTime(_poolId, _departureTime)
                 return res.json({success: true})
             } catch (e) {
                 console.log(e)
-                return res.status(400).json({ error: e })
+                return res.status(400).json({ errorMsg: e })
             }
         }
         else {
@@ -219,7 +348,7 @@ router.route('/:id/comments').get(async (req, res) => {
         try {
             req.params.id = checkId(xss(req.params.id))
         } catch (e) {
-            return res.status(400).json({ error: e })
+            return res.status(400).json({ errorMsg: e })
         }
         // fetch all comments
         try {
@@ -228,7 +357,7 @@ router.route('/:id/comments').get(async (req, res) => {
             const commentList = await comments.getAllComments(event._id, _poolId)
             return res.status(200).json(commentList)
         } catch (e) {
-            return res.status(404).json({ error: e });
+            return res.status(404).json({ errorMsg: e });
         }
     }
 })
@@ -236,52 +365,81 @@ router.route('/:id/comments').get(async (req, res) => {
 router
     .route('/:id/createComment')
     .post(async (req, res) => {
-        let { description } = req.body
-        // validate
-        try {
-            req.session.user.email = checkEmail(xss(req.session.user.email))
-            req.params.id = checkId(xss(req.params.id))
-            description = checkString(xss(description))
-        } catch (e) {
-            return res.status(400).json({ error: e })
-        }
-        // check if user, event, and pool exist. also check if it's valid comment. then create it
-        try {
+        if (req.session.user) {
+            let { description } = req.body
+            // validate
+            try {
+                req.session.user.email = checkEmail(xss(req.session.user.email))
+                req.params.id = checkId(xss(req.params.id))
+                description = checkString(xss(description))
+            } catch (e) {
+                return res.status(400).json({ errorMsg: e })
+            }
+            // check if user, event, and pool exist.
             const email = req.session.user.email
             const _poolId = req.params.id
-            const user = await users.getUser(email)
-            const event = await events.getEventByPoolId(_poolId)
-            const pool = await carpools.getPool(_poolId)
-            const comment = await comments.createComment(event._id, _poolId, email, description)
-            return res.status(200).json({ success: true, commentId: comment._id })
-        } catch (e) {
-            console.log(e)
-            res.statusMessage = e;
-            return res.status(404).json({ errorMsg: e }).end()
+            let event
+            try {
+                await users.getUser(email)
+                event = await events.getEventByPoolId(_poolId)
+                await carpools.getPool(_poolId)
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+            // check if it's valid comment. then create it
+            try {
+                const comment = await comments.createComment(event._id, _poolId, email, description)
+                return res.status(200).json({ success: true, commentId: comment._id })
+            } catch (e) {
+                console.log(e)
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end()
+            }   
+        }
+        else {
+            return res.redirect('/')
         }
     })
 
 router
     .route('/:id/deleteComment')
     .post(async (req, res) => {
-        let { commentId } = req.body
-        // validate
-        try {
-            commentId = checkId(xss(commentId))
-            req.params.id = checkId(xss(req.params.id))
-        } catch (e) {
-            return res.status(400).json({ error: e })
-        }
-        // delete the comment
-        try {
+        if (req.session.user) {
+            let { commentId } = req.body
+            // validate
+            try {
+                commentId = checkId(xss(commentId))
+                req.params.id = checkId(xss(req.params.id))
+            } catch (e) {
+                return res.status(400).json({ errorMsg: e })
+            }
+            // check if user, event, and pool exist.
+            const email = req.session.user.email
             const _poolId = req.params.id
-            const event = await events.getEventByPoolId(_poolId)
-            const comment = await comments.deleteComment(event._id, _poolId, commentId)
-            return res.status(200).json({ success: true, commentDeleted: comment })
-        } catch (e) {
-            console.log(e)
-            res.statusMessage = e;
-            return res.status(404).json({ errorMsg: e }).end()
+            let event
+            try {
+                await users.getUser(email)
+                event = await events.getEventByPoolId(_poolId)
+                await carpools.getPool(_poolId)
+            } catch (e) {
+                console.log(e);
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end();
+            }
+            // delete the comment
+            try {
+                const comment = await comments.deleteComment(event._id, _poolId, commentId)
+                return res.status(200).json({ success: true, commentDeleted: comment })
+            } catch (e) {
+                console.log(e)
+                res.statusMessage = e;
+                return res.status(404).json({ errorMsg: e }).end()
+            }
+        }
+        else {
+            return res.redirect('/')
         }
     })
 module.exports = router;
