@@ -15,9 +15,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet" />
     {{!-- Custom Styling --}}
     <link rel="stylesheet" href="../../public/css/mainStyles.css">
+    <link rel="stylesheet" href="../../public/css/error.css">
+    <link rel="stylesheet" href="../../public/css/pool.css">
+    <link rel="stylesheet" href="../../public/css/landing.css">
 </head>
 
 <body>
+
+    {{#if authenticated}}
+        {{> header}}
+    {{/if}}
     
     {{{body}}}
     

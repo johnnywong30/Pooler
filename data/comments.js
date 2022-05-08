@@ -2,7 +2,6 @@ const { checkId, checkString, checkEmail, checkPassword, checkFirstName, checkLa
 const { users, events } = require("../config/mongoCollections");
 const moment = require("moment")
 const { v4: uuidv4 } = require("uuid");
-const events = require("./events");
 
 module.exports = {
     async createComment(eventId, poolId, email, details) {
@@ -29,7 +28,7 @@ module.exports = {
         }
         const updateCarpool = await eventCollection.updateOne(
             {_id: _eventId, "carpools._id": _poolId},
-            { $push: {"carpool.$.comments": newComment} }
+            { $push: {"carpools.$.comments": newComment} }
         )
         if (updateCarpool.modifiedCount === 0) throw `Error: could not createComment successfully`
         return { commentCreated: true }
@@ -70,13 +69,15 @@ module.exports = {
         if (!carpool) throw `Error: getComment carpool ${_poolId} does not exist`
         const comment = carpool.comments.find(comment => comment._id === _commentId)
         if (!comment) throw `Error: getComment comment ${commentId} does not exist`
+        const newComments = carpool.comments.filter((x) => x._id !== _commentId)
         const updateCarpool = await eventCollection.updateOne(
-            { _id: _eventId, "carpools._id": _poolId },
-            { $pull: {"carpool.$.comments._id": _commentId} }
+            {_id: _eventId, "carpools._id": _poolId},
+            { $set: {"carpools.$.comments": newComments} }
         )
-        if (updateCarpool.modifiedCount === 0) throw `Error: could not createComment successfully`
+        if (updateCarpool.modifiedCount === 0) throw `Error: could not deleteComment successfully`
         return { commentDeleted: true }
     },
+    //we don't need to code this, but here if we do
     async updateComment(eventId, poolId, commentId, details) {
         let _eventId = checkId(eventId)
         let _poolId = checkId(poolId)

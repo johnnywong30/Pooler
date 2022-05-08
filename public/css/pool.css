@@ -1,0 +1,119 @@
+.comment-section {
+    justify-content: start !important;
+}
+
+.comment-container {
+    color: var(--secondary);
+    padding-top: 10px;
+    padding-bottom: 15px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 10px;
+    width: 350px;
+    margin-top: 10px;
+}
+
+.comment-detail-container {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 10px;
+}
+
+.deleteComment {
+    position: relative;
+    left: 325px;
+    cursor: pointer;
+
+}
+
+.comment-detail-container>.comment-user {
+    font-family: var(--montserrat);
+    font-weight: 400;
+    font-size: 1em;
+    color: rgb(99, 136, 211);
+    padding-left: 15px;
+}
+
+.comment-detail-container>.comment-description {
+    display: block;
+    font-family: var(--montserrat);
+    font-size: .85em;
+    padding-left: 30px;
+    overflow: hidden;
+}
+
+#createCommentDescription {
+    display: block;
+    width: 400px;
+    height: 80px;
+    border: solid 1px var(--secondary);
+    border-radius: 5px;
+    transition: all .3s ease;
+    padding: 7.5px 15px;
+    resize: none;
+    font-size: .8rem;
+}
+
+.comment-button {
+    max-height: 30px;
+    padding: 6px 14px;
+    margin: 5px auto;
+    font-family: var(--montserrat);
+    border-radius: 6px;
+    color: var(--secondary);
+    background: #fff;
+    border: none;
+    box-shadow: 0px 0.5px 3px rgba(0, 0, 0, 0.1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
+}
+
+.comment-button:hover {
+    box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 1.5px var(--button);
+    outline: 0;
+}
+
+.pool-card {
+    max-width: 32rem;
+    margin: auto;
+    transform: translate(0, 25%);
+}
+
+.carpool-info {
+    width: 40vw;
+    justify-content: start !important;
+}
+
+.member-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.member-container>.phone-num {
+    color: rgb(99, 211, 198);
+}
+
+.carpool-btn {
+    max-height: 30px;
+    padding: 6px 14px;
+    margin: 0 auto;
+    font-family: var(--montserrat);
+    border-radius: 6px;
+    color: var(--secondary);
+    background: #fff;
+    border: none;
+    box-shadow: 0px 0.5px 3px rgba(0, 0, 0, 0.1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
+
+}
+
+.carpool-btn:hover {
+    box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 1.5px var(--button);
+    outline: 0;
+}

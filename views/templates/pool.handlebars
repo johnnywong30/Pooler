@@ -1,58 +1,70 @@
-{{! https://mdbootstrap.com/docs/standard/extended/news-feed/#blog }}
-<a href="/">
-    <img class="pooler-logo" src="/public/imgs/pooler.png" alt="Pooler" />
-</a>
-<div class="card px-3 pt-3" style="max-width: 32rem; margin:auto; transform: translate(0, 25%);">
-    <div>
-        <div class="row mb-3">
-            <div class="col-6">
-                <a href="/events/view/{{_eventID}}" class="text-info">
-                    <i class="fas fa-car"></i>
+<div class="container">
+    <div class="section-container">
+        <section class="section">
+            <div class="section-title">
+                <h1 class="title event-heading">
                     {{_eventName}}
-                </a>
+                </h1>
             </div>
+            <div class="section-container">
+                <div class="section-container">
+                    <div class="text-container carpool-info">
+                        <input type="hidden" id="poolId" value="{{_poolId}}">
+                        <input type="hidden" id="userEmail" value="{{email}}">
+                        <h2 class="carpool-details-heading ">
+                            Carpool Details
+                        </h2>
+                        <dl class="carpool-details">
+                            <dt id="driver-label" class="event-detail-label dt-inline">Driver</dt>
+                            <dd class="event-detail-info dd-inline">{{_driverName}}</dd>
 
-            <div class="col-6 text-end">
-                <u>{{_departureTime}}</u>
-            </div>
-        </div>
+                            <dt id="departure-label" class="event-detail-label">Departure Time</dt>
+                            <dd class="event-detail-info">{{_departureTime}}</dd>
 
-        <!-- Article title and description -->
-        <a href="" class="text-dark">
-            <h5>Driver: {{_driverName}}</h5>
-            <p>Capacity: {{_numMembers}}/{{_capacity}}</p>
-        </a>
+                            <dt id="capacity-label" class="event-detail-label dt-inline">Capacity</dt>
+                            <dd class="event-detail-info dd-inline">
+                                <span id="occupied">{{_numMembers}}</span>/{{_capacity}}
+                            </dd>
+                            <dt class="event-detail-label">Members</dt>
+                            <dd class="event-detail-info">
+                                {{#each _memberData}}
+                                <div class="member-container">
+                                    <span class="name">{{firstName}} {{lastName}}</span>
+                                    <span class="phone-num">{{phone}}</span>
+                                </div>
+                                {{/each}}
+                            </dd>
+                        </dl>
+                        {{#if _isUserInPool}}
+                        <button id="leave-btn" class="carpool-btn">Leave</button>
+                        {{else}}
+                        <button id="join-btn" class="carpool-btn">Join</button>
+                        {{/if}}
+                    </div>
+                    <div class="text-container comment-section">
+                        {{#if _isUserInPool}}
+                        <h5>Comments</h5>
 
-        <hr />
+                        <div id="comment-error" class='modal-error' hidden>
 
-        {{#each _memberData}}
-            <div class="row mb-4 border-bottom pb-2">
-                <div class="col-3">
-                    <p>Passenger</p>
+                        </div>
+                        <form id="create-comment-form" method="POST">
+                            <label for="createCommentDescription">Comment</label>
+                            <textarea id="createCommentDescription" name="createCommentDescription" required></textarea>
+                            <button class="comment-button" type="submit">Post</button>
+                        </form>
+                        <div class="comments-list" id="comments-list">
+
+                        </div>
+
+                        {{/if}}
+                    </div>
                 </div>
-
-                <div class="col-9">
-                    <p class="mb-2"><strong>{{this.firstName}} {{this.lastName}}</strong></p>
-                    <p>{{this.phone}}</p>
-                </div>
             </div>
-        {{/each}}
-
-        <!-- News -->
-        {{#if _isUserInPool}}
-            <div class="row mb-4 pb-2">
-                <div class="col-12">
-                    <a href="/pool/{{_poolId}}/leave" class="btn align-center text-small btn-2 leavePool">Leave</a>
-                </div>
-            </div>
-        {{else}}
-            <div class="row mb-4 pb-2">
-                <div class="col-12" style="text-align: center">
-                    <a href="/pool/{{_poolId}}/join" class="btn align-center text-small btn-2 joinPool">Join</a>
-                </div>
-            </div>
-        {{/if}}
+        </section>
     </div>
-
-    <!-- News block -->
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src='/public/js/pool.js'></script>
