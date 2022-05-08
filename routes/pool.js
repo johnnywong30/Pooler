@@ -11,13 +11,22 @@ router.route("/").get(async (req, res) => {
 
 router.route("/create/pool").post(async (req, res) => {
     if (req.session.user) {
+        // validate params
+        const { eventId, driverId, capacity, departureTime } = req.body;
+        let _eventId, _driverId, _capacity, _departureTime
         try {
-            const { eventId, driverId, capacity, departureTime } = req.body;
-            const _eventId = checkId(xss(eventId));
-            const _driverId = checkId(xss(driverId));
-            const cap = typeof capacity === 'number' ? capacity : xss(capacity)
-            const _capacity = checkCapacity(cap); // is a number
-            const _departureTime = checkDateTime(xss(departureTime));
+            _eventId = checkId(xss(eventId));
+            _driverId = checkId(xss(driverId));
+            cap = typeof capacity === 'number' ? capacity : xss(capacity)
+            _capacity = checkCapacity(cap); // is a number
+            _departureTime = checkDateTime(xss(departureTime));
+        } catch (e) {
+            console.log(e);
+            res.statusMessage = e;
+            return res.status(400).json({ errorMsg: e }).end();
+        }
+        //create the pool
+        try {
             const pool = await carpools.createPool(_eventId, _driverId, _departureTime, _capacity);
             await history.addToHistory(_driverId, _eventId, pool._id);
             return res.json({ success: true, poolId: pool._id }).end();
