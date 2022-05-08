@@ -21,6 +21,11 @@ Currently, most clubs use Google Sheets or Excel documents to handle carpooling,
 5. Go to `http://localhost:3000`
 6. Create an account and explore the pre-seeded events on our Pooler website!
 
+
+## Pre-made Accounts With Seed
+1. Username: `jwang203@stevens.edu`, Password: `password`
+2. Username: `szuo1@stevens.edu`, Password: `password`
+
 ## Core Features
 1. **Landing Page**: This explains the purpose and functionality of the Pooler website
 2. **User Profile:** Upon account creation a user’s profile will be automatically created. User profile will include important information about the user such as name, home address, venmo username, contact information, and if they are a driver and/or a passenger.
