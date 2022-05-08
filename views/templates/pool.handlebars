@@ -11,6 +11,8 @@
                     <div class="text-container carpool-info">
                         <input type="hidden" id="poolId" value="{{_poolId}}">
                         <input type="hidden" id="userEmail" value="{{email}}">
+                        <input type="hidden" id="currentDeparture" value="{{_departureTime}}" <input type="hidden"
+                            id="currentCapacity" value="{{_capacity}}">
                         <h2 class="carpool-details-heading ">
                             Carpool Details
                         </h2>
@@ -43,7 +45,7 @@
                     </div>
                     <div class="text-container comment-section">
                         {{#if _isUserInPool}}
-                        <h5>Comments</h5>
+                        <h2 class="comment-heading">Comments</h2>
 
                         <div id="comment-error" class='modal-error' hidden>
 
@@ -58,6 +60,23 @@
                         </div>
 
                         {{/if}}
+                    </div>
+                </div>
+                <div id="update-modal" class="modal-box">
+                    <div class="modal-content">
+                        <h1 class="modal-title">Update Carpool Details</h1>
+                        <form id="edit-pool-form" method="POST" autocomplete="off">
+                            <div id="edit-pool-error" class="modal-error" hidden>
+
+                            </div>
+                            <div id="edit-input-container" class="profile-form-item">
+                                
+                            </div>
+                            <div id="host-footer" class="modal-footer">
+                                <button id="edit-pool-submit" class="submit-btn" type="submit" value="submit">Update</button>
+                            </div>
+                            <span id="edit-close-btn" class="modal-close">&times;</span>
+                        </form>
                     </div>
                 </div>
             </div>

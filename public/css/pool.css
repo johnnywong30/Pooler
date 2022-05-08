@@ -2,6 +2,11 @@
     justify-content: start !important;
 }
 
+.comment-heading {
+    font-size: 1.5rem;
+    margin: 0 auto 5px 0 !important;
+}
+
 .comment-container {
     color: var(--secondary);
     padding-top: 10px;
@@ -29,7 +34,7 @@
     font-family: var(--montserrat);
     font-weight: 400;
     font-size: 1em;
-    color: rgb(99, 136, 211);
+    color: #4375c9;
     padding-left: 15px;
 }
 
@@ -93,7 +98,7 @@
 }
 
 .member-container>.phone-num {
-    color: rgb(99, 211, 198);
+    color: #00857a;
 }
 
 .carpool-btn {
@@ -116,4 +121,14 @@
 .carpool-btn:hover {
     box-shadow: 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 1.5px var(--button);
     outline: 0;
+}
+
+#departure-label,
+#capacity-label {
+    cursor: pointer;
+    color: #4375c9;
+}
+
+.edit-input-container {
+    padding: 10px auto;
 }
