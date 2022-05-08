@@ -18,6 +18,7 @@ router.route("/create/pool").post(async (req, res) => {
             const _capacity = checkCapacity(capacity); // is a number
             const _departureTime = checkDateTime(xss(departureTime));
             const pool = await carpools.createPool(_eventId, _driverId, _departureTime, _capacity);
+            await history.addToHistory(_driverId, _eventId, pool._id);
             return res.json({ success: true, poolId: pool._id }).end();
         } catch (e) {
             console.log(e);
@@ -140,7 +141,7 @@ router.route("/:id/join").post(async (req, res) => {
             await history.addToHistory(user._id, event._id, pool._id);
             return res.json({ success: true })
         } catch (e) {
-            return res.status(500).json({ error: e })
+            return res.status(400).json({ error: e })
         }
     } else {
         return res.redirect('/')
@@ -159,7 +160,7 @@ router.route("/:id/leave").post(async (req, res) => {
         await history.removeFromHistory(user._id, event._id, pool._id);
         return res.json({ success: true })
     } catch (e) {
-        return res.status(500).json({ error: e })
+        return res.status(400).json({ error: e })
     }
 });
 

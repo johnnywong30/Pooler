@@ -206,7 +206,7 @@ module.exports = {
 
 		sum = 0
 		for (carpool of event.carpools) {
-			sum += carpool.members.length + 1 //passengers + drivers
+			sum += carpool.members.length //passengers + drivers
 		}
 		return sum
 	},

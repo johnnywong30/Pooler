@@ -77,8 +77,10 @@
                 if (response.success) {
                     location.reload()
                 }
-            } catch (e) {
-                alert(e)
+            } catch (err) {
+                const { responseJSON } = err
+                const { error } = responseJSON
+                alert(error)
             }
         })
     }
@@ -90,8 +92,10 @@
                 if (response.success) {
                     location.reload()
                 }
-            } catch (e) {
-                alert(e)
+            } catch (err) {
+                const { responseJSON } = err
+                const { error } = responseJSON
+                alert(error)
             }
         })
     }
@@ -232,6 +236,7 @@
                 populateComments(comments)
             }
         } catch (error) {
+            console.log(error)
             createError(commentError, `Error: ${error}`)
         }
     })
@@ -256,9 +261,10 @@
             if (response.success) {
                 location.reload()
             }
-        } catch (error) {
-            console.log(error)
-            createError(updateError, `Error: ${error}`)
+        } catch (err) {
+            const { responseJSON } = err
+			const { error } = responseJSON
+			createError(updateError, `Error: ${error}`);
         }
     })
 

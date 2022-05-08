@@ -17,13 +17,13 @@ module.exports = {
 		// Check if driver exists
 		const userCollection = await users();
 		const user = await userCollection.findOne({ _id: _driverId });
-		if (!user) throw `No driver with ID of ${driverId}`;
+		if (!user) throw `No driver with ID of ${_driverId}`;
 		// Check if driver is actually a driver
-		if (!user.driver) throw `${driver} cannot drive. Cannot create carpool`;
+		if (!user.driver) throw `You cannot drive. Cannot create carpool`;
 
 		// Check if driver is in another carpool
 		const hasCarpool = event.carpools.find(carpool => carpool.members.includes(_driverId));
-		if (hasCarpool) throw `${driver} has already registered for a carpool`;
+		if (hasCarpool) throw `You are already in a carpool. Cannot join another.`;
 
 		const _poolId = uuidv4();
 
@@ -39,6 +39,7 @@ module.exports = {
 		const updateEvents = await collection.updateOne({ _id: _eventId }, { $push: { carpools: newCarpool } });
 		if (updateEvents.modifiedCount === 0) throw "Could not add carpool successfully";
 		// On success
+		await this.addPooler(eventId, _poolId, _driverId)
 		return await this.getPool(_poolId)
 	},
 	async addPooler(eventId, poolId, userId) {
@@ -57,12 +58,14 @@ module.exports = {
 		// Check if carpool exists
 		const carpool = event.carpools.find(carpool => carpool._id === _poolId);
 		if (!carpool) throw `No carpool with ID of ${_poolId}`;
+		// Check if you have a carpool already
+		const hasCarpool = event.carpools.find(carpool => carpool.members.includes(_userId));
+		if (hasCarpool) throw `You are already in a carpool. Cannot join another.`;
 		// Check if capacity is reached
 		if (carpool.members.length === carpool.capacity) throw `Carpool capacity reached`;
 		// Add user to carpool
 		const updateCarpool = await eventCollection.updateOne({ _id: _eventId, "carpools._id": _poolId }, { $push: { "carpools.$.members": _userId } });
 		if (updateCarpool.modifiedCount === 0) throw "Could not add pooler successfully";
-
 		// On success
 		return { poolerRegistered: true };
 	},
