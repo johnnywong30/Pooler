@@ -67,12 +67,24 @@ app.use('/profile', async (req, res, next) => {
 app.use('/events', async (req, res, next) => {
     if (req.session.user && req.method === 'POST') {
         // Clean up address data to be an object
-        const { street, city, state, zipcode, private } = req.body
-        req.body.destination = {
-            address: xss(street),
-            city: xss(city),
-            state: xss(state),
-            zipcode: xss(zipcode)
+        const { private } = req.body
+        if (!req.body.destination) {
+            const { street, city, state, zipcode } = req.body
+            req.body.destination = {
+                address: xss(street),
+                city: xss(city),
+                state: xss(state),
+                zipcode: xss(zipcode)
+            }
+        }
+        else {
+            const { address, city, state, zipcode } = req.body.destination
+            req.body.destination = {
+                address: xss(address),
+                city: xss(city),
+                state: xss(state),
+                zipcode: xss(zipcode)
+            }
         }
         req.body.private = private === 'true'
         next()

@@ -332,6 +332,7 @@
             alert("invalid address")
         }
 
+        // this hurts to look at
         $.ajax({
             url: `/events/updateEvent/${deleteBtn.value}`,
             type: 'POST',
@@ -342,9 +343,10 @@
                 saveChangesBtn.disabled = true
                 cancelBtn.disabled = true
                 currentValues = editables.map((element) => (element.value) ? element.value : element.checked)
+                location.reload()
             },
             error: function (error) {
-                console.log(`Error ${error}`);
+                alert(`Error ${error}`);
             }
         });
 

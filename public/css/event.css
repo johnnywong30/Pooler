@@ -1,6 +1,10 @@
 	/**********************
   Event Page CSS
   ***********************/
+.event-page-heading {
+  margin: 3rem auto auto auto;
+}
+
 #update-button, #delete-button {
   padding: 6px 14px;
   margin: 0 auto;

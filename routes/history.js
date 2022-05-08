@@ -26,7 +26,7 @@ router
         if (req.session.user) {
             const { email } = req.session.user
             try {
-                const historyData = await history.getHistory(email) 
+                const historyData = await history.getHistory(xss(email))
                 const detailedData = []
                 for await (const event of historyData.map(event => events.getEvent(event._id))) {
                     const date = new Date(event.date)

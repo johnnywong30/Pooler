@@ -15,7 +15,8 @@ router.route("/create/pool").post(async (req, res) => {
             const { eventId, driverId, capacity, departureTime } = req.body;
             const _eventId = checkId(xss(eventId));
             const _driverId = checkId(xss(driverId));
-            const _capacity = checkCapacity(capacity); // is a number
+            const cap = typeof capacity === 'number' ? capacity : xss(capacity)
+            const _capacity = checkCapacity(cap); // is a number
             const _departureTime = checkDateTime(xss(departureTime));
             const pool = await carpools.createPool(_eventId, _driverId, _departureTime, _capacity);
             await history.addToHistory(_driverId, _eventId, pool._id);
@@ -32,13 +33,12 @@ router.route("/create/pool").post(async (req, res) => {
 
 router.route("/:id").get(async (req, res) => {
     if (req.session.user) {
-
-
         try {
-            const user = await users.getUser(req.session.user.email);
-            const event = await events.getEventByPoolId(req.params.id);
-            const pool = await carpools.getPool(req.params.id);
-            const _poolId = req.params.id;
+            const email = checkEmail(xss(req.session.user.email))
+            const _poolId = checkId(xss(req.params.id))
+            const user = await users.getUser(email);
+            const event = await events.getEventByPoolId(_poolId);
+            const pool = await carpools.getPool(_poolId);
             const _driver = await users.getUserById(pool.driver);
             const _driverName = `${_driver.firstName} ${_driver.lastName}`;
             const _departureTime = pool.departureTime;
@@ -48,7 +48,7 @@ router.route("/:id").get(async (req, res) => {
                 try {
                     _memberData[i] = await users.getUserById(_memberData[i]);
                 } catch (e) {
-                    console.log("No such member with ID " + _memberData[i]);
+                    throw (`No such member with ID ${_memberData[i]}`);
                 }
             }
             const _numMembers = _memberData.length;
@@ -87,8 +87,7 @@ router.route("/:id").get(async (req, res) => {
 router.route("/list/:id").get(async (req, res) => {
     if (req.session.user) {
         try {
-            const pool = await carpools.getPools(req.params.id);
-            const _poolId = req.params.id;
+            const _poolId = checkId(xss(req.params.id));
             const importCarpools = await carpools.getPools(_poolId);
             return res.json(importCarpools);
         } catch (e) {
@@ -103,7 +102,8 @@ router.route("/list/:id").get(async (req, res) => {
 router.route("/currentUser/data").get(async (req, res) => {
     if (req.session.user) {
         try {
-            const user = await users.getUser(req.session.user.email);
+            const email = checkEmail(xss(req.session.user.email))
+            const user = await users.getUser(email);
             return res.json(user);
         } catch (e) {
             console.log(e);
@@ -117,7 +117,8 @@ router.route("/currentUser/data").get(async (req, res) => {
 router.route("/user/:id").get(async (req, res) => {
     if (req.session.user) {
         try {
-            const user = await users.getUserById(req.params.id);
+            const id = checkId(xss(req.params.id))
+            const user = await users.getUserById(id);
             return res.json(user);
         } catch (e) {
             console.log(e);
