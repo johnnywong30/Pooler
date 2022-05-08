@@ -17,9 +17,14 @@
     <link rel="stylesheet" href="../../public/css/mainStyles.css">
     <link rel="stylesheet" href="../../public/css/error.css">
     <link rel="stylesheet" href="../../public/css/pool.css">
+    <link rel="stylesheet" href="../../public/css/landing.css">
 </head>
 
 <body>
+
+    {{#if authenticated}}
+        {{> header}}
+    {{/if}}
     
     {{{body}}}
     

@@ -1211,14 +1211,14 @@ footer {
     justify-content: start;
 }
 
-.event-details-heading {
+.event-details-heading, .carpool-details-heading {
     font-size: 1.5rem;
     font-weight: 700;
     text-decoration: underline;
     margin: 5px 0;
 }
 
-.event-details {
+.event-details, .carpool-details{
     margin-top: -5px;
 }
 

@@ -20,6 +20,37 @@
     let commentList = $('#comments-list')
     let createCommentForm = $('#create-comment-form')
     let createCommentDescription = $('#createCommentDescription')
+
+    let leaveBtn = $('#leave-btn'),
+        joinBtn = $('#join-btn')
+    
+    if (leaveBtn) {
+        leaveBtn.on('click', async (e) => {
+            e.preventDefault()
+            try {
+                const response = await $.post(`${_poolId}/leave`)
+                if (response.success) {
+                    location.reload()
+                }
+            } catch (e) {
+                alert(e)
+            }
+        })
+    }
+    if (joinBtn) {
+        joinBtn.on('click', async (e) => {
+            e.preventDefault()
+            try {
+                const response = await $.post(`${_poolId}/join`)
+                if (response.success) {
+                    location.reload()
+                }
+            } catch (e) {
+                alert(e)
+            }
+        })
+    }
+        
     let commentError = document.getElementById('comment-error')
 
     const createError = (div, error) => {
@@ -41,6 +72,8 @@
     const createComments = (comment) => {
         const commentContainer = $(DOM.div, { 'class': 'comment-container' })
         const detailContainer = $(DOM.span, { 'class': 'comment-detail-container' })
+        const userIcon = $(DOM.span, { 'class': 'fa fa-user'})
+        // <i class="fa fa-user" aria-hidden="true"></i>
         const commentUser = $(DOM.span, { 'class': 'comment-user' }).text(comment.from)
         const commentDescription = $(DOM.span, { 'class': 'comment-description' }).text(comment.details)
         if (comment.from === user) {
@@ -65,8 +98,9 @@
             })
             commentContainer.prepend(removeButton)
         }
-        detailContainer.append([commentUser, commentDescription])
-        commentContainer.prepend(detailContainer)
+        detailContainer.append([userIcon, commentUser, commentDescription])
+        commentContainer.append(detailContainer)
+        
         return commentContainer
     }
     const populateComments = (comments) => {
@@ -96,4 +130,7 @@
     })
     // populate comments
     populateComments(comments)
+
+    
+
 })(window.jQuery);
