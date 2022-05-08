@@ -15,7 +15,7 @@ router
             const templateData = {
                 states: states
             }
-            return res.render('templates/register', templateData)
+            return res.status(200).render('templates/register', templateData)
         }
     })
     .post(async (req, res) => {
@@ -54,21 +54,30 @@ router
     .route('/login')
     .get(async (req, res) => {
         if (req.session.user) return res.redirect('/')
-        else return res.render('templates/login', {layout: 'main'})
+        else return res.status(200).render('templates/login', {layout: 'main'})
     })
     .post(async (req, res) => {
         const { email, password } = req.body
         let auth = {}
         let userEmail = ''
+        let pass = ''
+        // validate
         try {
             userEmail = checkEmail(xss(email))
-            const pass = checkPassword(xss(password))
-            auth = await users.checkUser(userEmail, pass)
+            pass = checkPassword(xss(password))
         } catch (e) {
             const templateData = {
                 error: 'You did not provide a valid email and/or password.'
             }
             return res.status(400).render('templates/login', templateData)
+        }
+        try {
+            auth = await users.checkUser(userEmail, pass)
+        } catch (e) {
+            const templateData = {
+                error: 'Account not found with given email and/or password.'
+            }
+            return res.status(404).render('templates/login', templateData)
         }
         if (auth.authenticated) {
             req.session.user = {
@@ -102,7 +111,7 @@ router
         if (req.session.user) {
             templateData.authenticated = true
         }
-        return res.render('templates/index', templateData)
+        return res.status(200).render('templates/index', templateData)
     })
 
 
